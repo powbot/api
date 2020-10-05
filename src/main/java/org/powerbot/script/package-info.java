@@ -1,0 +1,3 @@
+/**
+ */
+package org.powerbot.script;
