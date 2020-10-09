@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -81,7 +82,9 @@ public class Menu extends ClientAccessor {
 	public java.util.List<String> getMenuActions() {
 		final String[] actions = ctx.client().getMenuActions();
 		if (actions != null) {
-			return Arrays.stream(actions).map(StringUtils::stripHtml).collect(Collectors.toList());
+			final java.util.List<String> menuActions =  Arrays.stream(actions).filter(java.util.Objects::nonNull).map(StringUtils::stripHtml).collect(Collectors.toList());
+			Collections.reverse(menuActions);
+			return menuActions;
 		}
 		return new ArrayList<>();
 	}
@@ -89,7 +92,9 @@ public class Menu extends ClientAccessor {
 	public java.util.List<String> getMenuOptions() {
 		final String[] options = ctx.client().getMenuOptions();
 		if (options != null) {
-			return Arrays.stream(options).map(StringUtils::stripHtml).collect(Collectors.toList());
+			final java.util.List<String> menuOptions = Arrays.stream(options).filter(java.util.Objects::nonNull).map(StringUtils::stripHtml).collect(Collectors.toList());
+			Collections.reverse(menuOptions);
+			return menuOptions;
 		}
 		return new ArrayList<>();
 	}
