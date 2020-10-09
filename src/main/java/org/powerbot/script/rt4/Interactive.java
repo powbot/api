@@ -102,7 +102,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 		return valid() && ctx.input.apply(this, point -> Condition.wait(new Condition.Check() {
 			@Override
 			public boolean poll() {
-				return ctx.menu.indexOf(f) == 0;
+				return ctx.menu.menuSlot(f) == 0;
 			}
 		}, 5, 10) && ctx.input.click(true));
 	}

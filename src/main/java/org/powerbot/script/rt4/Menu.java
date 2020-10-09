@@ -7,21 +7,18 @@ import java.awt.Component;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
  * Menu
- *
+ * <p>
  * An interface of the menu which appears when right-clicking in the game. An example
- * of this menu is:
- *  <ul>
- *      <li><b>Walk here</b></li>
- *      <li><b>Examine</b> Tree</li>
- *      <li><b>Drop</b> Coins</li>
- *  </ul>
+ * f this menu is:
+ * <ul>
+ *     <li><b>Walk here</b></li>
+ *     <li><b>Examine</b> Tree</li>
+ *     <li><b>Drop</b> Coins</li>
+ * </ul>
  */
 public class Menu extends ClientAccessor {
 
@@ -37,7 +34,7 @@ public class Menu extends ClientAccessor {
 		final String a = action != null ? action.toLowerCase() : null;
 		final String o = option != null ? option.toLowerCase() : null;
 		return (Filter<MenuCommand>) command -> (a == null || command.action.toLowerCase().contains(a)) &&
-				(o == null || command.option.toLowerCase().contains(o));
+			(o == null || command.option.toLowerCase().contains(o));
 	}
 
 	/**
@@ -82,9 +79,10 @@ public class Menu extends ClientAccessor {
 	public java.util.List<String> getMenuActions() {
 		final String[] actions = ctx.client().getMenuActions();
 		if (actions != null) {
-			final java.util.List<String> menuActions =  Arrays.stream(actions).filter(java.util.Objects::nonNull).map(StringUtils::stripHtml).collect(Collectors.toList());
-			Collections.reverse(menuActions);
-			return menuActions;
+			return Arrays.stream(actions)
+				.filter(java.util.Objects::nonNull)
+				.map(StringUtils::stripHtml)
+				.collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
@@ -92,12 +90,14 @@ public class Menu extends ClientAccessor {
 	public java.util.List<String> getMenuOptions() {
 		final String[] options = ctx.client().getMenuOptions();
 		if (options != null) {
-			final java.util.List<String> menuOptions = Arrays.stream(options).filter(java.util.Objects::nonNull).map(StringUtils::stripHtml).collect(Collectors.toList());
-			Collections.reverse(menuOptions);
-			return menuOptions;
+			return Arrays.stream(options)
+				.filter(java.util.Objects::nonNull)
+				.map(StringUtils::stripHtml)
+				.collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * Checks if the menu contains any {@link MenuCommand} matching the filter.
 	 *
@@ -140,19 +140,34 @@ public class Menu extends ClientAccessor {
 	}
 
 	/**
+	 * Provides the slot of the menu command given the specified filter.
+	 *
+	 * @param filter The filter to apply to the menu.
+	 * @return The slot of the menu command, or {@code -1} if it was not found.
+	 */
+	public int menuSlot(final Filter<? super MenuCommand> filter) {
+		return indexToMenuSlot(indexOf(filter));
+	}
+
+	private int indexToMenuSlot(int idx) {
+		return ctx.client().getMenuCount() - idx - 1;
+	}
+
+	/**
 	 * Attempts to click the menu command provided by the filter.
 	 *
 	 * @param filter The filter to apply to the menu.
-	 * @param click Whether or not to left-click.
+	 * @param click  Whether or not to left-click.
 	 * @return {@code true} if the mouse has successfully clicked within the bounds of the {@link MenuCommand}
 	 */
 	private boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
 		final Client client = ctx.client();
-		int idx;
-		if (client == null || (idx = indexOf(filter)) == -1) {
+		int slot;
+		if (client == null || (slot = menuSlot(filter)) == -1) {
 			return false;
 		}
-		if (click && !client.isMenuOpen() && idx == 0) {
+
+		if (click && !client.isMenuOpen() && slot == 0) {
 			return ctx.input.click(true);
 		}
 
@@ -166,14 +181,14 @@ public class Menu extends ClientAccessor {
 			public boolean poll() {
 				return client.isMenuOpen();
 			}
-		}, 15, 10) || (idx = indexOf(filter)) == -1) {
+		}, 15, 10) || (slot = menuSlot(filter)) == -1) {
 			return false;
 		}
-		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + 19 + idx * 15, client.getMenuWidth(), 15);
-		Condition.sleep(Random.hicks(idx));
+		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + 19 + slot * 15, client.getMenuWidth(), 15);
+		Condition.sleep(Random.hicks(slot));
 		if (!ctx.input.move(
-				Random.nextInt(rectangle.x, rectangle.x + rectangle.width),
-				Random.nextInt(rectangle.y, rectangle.y + rectangle.height)) || !client.isMenuOpen()) {
+			Random.nextInt(rectangle.x, rectangle.x + rectangle.width),
+			Random.nextInt(rectangle.y, rectangle.y + rectangle.height)) || !client.isMenuOpen()) {
 			return false;
 		}
 		final Point p = ctx.input.getLocation();
@@ -222,7 +237,7 @@ public class Menu extends ClientAccessor {
 	 *
 	 * @return the array of menu items
 	 */
-	public String[]  items() {
+	public String[] items() {
 		final MenuCommand[] m = commands();
 		final String[] arr = new String[ctx.client().getMenuCount()];
 		for (int i = 0; i < ctx.client().getMenuCount(); i++) {
