@@ -15,20 +15,10 @@ import java.util.logging.Logger;
  */
 public final class Constants {
 	private static final Logger LOGGER = Logger.getLogger("Constants");
-	private static final Properties REMOTE, LOCAL;
+	private static final Properties LOCAL;
 
 	static {
-		REMOTE = new Properties();
 		LOCAL = new Properties();
-
-		final String src = System.getProperty(Constants.class.getCanonicalName(), "");
-		if (!src.isEmpty()) {
-			try {
-				REMOTE.load(new FileInputStream(src));
-			} catch (final IOException ignored) {
-				LOGGER.severe("failed to download constants");
-			}
-		}
 
 		try {
 			LOCAL.load(new InputStreamReader(Objects.requireNonNull(Constants.class.getClassLoader().getResourceAsStream("constants.properties"))));
@@ -38,7 +28,7 @@ public final class Constants {
 	}
 
 	private static int getInt(final String property) {
-		return Integer.parseInt(REMOTE.getProperty(property, LOCAL.getProperty(property)));
+		return Integer.parseInt(LOCAL.getProperty(property));
 	}
 
 	public static final int GAME_LOGIN = getInt("GAME_LOGIN");
