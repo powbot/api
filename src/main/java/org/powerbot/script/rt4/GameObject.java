@@ -230,21 +230,23 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	}
 
 	@Override
+	public Point basePoint() {
+		return ctx.game.worldToScreen(localX(), localY(), 0);
+	}
+
+	@Override
 	public Point centerPoint() {
 		// Non-default custom bounds take priority
-		final BoundingModel model2 = boundingModel.get();
-		if (model2 != null && !model2.equals(defaultBounds)) {
-			return model2.centerPoint();
+		final BoundingModel model = boundingModel.get();
+		if (model != null && !model.equals(defaultBounds)) {
+			return model.centerPoint();
 		}
-		final Model model = model();
-		if (model == null) {
-			return model2 != null ? model2.centerPoint() : NIL_POINT;
-		}
-		final Point center = model.centerPoint(localX(), localY(), modelOrientation());
-		if (!center.equals(NIL_POINT)) {
+
+		final Point center = modelCenterPoint();
+		if (center != null) {
 			return center;
 		}
-		return model2 != null ? model2.centerPoint() : NIL_POINT;
+		return NIL_POINT;
 	}
 
 	@Override

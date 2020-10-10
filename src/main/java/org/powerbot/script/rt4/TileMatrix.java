@@ -141,6 +141,11 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 		return isPolygonInViewport(bounds());
 	}
 
+	@Override
+	public Point basePoint() {
+		return point(0);
+	}
+
 	private boolean isPolygonInViewport(final Polygon p) {
 		for (int i = 0; i < p.npoints; i++) {
 			if (!ctx.game.pointInViewport(p.xpoints[i], p.ypoints[i])) {

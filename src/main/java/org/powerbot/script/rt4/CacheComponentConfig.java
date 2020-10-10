@@ -4,7 +4,12 @@ import org.powerbot.bot.cache.AbstractCacheWorker;
 import org.powerbot.bot.cache.Block;
 import org.powerbot.bot.cache.JagexBufferStream;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class CacheComponentConfig {
+
+	private static final Map<Integer, CacheComponentConfig[]> CACHE = new ConcurrentHashMap<>();
 
 	private static final int CACHE_IDX = 3;
 
@@ -93,8 +98,13 @@ public class CacheComponentConfig {
 	}
 
 	public static CacheComponentConfig[] load(final AbstractCacheWorker worker, final int widgetId) {
+		if (CACHE.containsKey(widgetId)) {
+			return CACHE.get(widgetId);
+		}
+
 		final Block b = worker.getBlock(CACHE_IDX, widgetId);
 		if (b == null) {
+			CACHE.put(widgetId, new CacheComponentConfig[]{});
 			return null;
 		}
 		final CacheComponentConfig[] comps = new CacheComponentConfig[b.getSectors().length];
@@ -103,6 +113,8 @@ public class CacheComponentConfig {
 			final int componentId = (widgetId << 16) + i;
 			comps[i] = new CacheComponentConfig(i, componentId, sectors[i]);
 		}
+
+		CACHE.put(widgetId, comps);
 		return comps;
 	}
 

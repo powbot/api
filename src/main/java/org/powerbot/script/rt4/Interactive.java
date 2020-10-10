@@ -44,6 +44,12 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 * {@inheritDoc}
 	 */
 	@Override
+	public abstract Point basePoint();
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public abstract Point centerPoint();
 
 	/**

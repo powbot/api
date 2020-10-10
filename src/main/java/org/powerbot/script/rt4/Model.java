@@ -187,6 +187,7 @@ public class Model {
 	}
 
 	public Point centerPoint(final int localX, final int localY, final int orientation) {
+		final boolean isResizable = ctx.game.resizable();
 		final List<Point> points = points(localX, localY, orientation);
 		if (points.size() == 0) {
 			return new Point(-1, -1);
@@ -195,7 +196,7 @@ public class Model {
 		final int yTotal = points.stream().mapToInt(p -> p.y).sum();
 		final Point central = new Point(xTotal / points.size(), yTotal / points.size());
 
-		return points.stream().filter(p -> ctx.game.inViewport(p)).sorted((a, b) -> {
+		return points.stream().filter(p -> ctx.game.inViewport(p, isResizable)).sorted((a, b) -> {
 			double distA = Math.sqrt(((central.x - a.x) * (central.x - a.x)) + ((central.y - a.y) * (central.y - a.y)));
 			double distB = Math.sqrt(((central.x - b.x) * (central.x - b.x)) + ((central.y - b.y) * (central.y - b.y)));
 

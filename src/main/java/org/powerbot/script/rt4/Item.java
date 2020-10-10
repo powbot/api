@@ -44,6 +44,11 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 	}
 
 	@Override
+	public Point basePoint() {
+		return component.screenPoint();
+	}
+
+	@Override
 	public Point centerPoint() {
 		if (component == null) {
 			return new Point(-1, -1);

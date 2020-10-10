@@ -20,8 +20,6 @@ public class Component extends Interactive {
 	private final Component component;
 	private final int index;
 
-	private Component[] sparseCache;
-
 	Component(final ClientContext ctx, final Widget widget, final int index) {
 		this(ctx, widget, null, index);
 	}
@@ -31,8 +29,6 @@ public class Component extends Interactive {
 		this.widget = widget;
 		this.component = component;
 		this.index = index;
-
-		sparseCache = new Component[0];
 	}
 
 	@Override
@@ -148,18 +144,8 @@ public class Component extends Interactive {
 		if (index < 0) {
 			return new Component(ctx, widget, this, -1);
 		}
-		if (index < sparseCache.length && sparseCache[index] != null) {
-			return sparseCache[index];
-		}
-		final Component c = new Component(ctx, widget, this, index);
-		final int l = sparseCache.length;
-		if (index >= l) {
-			sparseCache = Arrays.copyOf(sparseCache, index + 1);
-			for (int i = l; i < index + 1; i++) {
-				sparseCache[i] = new Component(ctx, widget, this, i);
-			}
-		}
-		return sparseCache[index] = c;
+
+		return new Component(ctx, widget, this, index);
 	}
 
 	public synchronized int componentCount() {
@@ -173,8 +159,11 @@ public class Component extends Interactive {
 		if (len <= 0) {
 			return new Component[0];
 		}
-		component(len - 1);
-		return Arrays.copyOf(sparseCache, len);
+		final Component[] comps = new Component[len];
+		for(int i = 0; i < len; i++) {
+			comps[i] = component(i);
+		}
+		return comps;
 	}
 
 	public int contentType() {
@@ -295,6 +284,11 @@ public class Component extends Interactive {
 	public int itemStackSize() {
 		final org.powerbot.bot.rt4.client.Widget w = getInternal();
 		return w != null ? w.getItemStackSize() : -1;
+	}
+
+	@Override
+	public Point basePoint() {
+		return screenPoint();
 	}
 
 	@Override

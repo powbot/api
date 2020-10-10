@@ -243,6 +243,15 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		return Tile.NIL;
 	}
 
+	public Point basePoint() {
+		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+
+		if (actor != null) {
+			return ctx.game.worldToScreen(localX(), localY(), (actor.getHeight() / 2));
+		}
+		return NIL_POINT;
+	}
+
 	@Override
 	public Point nextPoint() {
 		final org.powerbot.bot.rt4.client.Actor actor = getActor();
@@ -272,19 +281,19 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			return NIL_POINT;
 		}
 		// Non-default custom bounds take priority
-		final BoundingModel model2 = boundingModel.get();
-		if (model2 != null && !model2.equals(defaultBounds)) {
-			return model2.centerPoint();
+		final BoundingModel model = boundingModel.get();
+		if (model != null && !model.equals(defaultBounds)) {
+			final Point center = model.centerPoint();
+			if (center != null) {
+				return center;
+			}
 		}
-		final Model model = model();
-		if (model == null) {
-			return model2 != null ? model2.centerPoint() : NIL_POINT;
-		}
-		final Point center = model.centerPoint(localX(), localY(), modelOrientation());
-		if (!center.equals(NIL_POINT)) {
+
+		final Point center = modelCenterPoint();
+		if (center != null) {
 			return center;
 		}
-		return model2 != null ? model2.centerPoint() : NIL_POINT;
+		return NIL_POINT;
 	}
 
 	@Override

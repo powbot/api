@@ -8,35 +8,33 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Widgets
  */
 public class Widgets extends IdQuery<Widget> {
-	private Widget[] sparseCache;
+	private static final Map<Integer, Widget> CACHE = new ConcurrentHashMap<>();
 
 	public Widgets(final ClientContext ctx) {
 		super(ctx);
-		sparseCache = new Widget[0];
 	}
 
-	public synchronized Widget widget(final int index) {
+	public Widget widget(final int index) {
 		if (index < 0) {
 			return new Widget(ctx, 0);
 		}
-		if (index < sparseCache.length && sparseCache[index] != null) {
-			return sparseCache[index];
+		if (CACHE.containsKey(index)) {
+			return CACHE.get(index);
 		}
+
 		final Widget c = new Widget(ctx, index);
-		final int l = sparseCache.length;
-		if (index >= l) {
-			sparseCache = Arrays.copyOf(sparseCache, index + 1);
-			for (int i = l; i < index + 1; i++) {
-				sparseCache[i] = new Widget(ctx, i);
-			}
-		}
-		return sparseCache[index] = c;
+		CACHE.put(index, c);
+
+		return c;
 	}
 
 	/**
@@ -65,8 +63,11 @@ public class Widgets extends IdQuery<Widget> {
 		if (len <= 0) {
 			return new ArrayList<>(0);
 		}
-		widget(len - 1);
-		return new ArrayList<>(Arrays.asList(Arrays.copyOf(sparseCache, len)));
+		for (int i = 0; i < a.length; i++) {
+			widget(i);
+		}
+
+		return new ArrayList<>(CACHE.values());
 	}
 
 	/**

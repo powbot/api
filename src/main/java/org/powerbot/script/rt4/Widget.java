@@ -11,7 +11,6 @@ import java.util.Iterator;
  */
 public class Widget extends ClientAccessor implements Identifiable, Validatable, Iterable<Component> {
 	private final int index;
-	private Component[] sparseCache;
 	private CacheComponentConfig[] cacheConfigs;
 
 	/**
@@ -24,7 +23,6 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 	Widget(final ClientContext ctx, final int index) {
 		super(ctx);
 		this.index = index;
-		sparseCache = new Component[0];
 		cacheConfigs = CacheComponentConfig.load(ctx.bot().getCacheWorker(), index);
 	}
 
@@ -51,18 +49,8 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 		if (index < 0) {
 			return new Component(ctx, this, -1);
 		}
-		if (index < sparseCache.length && sparseCache[index] != null) {
-			return sparseCache[index];
-		}
-		final Component c = new Component(ctx, this, index);
-		final int l = sparseCache.length;
-		if (index >= l) {
-			sparseCache = Arrays.copyOf(sparseCache, index + 1);
-			for (int i = l; i < index + 1; i++) {
-				sparseCache[i] = new Component(ctx, this, i);
-			}
-		}
-		return sparseCache[index] = c;
+
+		return new Component(ctx, this, index);
 	}
 
 	public int componentCount() {
@@ -85,8 +73,11 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 		if (len <= 0) {
 			return new Component[0];
 		}
-		component(len - 1);
-		return Arrays.copyOf(sparseCache, len);
+		final Component[] comps = new Component[len];
+		for(int i = 0; i < len; i++) {
+			comps[i] = component(i);
+		}
+		return comps;
 	}
 
 	/**

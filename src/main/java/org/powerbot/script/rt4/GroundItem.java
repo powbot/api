@@ -51,6 +51,11 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 	}
 
 	@Override
+	public Point basePoint() {
+		return tile.basePoint();
+	}
+
+	@Override
 	public Point centerPoint() {
 		return tile.centerPoint();
 	}

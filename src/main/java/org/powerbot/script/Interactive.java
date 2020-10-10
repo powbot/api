@@ -8,6 +8,13 @@ import java.awt.*;
  */
 public interface Interactive extends Targetable, Validatable, Viewable, Drawable {
 	/**
+	 * Finds the base point of the entity within the game screen.
+	 *
+	 * @return the base point if the entity is on the screen; null otherwise
+	 */
+	Point basePoint();
+
+	/**
 	 * Finds the centroid of the entity within the game screen.
 	 *
 	 * @return the centroid if the entity is on the screen; null otherwise
