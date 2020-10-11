@@ -10,18 +10,18 @@ import java.util.EventListener;
  * An event that is dispatched when the game renders a model.
  */
 public class ModelRenderEvent extends AbstractEvent {
-	public static final int MODEL_DRAW_EVENT = 0x1000;
+	public static final int EVENT_ID = EventType.MODEL_RENDER_EVENT.id();
 	private static final long serialVersionUID = 2905739551668844907L;
 	private final IRenderable renderable;
-	private int[] verticesX;
-	private int[] verticesY;
-	private int[] verticesZ;
-	private int[] indicesX;
-	private int[] indicesY;
-	private int[] indicesZ;
+	private final int[] verticesX;
+	private final int[] verticesY;
+	private final int[] verticesZ;
+	private final int[] indicesX;
+	private final int[] indicesY;
+	private final int[] indicesZ;
 
 	public ModelRenderEvent(final IRenderable renderable, final int[] verticesX, final int[] verticesY, final int[] verticesZ, final int[] indicesX, final int[] indicesY, final int[] indicesZ) {
-		super(MODEL_DRAW_EVENT);
+		super(EVENT_ID);
 		this.renderable = renderable;
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;

@@ -13,16 +13,16 @@ import java.util.logging.Logger;
  * An event that is dispatched when the game requests the graphic buffer.
  */
 public class PaintEvent extends AbstractEvent {
-	public static final int PAINT_EVENT = 0x40;
+	public static final int EVENT_ID = EventType.PAINT_EVENT.id();
 	private static final long serialVersionUID = 4772234942045737667L;
 	public Graphics graphics;
 
 	public PaintEvent() {
-		super(PAINT_EVENT);
+		super(EVENT_ID);
 	}
 
 	public PaintEvent(final Graphics graphics) {
-		super(PAINT_EVENT);
+		super(EVENT_ID);
 		this.graphics = graphics;
 	}
 

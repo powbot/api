@@ -1,6 +1,7 @@
 package org.powerbot.script;
 
 import org.powerbot.bot.AbstractEvent;
+import org.powerbot.bot.EventType;
 import org.powerbot.bot.rt4.client.MessageEntry;
 
 import java.util.EventListener;
@@ -10,7 +11,7 @@ import java.util.EventListener;
  * An event that represents a message sent by the game to the chat box.
  */
 public class MessageEvent extends AbstractEvent {
-	public static final int MESSAGE_EVENT = 0x20;
+	public static final int EVENT_ID = EventType.MESSAGE_EVENT.id();
 	private static final long serialVersionUID = 4178447203851407187L;
 	private final int id;
 	private final String source, message;
@@ -20,7 +21,7 @@ public class MessageEvent extends AbstractEvent {
 	}
 
 	public MessageEvent(final int id, final String source, final String message) {
-		super(MESSAGE_EVENT);
+		super(EVENT_ID);
 		this.id = id;
 		this.source = source;
 		this.message = message;

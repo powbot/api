@@ -11,17 +11,17 @@ import java.util.EventListener;
  * An event that is dispatched when the game requests the graphic buffer.
  */
 public class TextPaintEvent extends AbstractEvent {
-	public static final int TEXT_PAINT_EVENT = 0x80;
+	public static final int EVENT_ID = EventType.TEXT_PAINT_EVENT.id();
 	private static final long serialVersionUID = 7174559879186449999L;
 	public Graphics graphics;
 	public int index = 0;
 
 	public TextPaintEvent() {
-		super(TEXT_PAINT_EVENT);
+		super(EVENT_ID);
 	}
 
 	public TextPaintEvent(final Graphics graphics) {
-		super(TEXT_PAINT_EVENT);
+		super(EVENT_ID);
 		this.graphics = graphics;
 	}
 
