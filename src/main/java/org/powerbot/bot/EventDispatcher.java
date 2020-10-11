@@ -1,7 +1,6 @@
 package org.powerbot.bot;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+
 import java.io.Closeable;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
