@@ -259,19 +259,18 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			return NIL_POINT;
 		}
 		// Non-default custom bounds take priority
-		final BoundingModel model2 = boundingModel.get();
-		if (model2 != null && !model2.equals(defaultBounds)) {
-			return model2.nextPoint();
+		final BoundingModel bModel = boundingModel.get();
+		if (bModel != null && !bModel.equals(defaultBounds)) {
+			return bModel.nextPoint();
 		}
 		final Model model = model();
-		if (model == null) {
-			return model2 != null ? model2.nextPoint() : NIL_POINT;
+		if (model != null) {
+			final Point next = model.nextPoint(localX(), localY(), modelOrientation());
+			if (!next.equals(NIL_POINT)) {
+				return next;
+			}
 		}
-		final Point next = model.nextPoint(localX(), localY(), modelOrientation());
-		if (!next.equals(NIL_POINT)) {
-			return next;
-		}
-		return model2 != null ? model2.nextPoint() : NIL_POINT;
+		return basePoint();
 	}
 
 	@Override
@@ -281,9 +280,9 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			return NIL_POINT;
 		}
 		// Non-default custom bounds take priority
-		final BoundingModel model = boundingModel.get();
-		if (model != null && !model.equals(defaultBounds)) {
-			final Point center = model.centerPoint();
+		final BoundingModel bModel = boundingModel.get();
+		if (bModel != null && !bModel.equals(defaultBounds)) {
+			final Point center = bModel.centerPoint();
 			if (center != null) {
 				return center;
 			}
@@ -293,7 +292,8 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		if (center != null) {
 			return center;
 		}
-		return NIL_POINT;
+
+		return basePoint();
 	}
 
 	@Override
@@ -303,14 +303,14 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			return false;
 		}
 		// Non-default custom bounds take priority
-		final BoundingModel model2 = boundingModel.get();
-		if (model2 != null && !model2.equals(defaultBounds)) {
-			return model2.contains(point);
+		final BoundingModel bModel = boundingModel.get();
+		if (bModel != null && !bModel.equals(defaultBounds)) {
+			return bModel.contains(point);
 		}
 
 		final Model model = model();
 		if (model == null || model.nextPoint(localX(), localY(), modelOrientation()).equals(NIL_POINT)) {
-			return model2 != null && model2.contains(point);
+			return bModel != null && bModel.contains(point);
 		}
 		return model.contains(point, localX(), localY(), modelOrientation());
 	}

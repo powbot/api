@@ -40,6 +40,9 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 			if (!counts.containsKey(t)) {
 				counts.put(t, new AtomicInteger(0));
 			}
+			if (!object.inViewport()) {
+				continue;
+			}
 			final Point p = object.tile().distanceTo(player) > 4 ? object.basePoint() : object.centerPoint();
 			if (p.x == -1) {
 				continue;

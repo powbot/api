@@ -77,25 +77,24 @@ public class Menu extends ClientAccessor {
 	}
 
 	public java.util.List<String> getMenuActions() {
-		final String[] actions = ctx.client().getMenuActions();
-		if (actions != null) {
-			return Arrays.stream(actions)
-				.filter(java.util.Objects::nonNull)
-				.map(StringUtils::stripHtml)
-				.collect(Collectors.toList());
-		}
-		return new ArrayList<>();
+		final String[] menuActions = ctx.client().getMenuActions();
+		return stripMenuValues(menuActions);
 	}
 
 	public java.util.List<String> getMenuOptions() {
-		final String[] options = ctx.client().getMenuOptions();
-		if (options != null) {
-			return Arrays.stream(options)
-				.filter(java.util.Objects::nonNull)
-				.map(StringUtils::stripHtml)
-				.collect(Collectors.toList());
+		final String[] menuOptions = ctx.client().getMenuOptions();
+		return stripMenuValues(menuOptions);
+	}
+
+	private java.util.List<String> stripMenuValues(final String[] values) {
+		final java.util.List<String> list = new ArrayList<>();
+		if (values != null) {
+			for (int i = ctx.client().getMenuCount() - 1; i >= 0; i--) {
+				if (values[i] == null) continue;
+				list.add(StringUtils.stripHtml(values[i]));
+			}
 		}
-		return new ArrayList<>();
+		return list;
 	}
 
 	/**
@@ -140,20 +139,6 @@ public class Menu extends ClientAccessor {
 	}
 
 	/**
-	 * Provides the slot of the menu command given the specified filter.
-	 *
-	 * @param filter The filter to apply to the menu.
-	 * @return The slot of the menu command, or {@code -1} if it was not found.
-	 */
-	public int menuSlot(final Filter<? super MenuCommand> filter) {
-		return indexToMenuSlot(indexOf(filter));
-	}
-
-	private int indexToMenuSlot(int idx) {
-		return ctx.client().getMenuCount() - idx - 1;
-	}
-
-	/**
 	 * Attempts to click the menu command provided by the filter.
 	 *
 	 * @param filter The filter to apply to the menu.
@@ -163,7 +148,7 @@ public class Menu extends ClientAccessor {
 	private boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
 		final Client client = ctx.client();
 		int slot;
-		if (client == null || (slot = menuSlot(filter)) == -1) {
+		if (client == null || (slot = indexOf(filter)) == -1) {
 			return false;
 		}
 
@@ -181,7 +166,7 @@ public class Menu extends ClientAccessor {
 			public boolean poll() {
 				return client.isMenuOpen();
 			}
-		}, 15, 10) || (slot = menuSlot(filter)) == -1) {
+		}, 15, 10) || (slot = indexOf(filter)) == -1) {
 			return false;
 		}
 		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + 19 + slot * 15, client.getMenuWidth(), 15);
@@ -241,8 +226,7 @@ public class Menu extends ClientAccessor {
 		final MenuCommand[] m = commands();
 		final String[] arr = new String[ctx.client().getMenuCount()];
 		for (int i = 0; i < ctx.client().getMenuCount(); i++) {
-			arr[i] = m[i].action + " " + m[i].option;
-			arr[i] = arr[i].trim();
+			arr[i] = (m[i].action + " " + m[i].option).trim();
 		}
 		return arr;
 	}

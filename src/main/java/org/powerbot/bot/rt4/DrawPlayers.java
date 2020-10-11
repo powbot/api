@@ -20,6 +20,9 @@ public class DrawPlayers extends ClientAccessor implements PaintListener {
 		final FontMetrics metrics = render.getFontMetrics();
 		for (final Player player : ctx.players.select()) {
 			try {
+				if (!player.inViewport()) {
+					continue;
+				}
 				final Point location = player.centerPoint();
 				if (location.x == -1 || location.y == -1) {
 					continue;

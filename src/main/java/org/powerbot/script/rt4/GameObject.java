@@ -246,25 +246,26 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		if (center != null) {
 			return center;
 		}
-		return NIL_POINT;
+		return basePoint();
 	}
 
 	@Override
 	public Point nextPoint() {
 		// Non-default custom bounds take priority
-		final BoundingModel model2 = boundingModel.get();
-		if (model2 != null && !model2.equals(defaultBounds)) {
-			return model2.nextPoint();
+		final BoundingModel bModel = boundingModel.get();
+		if (bModel != null && !bModel.equals(defaultBounds)) {
+			return bModel.nextPoint();
 		}
+
 		final Model model = model();
-		if (model == null) {
-			return model2 != null ? model2.nextPoint() : NIL_POINT;
+		if (model != null) {
+			final Point next = model.nextPoint(localX(), localY(), modelOrientation());
+			if (!next.equals(NIL_POINT)) {
+				return next;
+			}
 		}
-		final Point next = model.nextPoint(localX(), localY(), modelOrientation());
-		if (!next.equals(NIL_POINT)) {
-			return next;
-		}
-		return model2 != null ? model2.nextPoint() : NIL_POINT;
+
+		return basePoint();
 	}
 
 	@Override

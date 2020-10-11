@@ -38,11 +38,6 @@ public class Npc extends Actor implements Identifiable, Actionable {
 	}
 
 	@Override
-	public boolean inViewport() {
-		return ctx.game.inViewport(centerPoint());
-	}
-
-	@Override
 	public String name() {
 		final CacheNpcConfig c = CacheNpcConfig.load(ctx.bot().getCacheWorker(), id());
 		return c != null ? StringUtils.stripHtml(c.name) : "";

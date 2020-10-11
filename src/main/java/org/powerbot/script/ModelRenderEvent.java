@@ -10,7 +10,7 @@ import java.util.EventListener;
  * An event that is dispatched when the game renders a model.
  */
 public class ModelRenderEvent extends AbstractEvent {
-	public static final int MODEL_DRAW_EVENT = 0x120;
+	public static final int MODEL_DRAW_EVENT = 0x1000;
 	private static final long serialVersionUID = 2905739551668844907L;
 	private final IRenderable renderable;
 	private int[] verticesX;
