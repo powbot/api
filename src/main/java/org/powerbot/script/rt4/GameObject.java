@@ -302,7 +302,12 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int localX() {
-		return object.getX();
+		if (object.getX() != -1) {
+			return object.getX();
+		}
+
+		final int r = relative();
+		return r >> 16;
 	}
 
 	/**
@@ -310,7 +315,12 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int localY() {
-		return object.getZ();
+		if (object.getZ() != -1) {
+			return object.getZ();
+		}
+
+		final int r = relative();
+		return r & 0xffff;
 	}
 
 	/**

@@ -48,7 +48,7 @@ public abstract class ClientContext<C extends Client> {
 		input = bot.newInput();
 
 		properties.put("trades.allowed", "0");
-		properties.put("sdn.host", "sdn.powerbot.org");
+		properties.put("sdn.host", "sdn.powbot.org");
 	}
 
 	/**
