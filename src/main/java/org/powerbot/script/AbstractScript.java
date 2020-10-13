@@ -54,25 +54,20 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 			exec[i] = new CopyOnWriteArrayList<>();
 		}
 
-		final ClientContext x = ((ContextClassLoader) Thread.currentThread().getContextClassLoader()).ctx();
+		final ClientContext x = ClientContext.ctx();
 		final Class<?>[] o = {(Class<?>) x.bot().getScriptTypeArg(getClass()), null};
 		o[1] = o[0] == null ? null : x.bot().getPrimaryClientContext(o[0]);
 		if (o[0] != null && o[0] != o[1]) {
 			try {
 				final Constructor<?> ctor = o[0].getDeclaredConstructor(o[1]);
 				ctor.setAccessible(true);
-				@SuppressWarnings("unchecked")
-				final C ctx = (C) ctor.newInstance(x);
-				this.ctx = ctx;
+
+				this.ctx = (C) ctor.newInstance(x);
 			} catch (final Exception e) {
 				throw new IllegalStateException(e);
 			}
 		} else {
-			@SuppressWarnings("unchecked")
 			final C ctx = (C) x;
-			if (ctx == null) {
-				throw new IllegalStateException("context unset");
-			}
 			this.ctx = ctx;
 		}
 
