@@ -8,32 +8,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public abstract class EventDispatcher extends AbstractCollection<EventListener> implements Runnable, Closeable {
 	private final AtomicReference<Thread> thread;
 	private final CopyOnWriteArrayList<EventListener> listeners;
-	protected final Map<EventListener, Long> bitmasks;
+	protected final Map<EventListener, List<Integer>> listenersToId;
 	private final BlockingQueue<EventObject> queue;
 	protected final Map<Class<? extends EventListener>, Integer> masks;
 
 	protected EventDispatcher() {
 		thread = new AtomicReference<>(null);
 		listeners = new CopyOnWriteArrayList<>();
-		bitmasks = new ConcurrentHashMap<>();
+		listenersToId = new ConcurrentHashMap<>();
 		queue = new LinkedBlockingQueue<>();
 		masks = new HashMap<>();
 	}
 
-	private long getMask(final EventListener e) {
-		long m = 0;
-
-		for (final Map.Entry<Class<? extends EventListener>, Integer> entry : masks.entrySet()) {
-			if (entry.getKey().isInstance(e)) {
-				m |= entry.getValue();
-			}
-		}
-
-		return m;
+	private List<Integer> getMasks(final EventListener e) {
+		return masks.entrySet().stream()
+			.filter(es -> es.getKey().isInstance(e)).map(Map.Entry::getValue).collect(Collectors.toList());
 	}
 
 	public final void dispatch(final EventObject e) {
@@ -116,7 +110,7 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 	@Override
 	public final boolean add(final EventListener e) {
 		if (listeners.addIfAbsent(e)) {
-			bitmasks.put(e, getMask(e));
+			listenersToId.put(e, getMasks(e));
 			return true;
 		}
 
@@ -125,7 +119,7 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 
 	public final boolean remove(final EventListener e) {
 		if (listeners.remove(e)) {
-			bitmasks.remove(e);
+			listenersToId.remove(e);
 			return true;
 		}
 
