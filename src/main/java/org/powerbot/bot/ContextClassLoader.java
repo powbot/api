@@ -2,7 +2,7 @@ package org.powerbot.bot;
 
 import org.powerbot.script.*;
 
-@Script.Manifest(name = "RSBot", description = "powbot.org")
+@Script.Manifest(name = "PowBot", description = "powbot.org")
 public abstract class ContextClassLoader extends ClassLoader {
 	private final ClientContext ctx;
 
