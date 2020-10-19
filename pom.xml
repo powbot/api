@@ -24,7 +24,7 @@
         <repository>
             <id>powbot-api</id>
             <name>powbot-api</name>
-            <url>https://maven.pkg.github.com/powbot</url>
+            <url>https://maven.pkg.github.com/powbot/api</url>
         </repository>
     </distributionManagement>
 
