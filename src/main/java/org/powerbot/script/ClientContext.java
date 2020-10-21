@@ -52,9 +52,7 @@ public abstract class ClientContext<C extends Client> {
 		properties.put("trades.allowed", "0");
 		properties.put("sdn.host", "sdn.powbot.org");
 
-		if (ClientContext.ctx.get() == null) {
-			ClientContext.ctx.set(this);
-		}
+		ClientContext.ctx.set(this);
 	}
 
 	/**
