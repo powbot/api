@@ -32,8 +32,14 @@ class ModelCache(val ctx: ClientContext) : ModelRenderListener {
     }
 
     fun getModel(renderable: IRenderable, animated: Boolean, mirror: Boolean): Model? {
-        val wrapper = cache[renderable] ?: TimedModelWrapper(null, animated, mirror, System.currentTimeMillis())
-        wrapper.lastRequestTime = System.currentTimeMillis()
+        if (cache.containsKey(renderable)) {
+            val wrapper = cache[renderable]
+            wrapper?.lastRequestTime = System.currentTimeMillis()
+
+            return wrapper?.model
+        }
+
+        val wrapper = TimedModelWrapper(null, animated, mirror, System.currentTimeMillis())
 
         cache.put(renderable, wrapper)
 
