@@ -1,9 +1,13 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
+import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.*;
-import org.powerbot.script.*;
+import org.powerbot.bot.rt4.client.NpcConfig;
+import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.script.Actionable;
+import org.powerbot.script.Identifiable;
+import org.powerbot.script.StringUtils;
 
 import java.awt.*;
 
@@ -64,6 +68,7 @@ public class Npc extends Actor implements Identifiable, Actionable {
 		if (c.isNull()) {
 			return -1;
 		}
+
 		final int varbit = c.getVarbit(), si = c.getVarpbitIndex();
 		int index = -1;
 		if (varbit != -1) {
@@ -72,10 +77,15 @@ public class Npc extends Actor implements Identifiable, Actionable {
 			if (!varBit.isNull()) {
 				final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
 				index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
+			} else {
+				final CacheVarbitConfig cachedVarbit = CacheVarbitConfig.load(ctx.bot().getCacheWorker(), varbit);
+				final int mask = lookup[cachedVarbit.endBit - cachedVarbit.startBit];
+				index = ctx.varpbits.varpbit(cachedVarbit.configId) >> cachedVarbit.startBit & mask;
 			}
 		} else if (si != -1) {
 			index = ctx.varpbits.varpbit(si);
 		}
+
 		if (index >= 0) {
 			final int[] configs = c.getConfigs();
 			if (index < configs.length && configs[index] != -1) {
@@ -119,12 +129,12 @@ public class Npc extends Actor implements Identifiable, Actionable {
 
 	public short[] colors1() {
 		final CacheNpcConfig c = CacheNpcConfig.load(ctx.bot().getCacheWorker(), id());
-		return c != null ? c.colors1 : new short[]{};
+		return c != null ? c.recolorOriginal : new short[]{};
 	}
 
 	public short[] colors2() {
 		final CacheNpcConfig c = CacheNpcConfig.load(ctx.bot().getCacheWorker(), id());
-		return c != null ? c.colors2 : new short[]{};
+		return c != null ? c.recolorTarget : new short[]{};
 	}
 
 

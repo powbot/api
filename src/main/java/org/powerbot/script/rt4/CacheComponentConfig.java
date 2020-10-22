@@ -4,6 +4,7 @@ import org.powerbot.bot.cache.AbstractCacheWorker;
 import org.powerbot.bot.cache.Block;
 import org.powerbot.bot.cache.JagexBufferStream;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -508,5 +509,87 @@ public class CacheComponentConfig {
 				var3[var4] = stream.getInt();
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "CacheComponentConfig{" +
+			"componentId=" + componentId +
+			", id=" + id +
+			", type=" + type +
+			", contentType=" + contentType +
+			", originalX=" + originalX +
+			", originalY=" + originalY +
+			", originalWidth=" + originalWidth +
+			", originalHeight=" + originalHeight +
+			", widthMode=" + widthMode +
+			", heightMode=" + heightMode +
+			", xPositionMode=" + xPositionMode +
+			", yPositionMode=" + yPositionMode +
+			", parentId=" + parentId +
+			", isHidden=" + isHidden +
+			", scrollWidth=" + scrollWidth +
+			", scrollHeight=" + scrollHeight +
+			", noClickThrough=" + noClickThrough +
+			", spriteId=" + spriteId +
+			", textureId=" + textureId +
+			", spriteTiling=" + spriteTiling +
+			", opacity=" + opacity +
+			", borderType=" + borderType +
+			", shadowColor=" + shadowColor +
+			", flippedY=" + flippedY +
+			", flippedX=" + flippedX +
+			", modelType=" + modelType +
+			", modelId=" + modelId +
+			", offsetX2d=" + offsetX2d +
+			", offsetY2d=" + offsetY2d +
+			", rotationX=" + rotationX +
+			", rotationY=" + rotationY +
+			", rotationZ=" + rotationZ +
+			", modelZoom=" + modelZoom +
+			", animation=" + animation +
+			", orthogonal=" + orthogonal +
+			", modelHeightOverride=" + modelHeightOverride +
+			", fontId=" + fontId +
+			", text='" + text + '\'' +
+			", lineHeight=" + lineHeight +
+			", xTextAlignment=" + xTextAlignment +
+			", yTextAlignment=" + yTextAlignment +
+			", textColor=" + textColor +
+			", textShadowed=" + textShadowed +
+			", filled=" + filled +
+			", lineWidth=" + lineWidth +
+			", lineDirection=" + lineDirection +
+			", clickMask=" + clickMask +
+			", name='" + name + '\'' +
+			", actions=" + Arrays.toString(actions) +
+			", dragDeadZone=" + dragDeadZone +
+			", dragDeadTime=" + dragDeadTime +
+			", dragRenderBehavior=" + dragRenderBehavior +
+			", targetVerb='" + targetVerb + '\'' +
+			", menuType=" + menuType +
+			", hoveredSiblingId=" + hoveredSiblingId +
+			", alternateOperators=" + Arrays.toString(alternateOperators) +
+			", alternateRhs=" + Arrays.toString(alternateRhs) +
+			", x=" + Arrays.toString(x) +
+			", itemIds=" + Arrays.toString(itemIds) +
+			", itemQuantities=" + Arrays.toString(itemQuantities) +
+			", xPitch=" + xPitch +
+			", yPitch=" + yPitch +
+			", spriteXOffsets=" + Arrays.toString(spriteXOffsets) +
+			", spriteYOffsets=" + Arrays.toString(spriteYOffsets) +
+			", sprites=" + Arrays.toString(sprites) +
+			", configActions=" + Arrays.toString(configActions) +
+			", alternateText='" + alternateText + '\'' +
+			", alternateTextColor=" + alternateTextColor +
+			", mouseOverTextColor=" + mouseOverTextColor +
+			", mouseOverTextColor2=" + mouseOverTextColor2 +
+			", alternateSpriteId=" + alternateSpriteId +
+			", alternateModelId=" + alternateModelId +
+			", alternateAnimation=" + alternateAnimation +
+			", spellName='" + spellName + '\'' +
+			", tooltip='" + tooltip + '\'' +
+			", stream=" + stream +
+			'}';
 	}
 }

@@ -1,16 +1,13 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
+import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.*;
-import org.powerbot.bot.rt4.client.internal.IGameObject;
+import org.powerbot.bot.rt4.client.Varbit;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
-import org.powerbot.bot.rt4.client.internal.IVarbit;
-import org.powerbot.script.Tile;
 import org.powerbot.script.*;
 
 import java.awt.*;
-import java.util.function.Function;
 
 /**
  * GameObject
@@ -42,7 +39,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 	};
 
-	GameObject(final ClientContext ctx, final BasicObject object, final Type type)  {
+	GameObject(final ClientContext ctx, final BasicObject object, final Type type) {
 		super(ctx);
 		this.object = object;
 		this.type = type;
@@ -91,10 +88,13 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		if (c.stageOperationId != -1) {
 			final Cache cache = client.getVarbitCache();
 			final Varbit varBit = HashTable.lookup(cache.getTable(), c.stageOperationId, Varbit.class, Varbit::new);
-
 			if (!varBit.isNull()) {
 				final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
 				index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
+			} else {
+				final CacheVarbitConfig cachedVarbit = CacheVarbitConfig.load(ctx.bot().getCacheWorker(), c.stageOperationId);
+				final int mask = lookup[cachedVarbit.endBit - cachedVarbit.startBit];
+				index = ctx.varpbits.varpbit(cachedVarbit.configId) >> cachedVarbit.startBit & mask;
 			}
 		} else if (c.stageIndex >= 0) {
 			index = ctx.varpbits.varpbit(c.stageIndex);
@@ -115,8 +115,8 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 		final int id = (object.getUid() >> 14) & 0xffff;
 		final CacheObjectConfig
-				c1 = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id),
-				c2 = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
+			c1 = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id),
+			c2 = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
 		if (c2 != null) {
 			if (c1 != null && c2.name.equals("null")) {
 				return StringUtils.stripHtml(c1.name);
@@ -128,22 +128,52 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		return "";
 	}
 
+	/**
+	 * @deprecated Use originalColors() instead
+	 */
+	@Deprecated
 	public int[] colors1() {
 		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null) {
-			final int[] s = c.originalColors;
-			return s == null ? new int[0] : s;
+		if (c != null && c.originalColors != null) {
+			final int[] s = new int[c.originalColors.length];
+			for (int i = 0; i < s.length; i++) {
+				s[i] = c.originalColors[i];
+			}
+			return s;
 		}
 		return new int[0];
 	}
 
+	/**
+	 * @deprecated Use modifiedColors() instead
+	 */
+	@Deprecated
 	public int[] colors2() {
 		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null) {
-			final int[] s = c.modifiedColors;
-			return s == null ? new int[0] : s;
+		if (c != null && c.modifiedColors != null) {
+			final int[] s = new int[c.modifiedColors.length];
+			for (int i = 0; i < s.length; i++) {
+				s[i] = c.modifiedColors[i];
+			}
+			return s;
 		}
 		return new int[0];
+	}
+
+	public short[] originalColors() {
+		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
+		if (c != null && c.originalColors != null) {
+			return c.originalColors;
+		}
+		return new short[0];
+	}
+
+	public short[] modifiedColors() {
+		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
+		if (c != null && c.modifiedColors != null) {
+			return c.modifiedColors;
+		}
+		return new short[0];
 	}
 
 	public int width() {
@@ -214,8 +244,8 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	@Override
 	public boolean valid() {
 		return this != ctx.objects.nil()
-				&& !(object == null || object.object.isNull())
-				&& ctx.objects.select(this, 0).contains(this);
+			&& !(object == null || object.object.isNull())
+			&& ctx.objects.select(this, 0).contains(this);
 	}
 
 	@Override
@@ -328,7 +358,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int[] modelIds() {
-		final CacheObjectConfig c =  CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
+		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
 		return c != null ? c.meshId : null;
 	}
 
