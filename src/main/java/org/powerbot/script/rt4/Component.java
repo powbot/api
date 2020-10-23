@@ -6,7 +6,6 @@ import org.powerbot.bot.rt4.client.WidgetNode;
 import org.powerbot.script.Calculations;
 
 import java.awt.*;
-import java.util.Arrays;
 
 /**
  * Component
@@ -64,7 +63,7 @@ public class Component extends Interactive {
 		int x = widget.getX(), y = widget.getY();
 		if (parentId != -1) {
 			final Component parent = ctx.widgets.component(parentId >> 16, parentId & 0xffff);
-			if (parent != null ) {
+			if (parent != null) {
 				final Point p = parent.screenPoint();
 				x += p.x - parent.scrollX();
 				y += p.y - parent.scrollY();
@@ -74,10 +73,20 @@ public class Component extends Interactive {
 			final int[] boundsX = client.getWidgetBoundsX();
 			final int[] boundsY = client.getWidgetBoundsY();
 			if (index >= 0 && boundsX.length > index && boundsX[index] >= 0 && boundsY.length > index && boundsY[index] >= 0) {
-				return new Point(x + boundsX[index], y + boundsY[index]);
+				return new Point(boundsX[index], boundsY[index]);
 			}
 		}
 		return new Point(x, y);
+	}
+
+	private Point offsets(org.powerbot.bot.rt4.client.Widget widget) {
+		final int index = widget.getBoundsIndex();
+		final int[] boundsX = ctx.client().getWidgetBoundsX();
+		final int[] boundsY = ctx.client().getWidgetBoundsY();
+		if (index >= 0 && boundsX.length > index && boundsX[index] >= 0 && boundsY.length > index && boundsY[index] >= 0) {
+			return new Point(boundsX[index], boundsY[index]);
+		}
+		return new Point(0, 0);
 	}
 
 	public int relativeX() {
@@ -160,7 +169,7 @@ public class Component extends Interactive {
 			return new Component[0];
 		}
 		final Component[] comps = new Component[len];
-		for(int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			comps[i] = component(i);
 		}
 		return comps;
@@ -320,7 +329,7 @@ public class Component extends Interactive {
 	public boolean valid() {
 		final org.powerbot.bot.rt4.client.Widget internal = getInternal();
 		return internal != null && (component == null || component.visible()) &&
-				id() != -1 && internal.getBoundsIndex() != -1;
+			id() != -1 && internal.getBoundsIndex() != -1;
 	}
 
 	public boolean visible() {
