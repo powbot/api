@@ -53,25 +53,55 @@ public class Component extends Interactive {
 		return index;
 	}
 
-	public Point screenPoint() {
-		if (getInternal() != null && !getInternal().isNull()) {
-			final Point p = ClientContext.widgetPositionCache.get(getInternal().wrapped.get().hashCode());
-			if (p != null) {
-				return p;
+	private Component realParent() {
+		if (valid()) {
+			final int id = getInternal().getId();
+			final int pid = getInternal().getParentId();
+			final Component direct = ctx.widgets.widget(pid >> 16).component(pid & 0xff);
+			if (direct != null && direct.valid()) {
+				return direct;
+			}
+
+			for (final WidgetNode node : new HashTable<>(ctx.client().getWidgetTable(), WidgetNode.class)) {
+				if (node != null && node.getUid() == id >> 16) {
+					return ctx.widgets.widget(node.getUid() >> 16).component(node.getUid() & 0xff);
+				}
 			}
 		}
-
-		return NIL_POINT;
+		return new Component(ctx, ctx.widgets.nil(), -1);
 	}
 
-	private Point offsets(org.powerbot.bot.rt4.client.Widget widget) {
-		final int index = widget.getBoundsIndex();
-		final int[] boundsX = ctx.client().getWidgetBoundsX();
-		final int[] boundsY = ctx.client().getWidgetBoundsY();
-		if (index >= 0 && boundsX.length > index && boundsX[index] >= 0 && boundsY.length > index && boundsY[index] >= 0) {
-			return new Point(boundsX[index], boundsY[index]);
+	public Point screenPoint() {
+		return new Point(absX(), absY());
+	}
+
+	public int absX() {
+		final Component parent = realParent();
+		int absX = relativeX();
+		if (parent != null && parent.valid()) {
+			absX = absX + parent.absX();
 		}
-		return new Point(0, 0);
+
+		if (type() > 0 && boundsIndex() > 0) {
+			absX += ctx.client().getWidgetBoundsX()[boundsIndex()];
+		}
+
+		return absX;
+	}
+
+
+	public int absY() {
+		final Component parent = realParent();
+		int absY = relativeY();
+		if (parent != null && parent.valid()) {
+			absY += parent.absY();
+		}
+
+		if (type() > 0 && boundsIndex() > 0) {
+			absY += ctx.client().getWidgetBoundsY()[boundsIndex()];
+		}
+
+		return absY;
 	}
 
 	public int relativeX() {
