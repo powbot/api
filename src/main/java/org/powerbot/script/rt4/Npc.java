@@ -5,6 +5,7 @@ import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.NpcConfig;
 import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.Actionable;
 import org.powerbot.script.Identifiable;
 import org.powerbot.script.StringUtils;
@@ -73,7 +74,8 @@ public class Npc extends Actor implements Identifiable, Actionable {
 		int index = -1;
 		if (varbit != -1) {
 			final Cache cache = client.getVarbitCache();
-			final Varbit varBit = HashTable.lookup(cache.getTable(), varbit, Varbit.class);
+			final HashTable<IVarbit> table = new HashTable<>(cache.wrapped.get().getTable());
+			final Varbit varBit = new Varbit(table.lookup(varbit));
 			if (!varBit.isNull()) {
 				final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
 				index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;

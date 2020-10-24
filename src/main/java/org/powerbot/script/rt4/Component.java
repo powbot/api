@@ -2,7 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.WidgetNode;
+import org.powerbot.bot.rt4.client.internal.IWidgetNode;
 import org.powerbot.script.Calculations;
 
 import java.awt.*;
@@ -53,55 +53,30 @@ public class Component extends Interactive {
 		return index;
 	}
 
-	private Component realParent() {
-		if (valid()) {
-			final int id = getInternal().getId();
-			final int pid = getInternal().getParentId();
-			final Component direct = ctx.widgets.widget(pid >> 16).component(pid & 0xff);
-			if (direct != null && direct.valid()) {
-				return direct;
-			}
-
-			for (final WidgetNode node : new HashTable<>(ctx.client().getWidgetTable(), WidgetNode.class)) {
-				if (node != null && node.getUid() == id >> 16) {
-					return ctx.widgets.widget(node.getUid() >> 16).component(node.getUid() & 0xff);
-				}
-			}
-		}
-		return new Component(ctx, ctx.widgets.nil(), -1);
-	}
-
 	public Point screenPoint() {
-		return new Point(absX(), absY());
-	}
-
-	public int absX() {
-		final Component parent = realParent();
-		int absX = relativeX();
-		if (parent != null && parent.valid()) {
-			absX = absX + parent.absX();
+		final Client client = ctx.client();
+		final org.powerbot.bot.rt4.client.Widget widget = getInternal();
+		if (client == null || widget == null || widget.isNull()) {
+			return new Point(-1, -1);
 		}
-
-		if (type() > 0 && boundsIndex() > 0) {
-			absX += ctx.client().getWidgetBoundsX()[boundsIndex()];
+		final int parentId = parentId();
+		int x = widget.getX(), y = widget.getY();
+		if (parentId != -1) {
+			final Component parent = ctx.widgets.component(parentId >> 16, parentId & 0xffff);
+			if (parent != null) {
+				final Point p = parent.screenPoint();
+				x += p.x - parent.scrollX();
+				y += p.y - parent.scrollY();
+			}
+		} else {
+			final int index = widget.getBoundsIndex();
+			final int[] boundsX = client.getWidgetBoundsX();
+			final int[] boundsY = client.getWidgetBoundsY();
+			if (index >= 0 && boundsX.length > index && boundsX[index] >= 0 && boundsY.length > index && boundsY[index] >= 0) {
+				return new Point(boundsX[index], boundsY[index]);
+			}
 		}
-
-		return absX;
-	}
-
-
-	public int absY() {
-		final Component parent = realParent();
-		int absY = relativeY();
-		if (parent != null && parent.valid()) {
-			absY += parent.absY();
-		}
-
-		if (type() > 0 && boundsIndex() > 0) {
-			absY += ctx.client().getWidgetBoundsY()[boundsIndex()];
-		}
-
-		return absY;
+		return new Point(x, y);
 	}
 
 	public int relativeX() {
@@ -156,8 +131,9 @@ public class Component extends Interactive {
 		}
 
 		final int uid = id() >>> 16;
-		for (final WidgetNode node : new HashTable<>(client.getWidgetTable(), WidgetNode.class)) {
-			if (node != null && uid == node.getUid()) {
+		HashTable<IWidgetNode> cache = new HashTable<>(ctx.client().get().getWidgetTable());
+		for (IWidgetNode node = cache.getHead(); node != null; node = cache.getNext()) {
+			if (uid == node.getUid()) {
 				return (int) node.getNodeId();
 			}
 		}

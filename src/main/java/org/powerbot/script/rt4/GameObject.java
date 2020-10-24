@@ -5,6 +5,7 @@ import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.Varbit;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
+import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.*;
 
 import java.awt.*;
@@ -87,7 +88,8 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 		if (c.stageOperationId != -1) {
 			final Cache cache = client.getVarbitCache();
-			final Varbit varBit = HashTable.lookup(cache.getTable(), c.stageOperationId, Varbit.class, Varbit::new);
+			final HashTable<IVarbit> table = new HashTable<>(cache.wrapped.get().getTable());
+			final Varbit varBit = new Varbit(table.lookup(c.stageOperationId));
 			if (!varBit.isNull()) {
 				final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
 				index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;

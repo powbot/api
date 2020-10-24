@@ -1,111 +1,84 @@
 package org.powerbot.bot.rt4;
 
-import org.powerbot.bot.*;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IHashTable;
+import org.powerbot.bot.rt4.client.internal.INode;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.function.Function;
+public final class HashTable<T extends INode> {
+	private final IHashTable wrapped;
+	private INode current;
+	private int caret;
 
-public class HashTable<N> implements Iterator<N>, Iterable<N> {
-	private final org.powerbot.bot.rt4.client.HashTable table;
-	private final Class<N> type;
-	private int bucket_index = 0;
-	private Node curr;
-	private Node next;
-
-	public HashTable(final org.powerbot.bot.rt4.client.HashTable table, final Class<N> type) {
-		if (type == null) {
-			throw new IllegalArgumentException();
-		}
-		this.table = table;
-		this.type = type;
+	public HashTable(IHashTable cache) {
+		this.wrapped = cache;
+		caret = 0;
 	}
 
-	@Override
-	public Iterator<N> iterator() {
-		return this;
+	/**
+	 * Get the first node in the bag.
+	 *
+	 * @return head
+	 */
+	public T getHead() {
+		caret = 0;
+		return getNext();
 	}
 
-	@Override
-	public boolean hasNext() {
-		final org.powerbot.bot.rt4.client.Node[] buckets = !table.isNull() ? table.getBuckets() : null;
-		if (buckets == null) {
-			return false;
+	/**
+	 * Get the next node based on the current position in the bag.
+	 *
+	 * @return next
+	 */
+	@SuppressWarnings("unchecked")
+	public T getNext() {
+		INode[] sentinels = wrapped.getBuckets();
+
+		if (caret > 0 && sentinels[caret - 1] != current) {
+			INode node = current;
+			current = node.getNext();
+			return (T) node;
 		}
-		final long c = curr != null ? curr.getNodeId() : -1L;
-		if (bucket_index > 0 && bucket_index <= buckets.length && buckets[bucket_index - 1].getNodeId() != c) {
-			next = curr;
-			curr = curr.getNext();
-			return next != null;
-		}
-		while (bucket_index < buckets.length) {
-			final org.powerbot.bot.rt4.client.Node n = buckets[bucket_index++].getNext();
-			if (buckets[bucket_index - 1].getNodeId() != n.getNodeId()) {
-				next = n;
-				curr = n.getNext();
-				return next != null;
+
+		while (sentinels.length > caret) {
+			INode node = sentinels[caret++].getNext();
+			if (sentinels[caret - 1] != node) {
+				current = node.getNext();
+				return (T) node;
 			}
 		}
-		return false;
+		return null;
 	}
 
-	@Override
-	public N next() {
-		if (!hasNext()) {
-			return null;
+	/**
+	 * Get a node at a specific index in the bag
+	 *
+	 * @param index index of node
+	 * @return node or null
+	 */
+	@SuppressWarnings("unchecked")
+	public T getSentinel(int index) {
+		if (index < getLength()) {
+			return (T) wrapped.getBuckets()[index];
 		}
-
-		return IteratorUtils.newInstance(next, type);
+		return null;
 	}
 
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-	public static <E extends Proxy> E lookup(final org.powerbot.bot.rt4.client.IterableHashTable table, final long id, final Class<E> type) {
-		if (table == null) {
-			return null;
-		}
-
-		final Node[] buckets = table.getBuckets();
-		if (buckets == null || buckets.length == 0) {
-			return IteratorUtils.newInstance(null, type);
-		}
-
-		final Node n = buckets[(int) (id & (buckets.length - 1))];
-		for (Node node = n.getNext(); node != null && !node.isNull() && !node.equals(n); node = node.getNext()) {
-			if (node.getNodeId() == id) {
-				return IteratorUtils.newInstance(node, type);
+	public T lookup(long id) {
+		for (T node = getHead(); node != null; node = getNext()) {
+			if (id == node.getNodeId()) {
+				return node;
 			}
 		}
-
-		return IteratorUtils.newInstance(null, type);
+		return null;
 	}
 
-	public static <E extends Proxy, I> E lookup(final org.powerbot.bot.rt4.client.IterableHashTable table,
-												final long id,
-												final Class<E> type,
-												final Function<I, E> newFn) {
-		if (table == null) {
-			return null;
-		}
-
-		final Node[] buckets = table.getBuckets();
-		if (buckets == null || buckets.length == 0) {
-			return newFn.apply(null);
-		}
-
-		final Node n = buckets[(int) (id & (buckets.length - 1))];
-		for (Node node = n.getNext(); node != null && !node.isNull() && !node.equals(n); node = node.getNext()) {
-			if (node.getNodeId() == id) {
-				return newFn.apply((I) node.get());
-			}
-		}
-
-		return newFn.apply(null);
+	/**
+	 * The length of the array of nodes in this bag.
+	 *
+	 * @return array length
+	 */
+	public int getLength() {
+		return wrapped.getBuckets().length;
 	}
+
 }
 
