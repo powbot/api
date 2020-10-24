@@ -48,24 +48,18 @@ public interface Modelable {
 	boolean isAnimated();
 
 	/**
-	 * Whether or not the model should be mirrored
-	 * @return true if the model is mirrored
-	 */
-	boolean mirrorModel();
-
-	/**
 	 * Load the model from the cache
 	 * @return model
 	 */
 	default Model model() {
-		Model model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated(), mirrorModel());
+		Model model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
 		if (model == null && renderable() instanceof IModel) {
 			final IModel renderableModel = (IModel) renderable();
 			ctx().modelCache.onRender(renderable(), renderableModel.getVerticesX().clone(), renderableModel.getVerticesY().clone(),
 				renderableModel.getVerticesZ().clone(), renderableModel.getIndicesX().clone(), renderableModel.getIndicesY().clone(),
-				renderableModel.getIndicesZ().clone());
+				renderableModel.getIndicesZ().clone(), modelOrientation());
 
-			model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated(), mirrorModel());
+			model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
 		}
 
 		return model;
@@ -78,7 +72,7 @@ public interface Modelable {
 	default void drawModel(final Graphics g) {
 		final Model model = model();
 		if (model != null) {
-			model.draw(localX(), localY(), modelOrientation(), g);
+			model.draw(localX(), localY(), g);
 		}
 	}
 
@@ -91,6 +85,6 @@ public interface Modelable {
 		if (model == null) {
 			return new Point(-1, -1);
 		}
-		return model.centerPoint(localX(), localY(), modelOrientation());
+		return model.centerPoint(localX(), localY());
 	}
 }

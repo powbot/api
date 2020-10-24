@@ -291,7 +291,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 		final Model model = model();
 		if (model != null) {
-			final Point next = model.nextPoint(localX(), localY(), modelOrientation());
+			final Point next = model.nextPoint(localX(), localY());
 			if (!next.equals(NIL_POINT)) {
 				return next;
 			}
@@ -308,10 +308,10 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 			return model2.contains(point);
 		}
 		final Model model = model();
-		if (model == null || model.nextPoint(localX(), localY(), modelOrientation()).equals(NIL_POINT)) {
+		if (model == null || model.nextPoint(localX(), localY()).equals(NIL_POINT)) {
 			return model2 != null && model2.contains(point);
 		}
-		return model.contains(point, localX(), localY(), modelOrientation());
+		return model.contains(point, localX(), localY());
 	}
 
 	@Override
@@ -378,7 +378,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int modelOrientation() {
-		return (object.object.getOrientation() + 1024) & 0x3FFF;
+		return (object.object.getOrientation());
 	}
 
 	/**
@@ -391,10 +391,5 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	public int meta() {
 		return object.getMeta();
-	}
-
-	@Override
-	public boolean mirrorModel() {
-		return false;
 	}
 }

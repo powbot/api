@@ -19,8 +19,10 @@ public class ModelRenderEvent extends AbstractEvent {
 	private final int[] indicesX;
 	private final int[] indicesY;
 	private final int[] indicesZ;
+	private final int orientation;
 
-	public ModelRenderEvent(final IRenderable renderable, final int[] verticesX, final int[] verticesY, final int[] verticesZ, final int[] indicesX, final int[] indicesY, final int[] indicesZ) {
+	public ModelRenderEvent(final IRenderable renderable, final int[] verticesX, final int[] verticesY, final int[] verticesZ, final int[] indicesX, final int[] indicesY, final int[] indicesZ,
+							 final int orientation) {
 		super(EVENT_ID);
 		this.renderable = renderable;
 		this.verticesX = verticesX;
@@ -29,6 +31,7 @@ public class ModelRenderEvent extends AbstractEvent {
 		this.indicesX = indicesX;
 		this.indicesY = indicesY;
 		this.indicesZ = indicesZ;
+		this.orientation = orientation;
 	}
 
 	/**
@@ -37,7 +40,7 @@ public class ModelRenderEvent extends AbstractEvent {
 	@Override
 	public void call(final EventListener e) {
 		try {
-			((ModelRenderListener) e).onRender(renderable, verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ);
+			((ModelRenderListener) e).onRender(renderable, verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, orientation);
 		} catch (final Exception ignored) {
 		}
 	}

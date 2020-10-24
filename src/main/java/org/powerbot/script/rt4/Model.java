@@ -27,39 +27,37 @@ public class Model {
 	private int[] originalIndicesX;
 	private int[] originalIndicesZ;
 
+	private int orientation;
+
 	public Model(final int[] verticesX, final int[] verticesY, final int[] verticesZ,
-				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final boolean mirror) {
+				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final int orientation) {
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;
 		this.verticesZ = verticesZ;
 		this.indicesX = indicesX;
 		this.indicesY = indicesY;
 		this.indicesZ = indicesZ;
+		this.orientation = ((orientation & 0x3FFF) + 1024) % 2048;
 
-		save(mirror);
+		save();
 	}
 
-	private void save(final boolean mirror) {
+	private void save() {
 		this.originalVerticesX = verticesX.clone();
 		this.originalVerticesZ = verticesZ.clone();
 		this.originalIndicesX = indicesX.clone();
 		this.originalIndicesZ = indicesZ.clone();
-
-		if (mirror) {
-			mirrorModel();
-		}
 	}
 
 	public Model update(final int[] verticesX, final int[] verticesY, final int[] verticesZ,
-				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final boolean mirror) {
+				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final int orientation) {
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;
 		this.verticesZ = verticesZ;
 		this.indicesX = indicesX;
 		this.indicesY = indicesY;
 		this.indicesZ = indicesZ;
-
-		save(mirror);
+		this.orientation = ((orientation & 0x3FFF) + 1024) % 2048;
 
 		return this;
 	}
@@ -70,10 +68,9 @@ public class Model {
 	 * @param localY the local y of the entity
 	 * @return a list of polygons
 	 */
-	public List<Polygon> polygons(final int localX, final int localY, int orientation) {
-//		orientation = ((orientation & 0x3FFF) + 1024) % 2048;
+	public List<Polygon> polygons(final int localX, final int localY) {
 		if (orientation != 0) {
-			setOrientation(orientation % 2048);
+			setOrientation();
 		}
 
 		final int[] indX = indicesX();
@@ -110,17 +107,16 @@ public class Model {
 	 * Gets all the polygons of the model
 	 * @param localX the local x of the entity
 	 * @param localY the local y of the entity
-	 * @param orientation the orientation of the entity
 	 * @param g graphics object to onRender with
 	 */
-	public void draw(final int localX, final int localY, final int orientation, final Graphics g) {
-		for (final Polygon polygon : polygons(localX, localY, orientation)) {
+	public void draw(final int localX, final int localY, final Graphics g) {
+		for (final Polygon polygon : polygons(localX, localY)) {
 			g.drawPolygon(polygon);
 		}
 	}
 
-	public Point nextPoint(final int localX, final int localY, final int orientation) {
-		final List<Polygon> polygons = polygons(localX, localY, orientation);
+	public Point nextPoint(final int localX, final int localY) {
+		final List<Polygon> polygons = polygons(localX, localY);
 		if (polygons == null || polygons.isEmpty()) {
 			return new Point(-1, -1);
 		}
@@ -143,15 +139,19 @@ public class Model {
 		return new Point((int) x, (int) y);
 	}
 
-	public boolean contains(final Point point, final int localX, final int localY, final int orientation) {
-		final List<Polygon> polygons = polygons(localX, localY, orientation);
+	public boolean contains(final Point point, final int localX, final int localY) {
+		final List<Polygon> polygons = polygons(localX, localY);
 		return polygons != null && !polygons.isEmpty() && polygons.stream().anyMatch(polygon -> polygon.contains(point));
 	}
 
-	private void setOrientation(final int orientation) {
-		final int sin = Game.ARRAY_SIN[orientation];
-		final int cos = Game.ARRAY_COS[orientation];
-		for (int i = 0; i < originalVerticesX.length; ++i) {
+	private void setOrientation() {
+		final int sin = Game.ARRAY_SIN[this.orientation];
+		final int cos = Game.ARRAY_COS[this.orientation];
+		for (int i = 0; i < verticesX.length; ++i) {
+			if (originalVerticesX.length <= i || originalVerticesZ.length <= i) {
+				break;
+			}
+
 			verticesX[i] = originalVerticesX[i] * cos + originalVerticesZ[i] * sin >> 16;
 			verticesZ[i] = originalVerticesZ[i] * cos - originalVerticesX[i] * sin >> 16;
 		}
@@ -176,8 +176,8 @@ public class Model {
 		return vectors;
 	}
 
-	public List<Point> points(final int localX, final int localY, final int orientation) {
-		return polygons(localX, localY, orientation).stream().map(p -> {
+	public List<Point> points(final int localX, final int localY) {
+		return polygons(localX, localY).stream().map(p -> {
 			final int x = IntStream.of(p.xpoints).sum() / p.npoints;
 			final int y = IntStream.of(p.ypoints).sum() / p.npoints;
 
@@ -185,9 +185,9 @@ public class Model {
 		}).collect(Collectors.toList());
 	}
 
-	public Point centerPoint(final int localX, final int localY, final int orientation) {
+	public Point centerPoint(final int localX, final int localY) {
 		final boolean isResizable = ctx.game.resizable();
-		final List<Point> points = points(localX, localY, orientation);
+		final List<Point> points = points(localX, localY);
 		if (points.size() == 0) {
 			return new Point(-1, -1);
 		}

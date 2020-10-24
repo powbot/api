@@ -265,7 +265,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		}
 		final Model model = model();
 		if (model != null) {
-			final Point next = model.nextPoint(localX(), localY(), modelOrientation());
+			final Point next = model.nextPoint(localX(), localY());
 			if (!next.equals(NIL_POINT)) {
 				return next;
 			}
@@ -309,10 +309,10 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		}
 
 		final Model model = model();
-		if (model == null || model.nextPoint(localX(), localY(), modelOrientation()).equals(NIL_POINT)) {
+		if (model == null || model.nextPoint(localX(), localY()).equals(NIL_POINT)) {
 			return bModel != null && bModel.contains(point);
 		}
-		return model.contains(point, localX(), localY(), modelOrientation());
+		return model.contains(point, localX(), localY());
 	}
 
 	@Override
@@ -460,11 +460,4 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean mirrorModel() {
-		return true;
-	}
 }

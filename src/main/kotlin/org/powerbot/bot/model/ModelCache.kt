@@ -8,7 +8,7 @@ import org.powerbot.script.rt4.ClientContext
 import org.powerbot.script.rt4.Model
 import java.util.concurrent.ConcurrentHashMap
 
-data class TimedModelWrapper(var model: Model?, var animated: Boolean, var mirror: Boolean, var lastRequestTime: Long)
+data class TimedModelWrapper(var model: Model?, var animated: Boolean, var lastRequestTime: Long)
 
 class ModelCache() : ModelRenderListener {
 
@@ -31,7 +31,7 @@ class ModelCache() : ModelRenderListener {
         }
     }
 
-    fun getModel(ctx: ClientContext, renderable: IRenderable, animated: Boolean, mirror: Boolean): Model? {
+    fun getModel(ctx: ClientContext, renderable: IRenderable, animated: Boolean): Model? {
         val model = if (cache.containsKey(renderable)) {
             val wrapper = cache[renderable]
             wrapper?.lastRequestTime = System.currentTimeMillis()
@@ -39,7 +39,7 @@ class ModelCache() : ModelRenderListener {
             wrapper?.model
         } else {
 
-            val wrapper = TimedModelWrapper(null, animated, mirror, System.currentTimeMillis())
+            val wrapper = TimedModelWrapper(null, animated, System.currentTimeMillis())
 
             cache.put(renderable, wrapper)
 
@@ -54,13 +54,14 @@ class ModelCache() : ModelRenderListener {
         return null
     }
 
-    override fun onRender(renderable: IRenderable, verticesX: IntArray?, verticesY: IntArray?, verticesZ: IntArray?, indicesX: IntArray?, indicesY: IntArray?, indicesZ: IntArray?) {
+    override fun onRender(renderable: IRenderable, verticesX: IntArray?, verticesY: IntArray?,
+                          verticesZ: IntArray?, indicesX: IntArray?, indicesY: IntArray?, indicesZ: IntArray?, orientation: Int) {
         val wrapper = cache[renderable]
         if (wrapper != null && (wrapper.model == null || wrapper.animated)) {
             wrapper.model = if (wrapper.model != null)
-                wrapper.model!!.update(verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, wrapper.mirror)
+                wrapper.model!!.update(verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, orientation)
             else
-                Model(verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, wrapper.mirror)
+                Model(verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, orientation)
         }
     }
 }

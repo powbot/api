@@ -16,5 +16,5 @@ public interface ModelRenderListener extends EventListener {
 	 * @param renderable - the renderable entity being rendered
 	 * @return the next index to repaint
 	 */
-	void onRender(final IRenderable renderable, final int[] verticesX, final int[] verticesY, final int[] verticesZ, final int[] indicesX, final int[] indicesY, final int[] indicesZ);
+	void onRender(final IRenderable renderable, final int[] verticesX, final int[] verticesY, final int[] verticesZ, final int[] indicesX, final int[] indicesY, final int[] indicesZ, final int orientation);
 }
