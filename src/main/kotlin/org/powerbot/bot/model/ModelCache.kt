@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 data class TimedModelWrapper(var model: Model?, var animated: Boolean, var mirror: Boolean, var lastRequestTime: Long)
 
-class ModelCache(val ctx: ClientContext) : ModelRenderListener {
+class ModelCache() : ModelRenderListener {
 
     val cache = ConcurrentHashMap<IRenderable, TimedModelWrapper>()
 
@@ -31,19 +31,27 @@ class ModelCache(val ctx: ClientContext) : ModelRenderListener {
         }
     }
 
-    fun getModel(renderable: IRenderable, animated: Boolean, mirror: Boolean): Model? {
-        if (cache.containsKey(renderable)) {
+    fun getModel(ctx: ClientContext, renderable: IRenderable, animated: Boolean, mirror: Boolean): Model? {
+        val model = if (cache.containsKey(renderable)) {
             val wrapper = cache[renderable]
             wrapper?.lastRequestTime = System.currentTimeMillis()
 
-            return wrapper?.model
+            wrapper?.model
+        } else {
+
+            val wrapper = TimedModelWrapper(null, animated, mirror, System.currentTimeMillis())
+
+            cache.put(renderable, wrapper)
+
+            wrapper.model
         }
 
-        val wrapper = TimedModelWrapper(null, animated, mirror, System.currentTimeMillis())
+        if (model != null) {
+            model.setContext(ctx)
+            return model
+        }
 
-        cache.put(renderable, wrapper)
-
-        return wrapper.model
+        return null
     }
 
     override fun onRender(renderable: IRenderable, verticesX: IntArray?, verticesY: IntArray?, verticesZ: IntArray?, indicesX: IntArray?, indicesY: IntArray?, indicesZ: IntArray?) {
@@ -52,7 +60,7 @@ class ModelCache(val ctx: ClientContext) : ModelRenderListener {
             wrapper.model = if (wrapper.model != null)
                 wrapper.model!!.update(verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, wrapper.mirror)
             else
-                Model(ctx, verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, wrapper.mirror)
+                Model(verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, wrapper.mirror)
         }
     }
 }

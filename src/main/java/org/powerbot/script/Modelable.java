@@ -58,14 +58,14 @@ public interface Modelable {
 	 * @return model
 	 */
 	default Model model() {
-		Model model = ctx().modelCache.getModel(renderable(), isAnimated(), mirrorModel());
+		Model model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated(), mirrorModel());
 		if (model == null && renderable() instanceof IModel) {
 			final IModel renderableModel = (IModel) renderable();
 			ctx().modelCache.onRender(renderable(), renderableModel.getVerticesX().clone(), renderableModel.getVerticesY().clone(),
 				renderableModel.getVerticesZ().clone(), renderableModel.getIndicesX().clone(), renderableModel.getIndicesY().clone(),
 				renderableModel.getIndicesZ().clone());
 
-			model = ctx().modelCache.getModel(renderable(), isAnimated(), mirrorModel());
+			model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated(), mirrorModel());
 		}
 
 		return model;

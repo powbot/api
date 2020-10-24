@@ -75,10 +75,10 @@ public class HashTable<N> implements Iterator<N>, Iterable<N> {
 			return IteratorUtils.newInstance(null, type);
 		}
 
-		final Node n = buckets[buckets.length - 1];
-		for (Node o = n.getNext(); !o.equals(n) && !o.isNull(); o = o.getNext()) {
-			if (o.getNodeId() == id) {
-				return IteratorUtils.newInstance(o, type);
+		final Node n = buckets[(int) (id & (buckets.length - 1))];
+		for (Node node = n.getNext(); node != null && !node.isNull() && !node.equals(n); node = node.getNext()) {
+			if (node.getNodeId() == id) {
+				return IteratorUtils.newInstance(node, type);
 			}
 		}
 
@@ -98,10 +98,10 @@ public class HashTable<N> implements Iterator<N>, Iterable<N> {
 			return newFn.apply(null);
 		}
 
-		final Node n = buckets[buckets.length - 1];
-		for (Node o = n.getNext(); !o.equals(n) && !o.isNull(); o = o.getNext()) {
-			if (o.getNodeId() == id && o.get() != null && o.isTypeOf(type)) {
-				return newFn.apply((I) o.get());
+		final Node n = buckets[(int) (id & (buckets.length - 1))];
+		for (Node node = n.getNext(); node != null && !node.isNull() && !node.equals(n); node = node.getNext()) {
+			if (node.getNodeId() == id) {
+				return newFn.apply((I) node.get());
 			}
 		}
 

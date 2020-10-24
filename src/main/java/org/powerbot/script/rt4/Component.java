@@ -54,29 +54,14 @@ public class Component extends Interactive {
 	}
 
 	public Point screenPoint() {
-		final Client client = ctx.client();
-		final org.powerbot.bot.rt4.client.Widget widget = getInternal();
-		if (client == null || widget == null || widget.isNull()) {
-			return new Point(-1, -1);
-		}
-		final int parentId = parentId();
-		int x = widget.getX(), y = widget.getY();
-		if (parentId != -1) {
-			final Component parent = ctx.widgets.component(parentId >> 16, parentId & 0xffff);
-			if (parent != null) {
-				final Point p = parent.screenPoint();
-				x += p.x - parent.scrollX();
-				y += p.y - parent.scrollY();
-			}
-		} else {
-			final int index = widget.getBoundsIndex();
-			final int[] boundsX = client.getWidgetBoundsX();
-			final int[] boundsY = client.getWidgetBoundsY();
-			if (index >= 0 && boundsX.length > index && boundsX[index] >= 0 && boundsY.length > index && boundsY[index] >= 0) {
-				return new Point(boundsX[index], boundsY[index]);
+		if (getInternal() != null && !getInternal().isNull()) {
+			final Point p = ClientContext.widgetPositionCache.get(getInternal().wrapped.get().hashCode());
+			if (p != null) {
+				return p;
 			}
 		}
-		return new Point(x, y);
+
+		return NIL_POINT;
 	}
 
 	private Point offsets(org.powerbot.bot.rt4.client.Widget widget) {

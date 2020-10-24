@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 public class Model {
 
-	private final ClientContext ctx;
+	private ClientContext ctx;
 
 	private int[] verticesX;
 	private int[] verticesY;
@@ -27,9 +27,8 @@ public class Model {
 	private int[] originalIndicesX;
 	private int[] originalIndicesZ;
 
-	public Model(final ClientContext ctx, final int[] verticesX, final int[] verticesY, final int[] verticesZ,
+	public Model(final int[] verticesX, final int[] verticesY, final int[] verticesZ,
 				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final boolean mirror) {
-		this.ctx = ctx;
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;
 		this.verticesZ = verticesZ;
@@ -268,5 +267,9 @@ public class Model {
 			", indicesY=" + indicesY.length +
 			", indicesZ=" + indicesZ.length +
 			'}';
+	}
+
+	public void setContext(final ClientContext ctx) {
+		this.ctx = ctx;
 	}
 }
