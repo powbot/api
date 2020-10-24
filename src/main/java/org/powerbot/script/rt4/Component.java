@@ -73,7 +73,10 @@ public class Component extends Interactive {
 			final int[] boundsX = client.getWidgetBoundsX();
 			final int[] boundsY = client.getWidgetBoundsY();
 			if (index >= 0 && boundsX.length > index && boundsX[index] >= 0 && boundsY.length > index && boundsY[index] >= 0) {
-				return new Point(boundsX[index], boundsY[index]);
+				return new Point(
+					boundsX[index] + (type() > 0 ? relativeX() : 0),
+					boundsY[index] + (type() > 0 ? relativeY() : 0)
+				);
 			}
 		}
 		return new Point(x, y);
