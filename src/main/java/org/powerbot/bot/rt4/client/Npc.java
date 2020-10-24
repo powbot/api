@@ -1,6 +1,5 @@
 package org.powerbot.bot.rt4.client;
 
-import org.powerbot.bot.*;
 import org.powerbot.bot.rt4.client.internal.INpc;
 
 public class Npc extends Actor<INpc> {
@@ -13,7 +12,6 @@ public class Npc extends Actor<INpc> {
 		if (!isNull()) {
 			return new NpcConfig(wrapped.get().getConfig());
 		}
-
-		return null;
+		return new NpcConfig(null);
 	}
 }
