@@ -59,6 +59,8 @@ public class Model {
 		this.indicesZ = indicesZ;
 		this.orientation = ((orientation & 0x3FFF) + 1024) % 2048;
 
+		save();
+
 		return this;
 	}
 
@@ -69,9 +71,7 @@ public class Model {
 	 * @return a list of polygons
 	 */
 	public List<Polygon> polygons(final int localX, final int localY) {
-		if (orientation != 0) {
-			setOrientation();
-		}
+		setOrientation();
 
 		final int[] indX = indicesX();
 		final int[] indY = indicesY();
@@ -145,8 +145,11 @@ public class Model {
 	}
 
 	private void setOrientation() {
-		final int sin = Game.ARRAY_SIN[this.orientation];
-		final int cos = Game.ARRAY_COS[this.orientation];
+		if (orientation == 0)
+			return;
+
+		final int sin = Game.ARRAY_SIN[orientation];
+		final int cos = Game.ARRAY_COS[orientation];
 		for (int i = 0; i < verticesX.length; ++i) {
 			if (originalVerticesX.length <= i || originalVerticesZ.length <= i) {
 				break;

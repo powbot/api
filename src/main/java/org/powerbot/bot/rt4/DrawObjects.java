@@ -65,7 +65,8 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 					b.append(" (").append(n).append('/').append(arr[0]).append(')');
 				}
 				b.append(" - ").append(object.orientation()).append("/").append(object.modelOrientation())
-					.append("/").append(object.meta()).append("/").append(((object.modelOrientation() & 0x3FFF) + 1024) % 2048);
+					.append("/").append(object.meta()).append("/").append(((object.modelOrientation() & 0x3FFF) + 1024) % 2048)
+				.append("/").append(object.modelOrientation());
 				render.drawString(b.toString(), tx, ty - textHeight);
 			}
 		} catch (final Throwable t) {

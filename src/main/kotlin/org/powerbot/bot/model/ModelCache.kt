@@ -31,7 +31,11 @@ class ModelCache() : ModelRenderListener {
         }
     }
 
-    fun getModel(ctx: ClientContext, renderable: IRenderable, animated: Boolean): Model? {
+    fun getModel(ctx: ClientContext, renderable: IRenderable?, animated: Boolean): Model? {
+        if (renderable == null) {
+            return null
+        }
+
         val model = if (cache.containsKey(renderable)) {
             val wrapper = cache[renderable]
             wrapper?.lastRequestTime = System.currentTimeMillis()
@@ -56,6 +60,10 @@ class ModelCache() : ModelRenderListener {
 
     override fun onRender(renderable: IRenderable, verticesX: IntArray?, verticesY: IntArray?,
                           verticesZ: IntArray?, indicesX: IntArray?, indicesY: IntArray?, indicesZ: IntArray?, orientation: Int) {
+        if (verticesX == null || verticesX.isEmpty()) {
+            return
+        }
+
         val wrapper = cache[renderable]
         if (wrapper != null && (wrapper.model == null || wrapper.animated)) {
             wrapper.model = if (wrapper.model != null)
