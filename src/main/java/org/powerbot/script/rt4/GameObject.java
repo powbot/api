@@ -4,7 +4,6 @@ import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.Varbit;
-import org.powerbot.bot.rt4.client.internal.IBoundaryObject;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.*;

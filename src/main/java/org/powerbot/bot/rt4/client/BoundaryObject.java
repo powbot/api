@@ -29,11 +29,17 @@ public class BoundaryObject extends BasicObject<IBoundaryObject> {
 
 	@Override
 	public int getX() {
+		if (!isNull()) {
+			return wrapped.get().getX();
+		}
 		return -1;
 	}
 
 	@Override
 	public int getZ() {
+		if (!isNull()) {
+			return wrapped.get().getZ();
+		}
 		return -1;
 	}
 
