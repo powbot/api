@@ -45,6 +45,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 			d.add(WidgetCloser.class);
 			d.add(BankPin.class);
 			d.add(RandomEvents.class);
+			d.add(BankPinPending.class);
 		}
 
 		bank = new Bank(this);

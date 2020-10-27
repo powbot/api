@@ -10,7 +10,8 @@ public class RandomEvents extends PollingScript<ClientContext> {
 	}
 
 	private boolean isValid() {
-    	return ctx.input.blocking() && !ctx.properties.getProperty("randomevents.disable", "").equals("true") 
+    	return ctx.input.blocking() &&
+			!ctx.properties.getProperty("randomevents.disable", "").equals("true")
 			&& !ctx.npcs.select().within(5d).action("Dismiss").select(npc -> npc.interacting().equals(ctx.players.local()) 
 					&& npc.tile().matrix(ctx).reachable()).isEmpty();
 	}

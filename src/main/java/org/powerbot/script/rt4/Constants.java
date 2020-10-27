@@ -57,6 +57,8 @@ public final class Constants {
 	public static final int BANK_QUANTITY_X = getInt("BANK_QUANTITY_X");
 	public static final int BANK_QUANTITY_ALL = getInt("BANK_QUANTITY_ALL");
 	public static final int BANKPIN_WIDGET = getInt("BANKPIN_WIDGET");
+	public static final int BANKPIN_PENDING_WIDGET = getInt("BANKPIN_PENDING_WIDGET");
+	public static final int BANKPIN_PENDING_COMPONENT = getInt("BANKPIN_PENDING_COMPONENT");
 	//varps don't change so we'll leave these
 	public static final int BANK_QUANTITY = 1666;
 	public static final int BANK_X_VALUE = 304;
