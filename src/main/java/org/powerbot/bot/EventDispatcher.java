@@ -1,6 +1,8 @@
 package org.powerbot.bot;
 
 
+import org.powerbot.script.GameActionEvent;
+
 import java.io.Closeable;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
