@@ -28,10 +28,14 @@ public class ScriptBundle {
 		public boolean local = false, assigned = false;
 		public Type client;
 
-		public Definition(final Script.Manifest manifest) {
+		public Definition(final Script.Manifest manifest, final String id) {
 			name = manifest.name();
-			id = null;
 			description = manifest.description();
+			this.id = id;
+		}
+
+		public Definition(final Script.Manifest manifest) {
+			this(manifest, null);
 		}
 
 		Definition(final String name, final String id, final String description) {
