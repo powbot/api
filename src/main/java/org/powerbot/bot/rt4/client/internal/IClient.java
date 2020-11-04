@@ -42,6 +42,8 @@ public interface IClient extends IGameEngine {
 
 	int getHintArrowY();
 
+	int getCurrentWorld();
+
 	ICache getItemConfigCache();
 
 	ILandscape getLandscape();

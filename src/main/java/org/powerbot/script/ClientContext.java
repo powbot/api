@@ -34,7 +34,7 @@ public abstract class ClientContext<C extends Client> {
 	private final AtomicReference<Bot<? extends ClientContext<C>>> bot;
 	private final AtomicReference<C> client;
 
-	private static AtomicReference<ClientContext> ctx = new AtomicReference<>(null);
+	private static AtomicReference<org.powerbot.script.rt4.ClientContext> ctx = new AtomicReference<>(null);
 
 	/**
 	 * Creates a new context with the given {@link org.powerbot.script.Bot}.
@@ -52,7 +52,7 @@ public abstract class ClientContext<C extends Client> {
 		properties.put("trades.allowed", "0");
 		properties.put("sdn.host", "sdn.powbot.org");
 
-		ClientContext.ctx.set(this);
+		ClientContext.ctx.set((org.powerbot.script.rt4.ClientContext) this);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public abstract class ClientContext<C extends Client> {
 		input = ctx.input;
 
 		if (ClientContext.ctx.get() == null) {
-			ClientContext.ctx.set(this);
+			ClientContext.ctx.set((org.powerbot.script.rt4.ClientContext) this);
 		}
 	}
 
@@ -86,7 +86,7 @@ public abstract class ClientContext<C extends Client> {
 		return "";
 	}
 
-	public static ClientContext ctx() {
+	public static org.powerbot.script.rt4.ClientContext ctx() {
 		return ctx.get();
 	}
 

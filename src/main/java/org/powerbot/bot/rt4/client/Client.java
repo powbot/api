@@ -503,6 +503,14 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 		return -1;
 	}
 
+	public int getCurrentWorld() {
+		if (!isNull()) {
+			return wrapped.get().getCurrentWorld();
+		}
+
+		return -1;
+	}
+
 	public int getSelectionType() {
 		if (!isNull()) {
 			return wrapped.get().getSelectionType();
