@@ -1,10 +1,12 @@
 package org.powerbot.script;
 
 import org.powerbot.bot.rt4.client.internal.IModel;
+import org.powerbot.bot.rt4.client.internal.INpc;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 import org.powerbot.script.rt4.Model;
 
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Modelable
@@ -61,7 +63,6 @@ public interface Modelable {
 
 			model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
 		}
-
 		return model;
 	}
 

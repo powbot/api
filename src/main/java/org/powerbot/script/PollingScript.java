@@ -95,19 +95,4 @@ public abstract class PollingScript<C extends ClientContext> extends AbstractScr
 	public void resume() {
 	}
 
-	/**
-	 * Called if the user specified run duration has been reached, triggerig {@link Script.State#STOP} if true is returned.
-	 * @return true if script can safely be stopped
-	 */
-	public boolean canBreak() {
-
-		if (ctx instanceof org.powerbot.script.rt4.ClientContext) {
-			final org.powerbot.script.rt4.ClientContext rt4ctx = (org.powerbot.script.rt4.ClientContext) ctx;
-			final Player p = rt4ctx.players.local();
-
-			return (rt4ctx.npcs.select().within(5d).select(npc -> npc.interacting().equals(p) && npc.healthBarVisible()).isEmpty()) && !p.healthBarVisible();
-		} else {
-			return false;
-		}
-	}
 }

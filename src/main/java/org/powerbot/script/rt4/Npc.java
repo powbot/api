@@ -5,6 +5,8 @@ import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.NpcConfig;
 import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.bot.rt4.client.internal.ICache;
+import org.powerbot.bot.rt4.client.internal.IModel;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.Actionable;
 import org.powerbot.script.Identifiable;
@@ -139,11 +141,22 @@ public class Npc extends Actor implements Identifiable, Actionable {
 		return c != null ? c.recolorTarget : new short[]{};
 	}
 
-
 	@Override
 	public int[] modelIds() {
 		final CacheNpcConfig c = CacheNpcConfig.load(ctx.bot().getCacheWorker(), id());
 
 		return c != null ? c.modelIds : null;
+	}
+
+	@Override
+	public Model model() {
+		final IModel model = renderable().getModel();
+		if (model != null) {
+			final Model wrapper = new Model(model.getVerticesX(), model.getVerticesY(), model.getVerticesZ(),
+				model.getIndicesX(), model.getIndicesY(), model.getIndicesZ(), getActor().getOrientation());
+			wrapper.setContext(ctx);
+			return wrapper;
+		}
+		return null;
 	}
 }
