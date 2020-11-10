@@ -1,6 +1,6 @@
 package org.powerbot.script;
 
-import org.powerbot.bot.*;
+import org.powerbot.bot.AbstractMouseSpline;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -142,7 +142,6 @@ public abstract class Input {
 	 * See {@link java.awt.event.KeyEvent} for the list of Virtual Keys.
 	 *
 	 * @param s the text to send
-	 *
 	 * @return whether or not the keys were successfully sent.
 	 */
 	public abstract boolean send(final String s);
@@ -152,9 +151,8 @@ public abstract class Input {
 	 * end. Virtual keys are also acceptable input, for example,
 	 * <code>{VK_ENTER}</code>.
 	 * See {@link java.awt.event.KeyEvent} for the list of Virtual Keys.
-	 * 
-	 * @param s the text to send
 	 *
+	 * @param s the text to send
 	 * @return whether or not the keys were successfully sent.
 	 */
 	public final boolean sendln(final String s) {
@@ -361,18 +359,18 @@ public abstract class Input {
 	 */
 	public final boolean move(final Point p) {
 		return apply(
-				new Targetable() {
-					@Override
-					public Point nextPoint() {
-						return p;
-					}
+			new Targetable() {
+				@Override
+				public Point nextPoint() {
+					return p;
+				}
 
-					@Override
-					public boolean contains(final Point point) {
-						return p.equals(point);
-					}
-				},
-				p::equals
+				@Override
+				public boolean contains(final Point point) {
+					return p.equals(point);
+				}
+			},
+			p::equals
 		);
 	}
 
@@ -388,14 +386,19 @@ public abstract class Input {
 			}
 			target_point.move(p.x, p.y);
 			final Vector3 end = new Vector3(p.x, p.y, 0);
-			final Iterable<Vector3> spline = this.spline.getPath(start, end);
-			for (final Vector3 v : spline) {
-				if(Thread.interrupted()){
-					return false;
+			if (!isTouchScreen()) {
+				final Iterable<Vector3> spline = this.spline.getPath(start, end);
+				for (final Vector3 v : spline) {
+					if (Thread.interrupted()) {
+						return false;
+					}
+					hop(v.x, v.y);
+					Condition.sleep((int) (this.spline.getAbsoluteDelay(v.z) * (speed.get() / 100d) / 1.33e6));
 				}
-				hop(v.x, v.y);
-				Condition.sleep((int) (this.spline.getAbsoluteDelay(v.z) * (speed.get() / 100d) / 1.33e6));
+			} else {
+				hop(end.x, end.y);
 			}
+
 			final Point p2 = getLocation(), ep = end.toPoint2D();
 			if (p2.equals(ep) && filter.accept(ep)) {
 				return true;
@@ -423,5 +426,8 @@ public abstract class Input {
 	 */
 	public abstract boolean scroll(final boolean down);
 
+	public abstract boolean isTouchScreen();
+
 	public abstract Dimension getComponentSize();
+
 }
