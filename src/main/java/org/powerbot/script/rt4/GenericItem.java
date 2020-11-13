@@ -96,4 +96,27 @@ abstract class GenericItem extends Interactive implements Identifiable, Nameable
 	public String[] inventoryActions() {
 		return CacheItemConfig.load(ctx.bot().getCacheWorker(), id()).actions;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean interact(final String action) {
+		if (name() != null) {
+			return interact(action, name());
+		}
+		return super.interact(action);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean interact(final boolean auto, final String action) {
+		if (name() != null) {
+			return interact(auto, action, name());
+		}
+
+		return super.interact(auto, action);
+	}
 }
