@@ -1,9 +1,14 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.input.MouseMovement;
+import org.powbot.input.MouseMovementCompleted;
 import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.script.*;
+import org.powerbot.script.Condition;
+import org.powerbot.script.Locatable;
+import org.powerbot.script.Tile;
 
 import java.awt.*;
+import java.util.concurrent.*;
 
 /**
  * Movement
@@ -72,23 +77,22 @@ public class Movement extends ClientAccessor {
 				return false;
 			}
 		}
-		final Tile t = loc;
-		final Filter<Point> f = point -> ctx.input.click(true);
-		return ctx.input.apply(new Targetable() {
-			private final TileMatrix tile = new TileMatrix(ctx, t);
 
-			@Override
-			public Point nextPoint() {
-				return tile.mapPoint();
-			}
+		final TileMatrix tile = new TileMatrix(ctx, loc);
+		final CompletableFuture<Boolean> interacted = new CompletableFuture<>();
+		final Callable<Point> position = tile::mapPoint;
+		final Callable<Boolean> valid = tile::onMap;
 
-			@Override
-			public boolean contains(final Point point) {
-				final Point p = tile.mapPoint();
-				final Rectangle t = new Rectangle(p.x - 2, p.y - 2, 4, 4);
-				return t.contains(point);
-			}
-		}, f);
+		final MouseMovementCompleted completed = (boolean result) ->
+			interacted.complete(ctx.input.click(true));
+
+		try {
+			final MouseMovement movement = new MouseMovement(position, valid, completed, false);
+			ctx.input.moveAsync(movement);
+			return interacted.get(10, TimeUnit.SECONDS);
+		} catch (InterruptedException | TimeoutException | ExecutionException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -163,12 +167,12 @@ public class Movement extends ClientAccessor {
 	 */
 	public boolean running(final boolean running) {
 		return running == running() || (ctx.widgets.widget(Constants.MOVEMENT_MAP).component(Constants.MOVEMENT_RUN_ENERGY - 1).interact("Toggle Run") &&
-				Condition.wait(new Condition.Check() {
-					@Override
-					public boolean poll() {
-						return running() == running;
-					}
-				}, 20, 10));
+			Condition.wait(new Condition.Check() {
+				@Override
+				public boolean poll() {
+					return running() == running;
+				}
+			}, 20, 10));
 	}
 
 	/**
@@ -181,6 +185,7 @@ public class Movement extends ClientAccessor {
 	 * measurement for the amount of steps required. Please consider using
 	 * {@link Tile#distanceTo(Locatable)} for euclidean distance for the length of a straight
 	 * line between these two points.
+	 *
 	 * @param l1 Location A
 	 * @param l2 Location B
 	 * @return The amount of steps required to traverse between these two locations.
@@ -189,11 +194,11 @@ public class Movement extends ClientAccessor {
 		final Tile b = ctx.game.mapOffset();
 		Tile t1, t2;
 		if (b == null ||
-				l1 == null || (t1 = l1.tile()) == null ||
-				l2 == null || (t2 = l2.tile()) == null ||
-				b == Tile.NIL || t1 == Tile.NIL || t2 == Tile.NIL
-				|| l1.tile().floor() != l2.tile().floor()
-				|| l1.tile().floor() != b.floor()) {
+			l1 == null || (t1 = l1.tile()) == null ||
+			l2 == null || (t2 = l2.tile()) == null ||
+			b == Tile.NIL || t1 == Tile.NIL || t2 == Tile.NIL
+			|| l1.tile().floor() != l2.tile().floor()
+			|| l1.tile().floor() != b.floor()) {
 			return -1;
 		}
 		t1 = t1.derive(-b.x(), -b.y());
@@ -203,8 +208,8 @@ public class Movement extends ClientAccessor {
 		final LocalPath.Node[] path;
 		final LocalPath.Node nodeStart, nodeStop;
 		if (graph != null &&
-				(nodeStart = graph.getNode(t1.x(), t1.y())) != null &&
-				(nodeStop = graph.getNode(t2.x(), t2.y())) != null) {
+			(nodeStart = graph.getNode(t1.x(), t1.y())) != null &&
+			(nodeStop = graph.getNode(t2.x(), t2.y())) != null) {
 			LocalPath.bfs(graph, nodeStart, nodeStop);
 			path = LocalPath.follow(nodeStop);
 		} else {
@@ -224,6 +229,7 @@ public class Movement extends ClientAccessor {
 	 * measurement for the amount of steps required. Please consider using
 	 * {@link Tile#distanceTo(Locatable)} for euclidean distance for the length of a straight
 	 * line between these two points.
+	 *
 	 * @param l The destination
 	 * @return The amount of steps required to traverse between the player and the location.
 	 */
@@ -239,6 +245,7 @@ public class Movement extends ClientAccessor {
 	 * two locations to determine if they're reachable. This should only be used if you need
 	 * to be certain that the point is reachable. Please consider using
 	 * {@link Tile#distanceTo(Locatable)}
+	 *
 	 * @param l1 Point A
 	 * @param l2 Point B
 	 * @return {@code true} if the two points can reach each other, {@code false} otherwise.

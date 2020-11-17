@@ -53,7 +53,7 @@ public class ScriptBundle {
 		}
 
 		public String getID() {
-			return id == null ? "" : id;
+			return id == null ? LOCALID : id;
 		}
 
 		public String getDescription() {

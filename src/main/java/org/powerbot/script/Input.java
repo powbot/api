@@ -1,5 +1,6 @@
 package org.powerbot.script;
 
+import org.powbot.input.MouseMovement;
 import org.powerbot.bot.AbstractMouseSpline;
 
 import java.awt.*;
@@ -346,7 +347,8 @@ public abstract class Input {
 	 * successfully moved.
 	 */
 	public final boolean move(final int x, final int y) {
-		return move(new Point(x, y));
+		return move(new MouseMovement(() -> new Point(x, y), () -> true, (success) -> {
+		}, false));
 	}
 
 	/**
@@ -358,53 +360,15 @@ public abstract class Input {
 	 * successfully moved.
 	 */
 	public final boolean move(final Point p) {
-		return apply(
-			new Targetable() {
-				@Override
-				public Point nextPoint() {
-					return p;
-				}
-
-				@Override
-				public boolean contains(final Point point) {
-					return p.equals(point);
-				}
-			},
-			p::equals
-		);
+		return move(new MouseMovement(() -> p, () -> true, (success) -> {
+		}, false));
 	}
 
+	@Deprecated
 	public final boolean apply(final Targetable targetable, final Filter<Point> filter) {
-		final Point target_point = new Point(-1, -1);
-		final int STANDARD_ATTEMPTS = 3;
-		for (int i = 0; i < STANDARD_ATTEMPTS; i++) {
-			final Point mp = getLocation();
-			final Vector3 start = new Vector3(mp.x, mp.y, 255);
-			final Point p = targetable.nextPoint();
-			if (p.x == -1 || p.y == -1) {
-				continue;
-			}
-			target_point.move(p.x, p.y);
-			final Vector3 end = new Vector3(p.x, p.y, 0);
-			if (!isTouchScreen()) {
-				final Iterable<Vector3> spline = this.spline.getPath(start, end);
-				for (final Vector3 v : spline) {
-					if (Thread.interrupted()) {
-						return false;
-					}
-					hop(v.x, v.y);
-					Condition.sleep((int) (this.spline.getAbsoluteDelay(v.z) * (speed.get() / 100d) / 1.33e6));
-				}
-			} else {
-				hop(end.x, end.y);
-			}
-
-			final Point p2 = getLocation(), ep = end.toPoint2D();
-			if (p2.equals(ep) && filter.accept(ep)) {
-				return true;
-			}
-		}
-		return false;
+		final Point targetPoint = targetable.nextPoint();
+		return move(new MouseMovement(() -> targetPoint, () -> true, (success) -> {
+		}, false));
 	}
 
 	/**
@@ -425,6 +389,22 @@ public abstract class Input {
 	 * simulated, otherwise, {@code false}.
 	 */
 	public abstract boolean scroll(final boolean down);
+
+	/**
+	 * Queues a {@link MouseMovement} and blocks until it's completed or cancelled
+	 *
+	 * @param command A mouse command
+	 * @return {@code true} if the command was successfully executed, otherwise {@code false}
+	 */
+	public abstract boolean move(MouseMovement command);
+
+	/**
+	 * Queues a {@link MouseMovement} to be completed asynchronously.
+	 * Use the onReached callback to perform an action once the target is reached
+	 *
+	 * @param command A mouse command
+	 */
+	public abstract void moveAsync(MouseMovement command);
 
 	public abstract boolean isTouchScreen();
 
