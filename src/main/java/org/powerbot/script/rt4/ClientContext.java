@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.inventory.InventoryWatcher;
 import org.powerbot.bot.model.ModelCache;
 import org.powerbot.bot.rt4.*;
 import org.powerbot.bot.rt4.client.Client;
@@ -35,6 +36,8 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 	public final Projectiles projectiles;
 	public final Components components;
 	public static final ModelCache modelCache = new ModelCache();
+	public static final InventoryWatcher inventoryWatcher = new InventoryWatcher();
+
 
 	private ClientContext(final Bot<ClientContext> bot) {
 		super(bot);

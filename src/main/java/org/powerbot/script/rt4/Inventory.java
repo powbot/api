@@ -76,6 +76,7 @@ public class Inventory extends ItemQuery<Item> {
 		return items;
 	}
 
+
 	/**
 	 * Gives you the item at a certain index.
 	 *
