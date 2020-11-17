@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.model.QuickHuller;
 import org.powerbot.bot.rt4.client.internal.IModel;
 import org.powerbot.script.Random;
 import org.powerbot.script.Vector3;
@@ -270,6 +271,10 @@ public class Model {
 			", indicesY=" + indicesY.length +
 			", indicesZ=" + indicesZ.length +
 			'}';
+	}
+
+	public Polygon quickHull(final int localX, final int localY) {
+		return QuickHuller.INSTANCE.hull(points(localX, localY));
 	}
 
 	public void setContext(final ClientContext ctx) {

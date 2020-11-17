@@ -9,12 +9,12 @@ import java.awt.*;
 public class Client extends Proxy<IClient> implements org.powerbot.script.Client {
 
 	public Client(final IClient wrapped) {
-		super(wrapped);
+		super(wrapped, false);
 	}
 
 	public NodeDeque getProjectiles() {
 		if (!isNull()) {
-			return new NodeDeque(wrapped.get().getProjectiles());
+			return new NodeDeque(get().getProjectiles());
 		}
 
 		return null;
@@ -22,7 +22,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public boolean isMembers() {
 		if (!isNull()) {
-			return wrapped.get().isMembers();
+			return get().isMembers();
 		}
 
 		return false;
@@ -30,7 +30,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCameraX() {
 		if (!isNull()) {
-			return wrapped.get().getCameraX();
+			return get().getCameraX();
 		}
 
 		return -1;
@@ -38,7 +38,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCameraY() {
 		if (!isNull()) {
-			return wrapped.get().getCameraY();
+			return get().getCameraY();
 		}
 
 		return -1;
@@ -46,7 +46,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCameraZ() {
 		if (!isNull()) {
-			return wrapped.get().getCameraZ();
+			return get().getCameraZ();
 		}
 
 		return -1;
@@ -54,7 +54,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCameraYaw() {
 		if (!isNull()) {
-			return wrapped.get().getCameraYaw();
+			return get().getCameraYaw();
 		}
 
 		return -1;
@@ -62,7 +62,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCameraPitch() {
 		if (!isNull()) {
-			return wrapped.get().getCameraPitch();
+			return get().getCameraPitch();
 		}
 
 		return -1;
@@ -70,7 +70,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getMinimapAngle() {
 		if (!isNull()) {
-			return wrapped.get().getMinimapAngle();
+			return get().getMinimapAngle();
 		}
 
 		return -1;
@@ -78,7 +78,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Player getPlayer() {
 		if (!isNull()) {
-			return new Player(wrapped.get().getPlayer());
+			return new Player(get().getPlayer());
 		}
 
 		return null;
@@ -86,7 +86,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Player[] getPlayers() {
 		if (!isNull()) {
-			final IPlayer[] players = wrapped.get().getPlayers();
+			final IPlayer[] players = get().getPlayers();
 			final Player[] wrapped = players != null ? new Player[players.length] : null;
 			if (players != null) {
 				for (int i = 0; i < players.length; i++) {
@@ -101,7 +101,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getPlayerIndices() {
 		if (!isNull()) {
-			return wrapped.get().getPlayerIndices();
+			return get().getPlayerIndices();
 		}
 
 		return null;
@@ -109,7 +109,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Npc[] getNpcs() {
 		if (!isNull()) {
-			final INpc[] npcs = wrapped.get().getNpcs();
+			final INpc[] npcs = get().getNpcs();
 			final Npc[] wrapped = npcs != null ? new Npc[npcs.length] : null;
 			if (npcs != null) {
 				for (int i = 0; i < npcs.length; i++) {
@@ -124,7 +124,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getNpcIndices() {
 		if (!isNull()) {
-			return wrapped.get().getNpcIndices();
+			return get().getNpcIndices();
 		}
 
 		return null;
@@ -132,7 +132,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getOffsetX() {
 		if (!isNull()) {
-			return wrapped.get().getOffsetX();
+			return get().getOffsetX();
 		}
 
 		return -1;
@@ -140,7 +140,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getOffsetY() {
 		if (!isNull()) {
-			return wrapped.get().getOffsetY();
+			return get().getOffsetY();
 		}
 
 		return -1;
@@ -148,7 +148,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getFloor() {
 		if (!isNull()) {
-			return wrapped.get().getFloor();
+			return get().getFloor();
 		}
 
 		return -1;
@@ -156,7 +156,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Landscape getLandscape() {
 		if (!isNull()) {
-			return new Landscape(wrapped.get().getLandscape());
+			return new Landscape(get().getLandscape());
 		}
 
 		return null;
@@ -164,7 +164,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public byte[][][] getLandscapeMeta() {
 		if (!isNull()) {
-			return wrapped.get().getLandscapeMeta();
+			return get().getLandscapeMeta();
 		}
 
 		return null;
@@ -172,7 +172,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[][][] getTileHeights() {
 		if (!isNull()) {
-			return wrapped.get().getTileHeights();
+			return get().getTileHeights();
 		}
 
 		return null;
@@ -180,7 +180,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public boolean isMenuOpen() {
 		if (!isNull()) {
-			return wrapped.get().isMenuOpen();
+			return get().isMenuOpen();
 		}
 
 		return false;
@@ -188,7 +188,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getMenuX() {
 		if (!isNull()) {
-			return wrapped.get().getMenuX();
+			return get().getMenuX();
 		}
 
 		return -1;
@@ -196,7 +196,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getMenuY() {
 		if (!isNull()) {
-			return wrapped.get().getMenuY();
+			return get().getMenuY();
 		}
 
 		return -1;
@@ -204,7 +204,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getMenuWidth() {
 		if (!isNull()) {
-			return wrapped.get().getMenuWidth();
+			return get().getMenuWidth();
 		}
 
 		return -1;
@@ -212,7 +212,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getMenuHeight() {
 		if (!isNull()) {
-			return wrapped.get().getMenuHeight();
+			return get().getMenuHeight();
 		}
 
 		return -1;
@@ -220,7 +220,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getMenuCount() {
 		if (!isNull()) {
-			return wrapped.get().getMenuCount();
+			return get().getMenuCount();
 		}
 
 		return -1;
@@ -228,7 +228,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public String[] getMenuActions() {
 		if (!isNull()) {
-			return wrapped.get().getMenuActions();
+			return get().getMenuActions();
 		}
 
 		return null;
@@ -236,7 +236,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public String[] getMenuOptions() {
 		if (!isNull()) {
-			return wrapped.get().getMenuOptions();
+			return get().getMenuOptions();
 		}
 
 		return null;
@@ -244,7 +244,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getWidgetBoundsX() {
 		if (!isNull()) {
-			return wrapped.get().getWidgetBoundsX();
+			return get().getWidgetBoundsX();
 		}
 
 		return null;
@@ -252,7 +252,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getWidgetBoundsY() {
 		if (!isNull()) {
-			return wrapped.get().getWidgetBoundsY();
+			return get().getWidgetBoundsY();
 		}
 
 		return null;
@@ -260,7 +260,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getWidgetBoundsWidth() {
 		if (!isNull()) {
-			return wrapped.get().getWidgetBoundsWidth();
+			return get().getWidgetBoundsWidth();
 		}
 
 		return null;
@@ -268,7 +268,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getWidgetBoundsHeight() {
 		if (!isNull()) {
-			return wrapped.get().getWidgetBoundsHeight();
+			return get().getWidgetBoundsHeight();
 		}
 
 		return null;
@@ -276,7 +276,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getDestinationX() {
 		if (!isNull()) {
-			return wrapped.get().getDestinationX();
+			return get().getDestinationX();
 		}
 
 		return -1;
@@ -284,7 +284,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getDestinationY() {
 		if (!isNull()) {
-			return wrapped.get().getDestinationY();
+			return get().getDestinationY();
 		}
 
 		return -1;
@@ -292,7 +292,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Widget[][] getWidgets() {
 		if (!isNull()) {
-			final IWidget[][] widgets = wrapped.get().getWidgets();
+			final IWidget[][] widgets = get().getWidgets();
 			if (widgets == null) {
 				return null;
 			}
@@ -318,7 +318,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public HashTable getWidgetTable() {
 		if (!isNull()) {
-			return new HashTable(wrapped.get().getWidgetTable());
+			return new HashTable(get().getWidgetTable());
 		}
 
 		return null;
@@ -326,7 +326,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public NodeDeque[][][] getGroundItems() {
 		if (!isNull()) {
-			final INodeDeque[][][] items = wrapped.get().getGroundItems();
+			final INodeDeque[][][] items = get().getGroundItems();
 			if (items == null) {
 				return null;
 			}
@@ -362,7 +362,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public CollisionMap[] getCollisionMaps() {
 		if (!isNull()) {
-			final ICollisionMap[] maps = wrapped.get().getCollisionMaps();
+			final ICollisionMap[] maps = get().getCollisionMaps();
 			final CollisionMap[] wrapped = maps != null ? new CollisionMap[maps.length] : null;
 			if (maps != null) {
 				for (int i = 0; i < maps.length; i++) {
@@ -377,7 +377,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getVarpbits() {
 		if (!isNull()) {
-			return wrapped.get().getVarpbits();
+			return get().getVarpbits();
 		}
 
 		return null;
@@ -385,7 +385,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getClientState() {
 		if (!isNull()) {
-			return wrapped.get().getClientState();
+			return get().getClientState();
 		}
 
 		return -1;
@@ -393,7 +393,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCrosshairIndex() {
 		if (!isNull()) {
-			return wrapped.get().getCrosshairIndex();
+			return get().getCrosshairIndex();
 		}
 
 		return -1;
@@ -401,7 +401,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getVarbitCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getVarbitCache());
+			return new Cache(get().getVarbitCache());
 		}
 
 		return null;
@@ -409,7 +409,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getNpcConfigCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getNpcConfigCache());
+			return new Cache(get().getNpcConfigCache());
 		}
 
 		return null;
@@ -417,7 +417,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getObjectConfigCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getObjectConfigCache());
+			return new Cache(get().getObjectConfigCache());
 		}
 
 		return null;
@@ -425,7 +425,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getItemConfigCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getItemConfigCache());
+			return new Cache(get().getItemConfigCache());
 		}
 
 		return null;
@@ -433,7 +433,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getSkillLevels1() {
 		if (!isNull()) {
-			return wrapped.get().getSkillLevels1();
+			return get().getSkillLevels1();
 		}
 
 		return null;
@@ -441,7 +441,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getSkillLevels2() {
 		if (!isNull()) {
-			return wrapped.get().getSkillLevels2();
+			return get().getSkillLevels2();
 		}
 
 		return null;
@@ -449,7 +449,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int[] getSkillExps() {
 		if (!isNull()) {
-			return wrapped.get().getSkillExps();
+			return get().getSkillExps();
 		}
 
 		return null;
@@ -457,7 +457,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCycle() {
 		if (!isNull()) {
-			return wrapped.get().getCycle();
+			return get().getCycle();
 		}
 
 		return -1;
@@ -465,7 +465,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getHintArrowNpcUid() {
 		if (!isNull()) {
-			return wrapped.get().getHintArrowNpcUid();
+			return get().getHintArrowNpcUid();
 		}
 
 		return -1;
@@ -473,7 +473,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getHintArrowPlayerUid() {
 		if (!isNull()) {
-			return wrapped.get().getHintArrowPlayerUid();
+			return get().getHintArrowPlayerUid();
 		}
 
 		return -1;
@@ -481,7 +481,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getHintArrowType() {
 		if (!isNull()) {
-			return wrapped.get().getHintArrowType();
+			return get().getHintArrowType();
 		}
 
 		return -1;
@@ -489,7 +489,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getHintArrowX() {
 		if (!isNull()) {
-			return wrapped.get().getHintArrowX();
+			return get().getHintArrowX();
 		}
 
 		return -1;
@@ -497,7 +497,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getHintArrowY() {
 		if (!isNull()) {
-			return wrapped.get().getHintArrowY();
+			return get().getHintArrowY();
 		}
 
 		return -1;
@@ -505,7 +505,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getCurrentWorld() {
 		if (!isNull()) {
-			return wrapped.get().getCurrentWorld();
+			return get().getCurrentWorld();
 		}
 
 		return -1;
@@ -513,7 +513,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getSelectionType() {
 		if (!isNull()) {
-			return wrapped.get().getSelectionType();
+			return get().getSelectionType();
 		}
 
 		return -1;
@@ -521,7 +521,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getSelectionIndex() {
 		if (!isNull()) {
-			return wrapped.get().getSelectionIndex();
+			return get().getSelectionIndex();
 		}
 
 		return -1;
@@ -534,7 +534,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 		}
 
 		if (!isNull()) {
-			return wrapped.get().getUsername();
+			return get().getUsername();
 		}
 
 		return null;
@@ -547,7 +547,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 		}
 
 		if (!isNull()) {
-			return wrapped.get().getPassword();
+			return get().getPassword();
 		}
 
 		return null;
@@ -555,7 +555,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getPlayerIndex() {
 		if (!isNull()) {
-			return wrapped.get().getPlayerIndex();
+			return get().getPlayerIndex();
 		}
 
 		return -1;
@@ -563,7 +563,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getRunPercentage() {
 		if (!isNull()) {
-			return wrapped.get().getRunPercentage();
+			return get().getRunPercentage();
 		}
 
 		return -1;
@@ -571,7 +571,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public EntryList getLoggerEntries() {
 		if (!isNull()) {
-			return new EntryList(wrapped.get().getLoggerEntries());
+			return new EntryList(get().getLoggerEntries());
 		}
 
 		return null;
@@ -579,7 +579,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getLoginState() {
 		if (!isNull()) {
-			return wrapped.get().getLoginState();
+			return get().getLoginState();
 		}
 
 		return -1;
@@ -587,7 +587,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getLoginField() {
 		if (!isNull()) {
-			return wrapped.get().getLoginField();
+			return get().getLoginField();
 		}
 
 		return -1;
@@ -604,7 +604,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getTileSize() {
 		if (!isNull()) {
-			return wrapped.get().getTileSize();
+			return get().getTileSize();
 		}
 
 		return -1;
@@ -612,7 +612,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getNpcCount() {
 		if (!isNull()) {
-			return wrapped.get().getNpcCount();
+			return get().getNpcCount();
 		}
 
 		return -1;
@@ -620,7 +620,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public int getPlayerCount() {
 		if (!isNull()) {
-			return wrapped.get().getPlayerCount();
+			return get().getPlayerCount();
 		}
 
 		return -1;
@@ -628,7 +628,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getPlayerModelCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getPlayerModelCache());
+			return new Cache(get().getPlayerModelCache());
 		}
 
 		return null;
@@ -636,7 +636,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getObjectModelCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getObjectModelCache());
+			return new Cache(get().getObjectModelCache());
 		}
 
 		return null;
@@ -644,7 +644,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getNpcModelCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getNpcModelCache());
+			return new Cache(get().getNpcModelCache());
 		}
 
 		return null;
@@ -652,7 +652,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getWidgetModelCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getWidgetModelCache());
+			return new Cache(get().getWidgetModelCache());
 		}
 
 		return null;
@@ -660,7 +660,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Cache getGroundItemModelCache() {
 		if (!isNull()) {
-			return new Cache(wrapped.get().getGroundItemModelCache());
+			return new Cache(get().getGroundItemModelCache());
 		}
 
 		return null;
@@ -668,7 +668,7 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 	public Canvas getCanvas() {
 		if (!isNull()) {
-			return wrapped.get().getCanvas();
+			return get().getCanvas();
 		}
 
 		return null;

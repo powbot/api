@@ -44,8 +44,9 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 				if (p.x == -1) {
 					continue;
 				}
-				if (object.tile().distanceTo(player) == 1) {
-					object.drawModel(render);
+				final Polygon hull = object.hull();
+				if (hull != null && object.tile().distanceTo(player) <= 4) {
+					render.drawPolygon(hull);
 				}
 
 				render.setColor(Color.black);
@@ -67,6 +68,9 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 				b.append(" - ").append(object.orientation()).append("/").append(object.modelOrientation())
 					.append("/").append(object.meta()).append("/").append(((object.modelOrientation() & 0x3FFF) + 1024) % 2048)
 				.append("/").append(object.modelOrientation());
+				if (object.tile().distanceTo(player) < 3) {
+					b.append("/").append(object.tile().toString());
+				}
 				render.drawString(b.toString(), tx, ty - textHeight);
 			}
 		} catch (final Throwable t) {

@@ -7,11 +7,23 @@ import java.util.Map;
 
 public class Proxy<T> {
 	public final WeakReference<T> wrapped;
+	private final T obj;
 
 	private static final Map<Class<? extends Proxy>, Class> typeCache = new HashMap<>();
 
 	public Proxy(final T wrapped) {
-		this.wrapped = new WeakReference<>(wrapped);
+		this(wrapped, true);
+	}
+
+	public Proxy(final T wrapped, final boolean wrap) {
+		if (wrap) {
+			this.wrapped = new WeakReference<>(wrapped);
+			this.obj = null;
+		} else {
+			this.obj = wrapped;
+			this.wrapped = null;
+		}
+
 	}
 
 	private static Class<?> getTypeClass(final Class<? extends Proxy> c) {
@@ -43,7 +55,12 @@ public class Proxy<T> {
 
 	@Override
 	public int hashCode() {
-		return System.identityHashCode(wrapped.get());
+		if (wrapped != null)
+			return System.identityHashCode(wrapped.get());
+		if (obj != null)
+			return System.identityHashCode(obj);
+
+		return 0;
 	}
 
 	@Override
@@ -52,14 +69,14 @@ public class Proxy<T> {
 			return false;
 		}
 		if (!isNull() && !((Proxy) o).isNull()) {
-			final T unwrapped = this.wrapped.get();
-			return unwrapped == ((Proxy) o).wrapped.get();
+			final T unwrapped = get();
+			return unwrapped == ((Proxy) o).get();
 		}
 
 		return this == o;
 	}
 
 	public T get() {
-		return wrapped != null ? wrapped.get() : null;
+		return wrapped != null ? wrapped.get() : obj;
 	}
 }

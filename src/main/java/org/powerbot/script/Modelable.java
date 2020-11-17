@@ -66,6 +66,15 @@ public interface Modelable {
 		return model;
 	}
 
+	default Polygon hull() {
+		final Model model = model();
+		if (model != null) {
+			return model.quickHull(localX(), localY());
+		}
+
+		return null;
+	}
+
 	/**
 	 * Draws the model polygons on the screen for debug purposes
 	 * @param g - Graphics object to onRender with

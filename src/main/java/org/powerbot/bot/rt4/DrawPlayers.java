@@ -28,8 +28,9 @@ public class DrawPlayers extends ClientAccessor implements PaintListener {
 				if (location.x == -1 || location.y == -1) {
 					continue;
 				}
-				if (player.tile().distanceTo(me) <= 1) {
-					player.drawModel(render);
+				final Polygon hull = player.hull();
+				if (hull != null) {
+					render.drawPolygon(hull);
 				}
 
 				render.setColor(Color.RED);
