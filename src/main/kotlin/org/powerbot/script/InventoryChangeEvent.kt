@@ -8,7 +8,7 @@ data class InventoryChangeEvent(val itemId: Int, val quantityChange: Int, val ne
 
     companion object {
         val EVENT_ID = EventType.INVENTORY_CHANGE_EVENT.id()
-        private const val serialVersionUID = 2205739551668845607L
+        private const val serialVersionUID = 2305739551668845607L
     }
 
     /**

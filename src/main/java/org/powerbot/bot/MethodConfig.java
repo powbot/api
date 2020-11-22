@@ -1,6 +1,7 @@
 package org.powerbot.bot;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MethodConfig {
 
@@ -56,4 +57,22 @@ public class MethodConfig {
 		return String.format("MethodConfig[parent=%s;name=%s;desc=%s;eventClass=%s,callbackVariables=%s,dispatchEventIndex=%d]", parent, name, desc, eventClass, callbackVariables.toString(), dispatchEventIndex);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		MethodConfig that = (MethodConfig) o;
+		return dispatchEventIndex == that.dispatchEventIndex &&
+			Objects.equals(identifiedName, that.identifiedName) &&
+			Objects.equals(parent, that.parent) &&
+			Objects.equals(name, that.name) &&
+			Objects.equals(desc, that.desc) &&
+			Objects.equals(eventClass, that.eventClass) &&
+			Objects.equals(callbackVariables, that.callbackVariables);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(identifiedName, parent, name, desc, eventClass, callbackVariables, dispatchEventIndex);
+	}
 }
