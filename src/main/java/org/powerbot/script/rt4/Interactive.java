@@ -82,7 +82,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean click(final boolean left) {
-		return click(left ? MouseEvent.BUTTON1 : MouseEvent.BUTTON2);
+		return click(left ? MouseEvent.BUTTON1 : MouseEvent.BUTTON3);
 	}
 
 	/**
