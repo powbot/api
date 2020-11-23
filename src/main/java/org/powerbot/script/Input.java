@@ -25,7 +25,7 @@ public abstract class Input {
 		blocking = new AtomicBoolean(false);
 		keyboard = new AtomicBoolean(false);
 		this.spline = spline;
-		speed = new AtomicInteger(translateToParisUnits(MINIMUM_SPEED));
+		speed = new AtomicInteger(MINIMUM_SPEED);
 	}
 
 	/**
@@ -36,32 +36,12 @@ public abstract class Input {
 	public abstract Component getComponent();
 
 	/**
-	 * Takes a speed in paris units and returns the equivalent speed in percentage.
-	 *
-	 * @param s the speed in paris units.
-	 * @return the speed in percentage.
-	 */
-	private int translateFromParisUnits(int s) {
-		return (int) ((100 - speed.get()) / 0.9);
-	}
-
-	/**
-	 * Takes a percentage speed and returns the equivalent speed in paris units.
-	 *
-	 * @param s the speed in percentage.
-	 * @return the speed in paris units.
-	 */
-	private int translateToParisUnits(int s) {
-		return (int) Math.ceil(100 - (s * 0.9));
-	}
-
-	/**
 	 * Returns the current mouse speed.
 	 *
 	 * @return the current mouse speed.
 	 */
 	public int speed() {
-		return translateFromParisUnits(speed.get());
+		return speed.get();
 	}
 
 	/**
@@ -73,8 +53,7 @@ public abstract class Input {
 	 */
 	public int speed(final int s) {
 		if (s < MINIMUM_SPEED || s > MAXIMUM_SPEED) SpeedException.forSpeed(s);
-		int speedInParisUnits = translateToParisUnits(s);
-		speed.set(speedInParisUnits);
+		speed.set(s);
 		return speed();
 	}
 
