@@ -46,4 +46,6 @@ public abstract class Bot<C extends ClientContext<? extends Client>> {
 	public abstract Collection<? extends Class<? extends Script>> listDaemons();
 
 	public abstract AbstractCacheWorker getCacheWorker();
+
+	public abstract WebWalkingService getWebWalkingService();
 }

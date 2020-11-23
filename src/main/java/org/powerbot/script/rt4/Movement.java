@@ -15,7 +15,7 @@ import java.util.concurrent.*;
  */
 public class Movement extends ClientAccessor {
 
-	public Movement(final ClientContext ctx) {
+	public Movement(ClientContext ctx) {
 		super(ctx);
 	}
 
@@ -252,5 +252,29 @@ public class Movement extends ClientAccessor {
 	 */
 	public boolean reachable(final Locatable l1, final Locatable l2) {
 		return distance(l1, l2) > 0;
+	}
+
+	/**
+	 * Uses web walking to walk to a destination
+	 *
+	 * @param locatable the destination tile
+	 * @return true if player walked to the destination tile
+	 */
+	public boolean walkTo(final Locatable locatable) {
+		return walkTo(locatable, false);
+	}
+
+	/**
+	 * Uses web walking to walk to a destination
+	 *
+	 * @param locatable the destination tile
+	 * @param refreshQuests set to true to force refreshing completed quests
+	 * @return true if player walked to the destination tile
+	 */
+	public boolean walkTo(final Locatable locatable, final boolean refreshQuests) {
+		if (locatable == null) {
+			throw new IllegalArgumentException();
+		}
+		return ctx.bot().getWebWalkingService().walkTo(locatable, refreshQuests);
 	}
 }
