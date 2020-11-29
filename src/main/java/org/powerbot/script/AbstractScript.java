@@ -89,7 +89,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 
 		dir = new File(new File(System.getProperty("java.io.tmpdir"), ContextClassLoader.class.getAnnotation(Script.Manifest.class).name()), id);
 		if (!dir.isDirectory()) {
-			if (!dir.mkdirs()) {
+			if (!dir.exists() && !dir.mkdirs()) {
 				log.warning("Failed to make directory: " + dir.getAbsolutePath());
 			}
 		}
@@ -112,7 +112,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 				}
 			} else {
 				if (!dir.isDirectory()) {
-					if (!dir.mkdirs()) {
+					if (!dir.exists() && !dir.mkdirs()) {
 						log.warning("Failed to make directory: " + dir.getAbsolutePath());
 					}
 				}
@@ -162,7 +162,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 	 */
 	public File getStorageDirectory() {
 		if (!dir.isDirectory()) {
-			if (!dir.mkdirs()) {
+			if (!dir.exists() && !dir.mkdirs()) {
 				log.warning("Failed to make directory: " + dir.getAbsolutePath());
 			}
 		}
@@ -226,7 +226,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 
 		final File p = f.getParentFile();
 		if (p != null) {
-			if (!p.mkdirs()) {
+			if (!p.exists() && !p.mkdirs()) {
 				log.warning("Failed to make directory: " + p.getAbsolutePath());
 			}
 		}
