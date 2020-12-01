@@ -1,7 +1,6 @@
- package org.powerbot.bot;
+package org.powerbot.bot;
 
 
-import org.powerbot.script.ClientContext;
 import org.powerbot.script.GameActionEvent;
 
 import java.io.Closeable;
@@ -14,12 +13,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public abstract class EventDispatcher extends AbstractCollection<EventListener> implements Runnable, Closeable {
+	private final AtomicReference<Thread> thread;
 	private final CopyOnWriteArrayList<EventListener> listeners;
 	protected final Map<EventListener, List<Integer>> listenersToId;
 	private final BlockingQueue<EventObject> queue;
 	protected final Map<Class<? extends EventListener>, Integer> masks;
 
 	protected EventDispatcher() {
+		thread = new AtomicReference<>(null);
 		listeners = new CopyOnWriteArrayList<>();
 		listenersToId = new ConcurrentHashMap<>();
 		queue = new LinkedBlockingQueue<>();
@@ -45,7 +46,11 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 
 	@Override
 	public final void run() {
-		while (!ClientContext.ctx().controller.isStopping()) {
+		if (!thread.compareAndSet(null, Thread.currentThread())) {
+			return;
+		}
+
+		while (!Thread.interrupted()) {
 			final EventObject o;
 
 			try {
@@ -59,10 +64,16 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 			} catch (final Throwable ignored) {
 			}
 		}
+
+		thread.set(null);
 	}
 
 	@Override
 	public final void close() {
+		final Thread t = thread.get();
+		if (t != null) {
+			t.interrupt();
+		}
 	}
 
 	@Override
