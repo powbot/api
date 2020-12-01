@@ -86,13 +86,8 @@ public class Movement extends ClientAccessor {
 		final MouseMovementCompleted completed = (boolean result) ->
 			interacted.complete(ctx.input.click(true));
 
-		try {
-			final MouseMovement movement = new MouseMovement(position, valid, completed, false);
-			ctx.input.moveAsync(movement);
-			return interacted.get(10, TimeUnit.SECONDS);
-		} catch (InterruptedException | TimeoutException | ExecutionException e) {
-			return false;
-		}
+		final MouseMovement movement = new MouseMovement(position, valid, completed, false);
+		return ctx.input.move(movement);
 	}
 
 	/**
