@@ -154,4 +154,6 @@ public interface IClient extends IGameEngine {
 
 	void setEventDispatcher(EventDispatcher dispatcher);
 
+	IPreferences getPreferences();
+
 }
