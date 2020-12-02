@@ -28,6 +28,10 @@ public abstract class Input {
 		speed = new AtomicInteger(MINIMUM_SPEED);
 	}
 
+	public abstract Rectangle inputBounds();
+
+	public abstract boolean isTargetInViewport(Point target);
+
 	/**
 	 * Returns the target component.
 	 *
