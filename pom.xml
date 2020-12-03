@@ -30,7 +30,7 @@
 
     <properties>
         <github.global.server>github</github.global.server>
-        <revision>8.1.4</revision>
+        <revision>8.1.5</revision>
         <changelist>-SNAPSHOT</changelist>
         <sha1/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
