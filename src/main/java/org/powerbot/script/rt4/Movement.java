@@ -87,7 +87,10 @@ public class Movement extends ClientAccessor {
 			interacted.complete(ctx.input.click(true));
 
 		final MouseMovement movement = new MouseMovement(position, valid, completed, false);
-		return ctx.input.move(movement);
+		if (ctx.input.move(movement)) {
+			return Condition.wait(() -> ClientContext.ctx().movement.destination() != Tile.NIL, 500, 5);
+		}
+		return false;
 	}
 
 	/**
