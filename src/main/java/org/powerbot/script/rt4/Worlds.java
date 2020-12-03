@@ -131,7 +131,7 @@ public class Worlds extends AbstractQuery<Worlds, World, ClientContext> implemen
 	 * @return {@code true} if successfully opened, {@code false} otherwise.
 	 */
 	public boolean open() {
-		if (ctx.widgets.widget(WORLD_WIDGET).valid()) {
+		if (ctx.worlds.size() > 0) {
 			return true;
 		}
 		ctx.game.tab(Game.Tab.LOGOUT);
