@@ -1,6 +1,7 @@
 package org.powerbot.util;
 
-import org.powerbot.script.*;
+import org.powerbot.script.Script;
+import org.powerbot.script.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class ScriptBundle {
 		}
 
 		public String getID() {
-			return id == null ? LOCALID : id;
+			return id == null ? getName() : id;
 		}
 
 		public String getDescription() {

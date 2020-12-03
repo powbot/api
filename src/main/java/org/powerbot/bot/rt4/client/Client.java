@@ -673,4 +673,11 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 		return null;
 	}
+
+	public IPreferences getPreferences() {
+		if(!isNull()) {
+			return get().getPreferences();
+		}
+		return null;
+	}
 }
