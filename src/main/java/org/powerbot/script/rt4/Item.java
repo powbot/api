@@ -3,6 +3,7 @@ package org.powerbot.script.rt4;
 import org.powerbot.script.*;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 
 /**
  * Item
@@ -147,5 +148,23 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 
 	public int inventoryIndex() {
 		return inventoryIndex;
+	}
+
+	@Override
+	public Callable<Point> calculateScreenPosition() {
+		return new Callable<>() {
+			private Point lastBasePoint;
+			private Point lastTarget;
+
+			@Override
+			public Point call() {
+				final Point currentBasePoint = basePoint();
+				if (lastBasePoint == null || currentBasePoint.distance(lastBasePoint) > 3) {
+					lastBasePoint = currentBasePoint;
+					lastTarget = nextPoint();
+				}
+				return lastTarget;
+			}
+		};
 	}
 }

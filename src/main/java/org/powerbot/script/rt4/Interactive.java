@@ -64,7 +64,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean hover() {
-		final MouseMovement movement = new MouseMovement(getPointCallable(), this::valid, (success) -> {
+		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid, (success) -> {
 		}, false);
 		return ctx.input.move(movement);
 	}
@@ -93,7 +93,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 		if (!inViewport()) {
 			return false;
 		}
-		final MouseMovement movement = new MouseMovement(getPointCallable(), this::valid, (success) -> {
+		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid, (success) -> {
 			ctx.input.click(button);
 		}, false);
 		return ctx.input.move(movement);
@@ -172,11 +172,9 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 		}
 
 		final CompletableFuture<Boolean> interacted = new CompletableFuture<>();
-		final Callable<Point> position = getPointCallable();
+		final Callable<Point> position = calculateScreenPosition();
 		final Callable<Boolean> valid = () -> {
 			if (Interactive.this instanceof Actor || Interactive.this instanceof GameObject) {
-				boolean v = valid();
-				boolean i = inViewport();
 				return valid() && inViewport();
 			} else {
 				return valid();
@@ -226,23 +224,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 		}
 	}
 
-	private Callable<Point> getPointCallable() {
-		final Callable<Point> position = new Callable<>() {
-			private Point lastBasePoint;
-			private Point lastTarget;
-
-			@Override
-			public Point call() {
-				final Point currentBasePoint = basePoint();
-				if (lastBasePoint == null || currentBasePoint.distance(lastBasePoint) > 3) {
-					lastBasePoint = currentBasePoint;
-					lastTarget = nextPoint();
-				}
-				return lastTarget;
-			}
-		};
-		return position;
-	}
+	public abstract Callable<Point> calculateScreenPosition();
 
 	/**
 	 * {@inheritDoc}

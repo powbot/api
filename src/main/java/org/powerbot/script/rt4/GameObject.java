@@ -9,6 +9,7 @@ import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.*;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 
 /**
  * GameObject
@@ -391,5 +392,23 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	public int meta() {
 		return object.getMeta();
+	}
+
+	@Override
+	public Callable<Point> calculateScreenPosition() {
+		return new Callable<>() {
+			private Tile lastTile;
+			private Point lastTarget;
+
+			@Override
+			public Point call() {
+				final Tile currentTile = tile();
+				if (!currentTile.equals(lastTile)) {
+					lastTile = currentTile;
+					lastTarget = nextPoint();
+				}
+				return lastTarget;
+			}
+		};
 	}
 }

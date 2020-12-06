@@ -3,6 +3,7 @@ package org.powerbot.script.rt4;
 import org.powerbot.script.*;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 
 /**
  * TileMatrix
@@ -214,5 +215,24 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 	@Override
 	public String toString() {
 		return tile.toString();
+	}
+
+
+	@Override
+	public Callable<Point> calculateScreenPosition() {
+		return new Callable<>() {
+			private Tile lastTile;
+			private Point lastTarget;
+
+			@Override
+			public Point call() {
+				final Tile currentTile = tile();
+				if (!currentTile.equals(lastTile)) {
+					lastTile = currentTile;
+					lastTarget = nextPoint();
+				}
+				return lastTarget;
+			}
+		};
 	}
 }

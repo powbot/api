@@ -6,6 +6,7 @@ import org.powerbot.bot.rt4.client.internal.IWidgetNode;
 import org.powerbot.script.Calculations;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 
 /**
  * Component
@@ -360,5 +361,23 @@ public class Component extends Interactive {
 	@Override
 	public String toString() {
 		return String.format("%s (%s)[%s]", widget, component, index);
+	}
+
+	@Override
+	public Callable<Point> calculateScreenPosition() {
+		return new Callable<>() {
+			private Point lastBasePoint;
+			private Point lastTarget;
+
+			@Override
+			public Point call() {
+				final Point currentBasePoint = basePoint();
+				if (lastBasePoint == null || currentBasePoint.distance(lastBasePoint) > 3) {
+					lastBasePoint = currentBasePoint;
+					lastTarget = nextPoint();
+				}
+				return lastTarget;
+			}
+		};
 	}
 }

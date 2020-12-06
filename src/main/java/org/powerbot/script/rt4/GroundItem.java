@@ -7,6 +7,7 @@ import org.powerbot.script.Tile;
 import org.powerbot.script.*;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 
 /**
  * GroundItem
@@ -119,5 +120,24 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 			return d != null && NodeQueue.get(d, ItemNode.class).contains(node);
 		}
 		return false;
+	}
+
+
+	@Override
+	public Callable<Point> calculateScreenPosition() {
+		return new Callable<>() {
+			private Tile lastTile;
+			private Point lastTarget;
+
+			@Override
+			public Point call() {
+				final Tile currentTile = tile();
+				if (!currentTile.equals(lastTile)) {
+					lastTile = currentTile;
+					lastTarget = nextPoint();
+				}
+				return lastTarget;
+			}
+		};
 	}
 }

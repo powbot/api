@@ -4,12 +4,12 @@ import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.*;
 import org.powerbot.bot.rt4.client.internal.ICombatStatus;
 import org.powerbot.bot.rt4.client.internal.ICombatStatusData;
-import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 import org.powerbot.script.Tile;
 import org.powerbot.script.*;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 
 /**
  * Actor
@@ -126,7 +126,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	public boolean inCombat() {
 		return healthBarVisible();
 	}
-	
+
 	/**
 	 * Whether or not the entity has a health bar displayed over their head. This can be
 	 * used to determine whether or not the entity is currently in combat.
@@ -165,10 +165,10 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	/**
 	 * The health of the entity.
 	 *
+	 * @return The health of the entity.
 	 * @deprecated This was deprecated as the client no longer receives
 	 * the absolute health value of the entity. This will now return
 	 * {@link Actor#healthPercent()} instead.
-	 * @return The health of the entity.
 	 */
 	@Deprecated
 	public int health() {
@@ -178,12 +178,12 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	/**
 	 * The maximum health of the entity.
 	 *
+	 * @return {@code 100}
 	 * @deprecated This was deprecated as the client no longer
 	 * receives the absolute health value of the entity. This will
 	 * now return {@code 100} instead, rendering it useless. This
 	 * function is only kept for backwards compatibility, and should
 	 * not be used.
-	 * @return {@code 100}
 	 */
 	@Deprecated
 	public int maxHealth() {
@@ -366,7 +366,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		return new CombatStatus[]{secondary, health};
 	}
 
-	private BarComponent getBarComponent(){
+	private BarComponent getBarComponent() {
 		final CombatStatus[] nodes = getBarNodes();
 		final Client client = ctx.client();
 		if (nodes == null || client == null) {
@@ -428,6 +428,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 
 		return actor != null ? getActor().getX() : 0;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -460,4 +461,21 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		return true;
 	}
 
+	@Override
+	public Callable<Point> calculateScreenPosition() {
+		return new Callable<>() {
+			private Tile lastTile;
+			private Point lastTarget;
+
+			@Override
+			public Point call() {
+				final Tile currentTile = tile();
+				if (!currentTile.equals(lastTile)) {
+					lastTile = currentTile;
+					lastTarget = nextPoint();
+				}
+				return lastTarget;
+			}
+		};
+	}
 }
