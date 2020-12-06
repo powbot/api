@@ -90,6 +90,9 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean click(final int button) {
+		if (!inViewport()) {
+			return false;
+		}
 		final MouseMovement movement = new MouseMovement(getPointCallable(), this::valid, (success) -> {
 			ctx.input.click(button);
 		}, false);

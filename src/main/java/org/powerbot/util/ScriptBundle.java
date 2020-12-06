@@ -1,12 +1,13 @@
 package org.powerbot.util;
 
 import org.powerbot.script.Script;
+import org.powerbot.script.ScriptConfigurationOption;
 import org.powerbot.script.StringUtils;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class ScriptBundle {
 	public final Definition definition;
@@ -23,23 +24,27 @@ public class ScriptBundle {
 		public static final String LOCALID = "0/local";
 		private final String name, id, description;
 
+		private List<ScriptConfigurationOption> configs;
 		public String className;
 		public byte[] key;
 		public String source, website;
 		public boolean local = false, assigned = false;
 		public Type client;
 
-		public Definition(final Script.Manifest manifest, final String id) {
-			name = manifest.name();
-			description = manifest.description();
-			this.id = id;
-		}
-
 		public Definition(final Script.Manifest manifest) {
 			this(manifest, null);
 		}
 
-		Definition(final String name, final String id, final String description) {
+		public Definition(final Script.Manifest manifest, final String id) {
+			this(manifest, new Script.ScriptConfiguration[0], id);
+		}
+
+		public Definition(final Script.Manifest manifest, final Script.ScriptConfiguration[] configs, final String id) {
+			this(configs, manifest.name(), id, manifest.description());
+		}
+
+		Definition(final Script.ScriptConfiguration[] configs, final String name, final String id, final String description) {
+			this.configs = Arrays.stream(configs).map(ScriptConfigurationOption::fromAnnotation).collect(Collectors.toList());
 			this.name = name;
 			this.id = id;
 			this.description = description;
@@ -61,29 +66,13 @@ public class ScriptBundle {
 			return getCleanText(description);
 		}
 
+		public List<ScriptConfigurationOption> getConfigs() {
+			return configs;
+		}
+
 		@Override
 		public String toString() {
 			return getName().toLowerCase();
-		}
-
-		public static Definition fromMap(final Map<String, String> data) {
-			final String name = data.getOrDefault("name", null);
-
-			if (name == null || name.isEmpty()) {
-				return null;
-			}
-
-			final String id = data.getOrDefault("id", null);
-			final String description = data.getOrDefault("description", null);
-
-			final Definition def = new Definition(name, id, description);
-			def.className = data.get("className");
-			def.assigned = data.containsKey("assigned") && !data.get("assigned").equals("0");
-			def.source = data.get("link");
-			def.website = data.getOrDefault("website", "");
-
-			setClientMode(data, def);
-			return def;
 		}
 
 		@Override

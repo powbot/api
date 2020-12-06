@@ -178,8 +178,11 @@ public class Game extends ClientAccessor {
 	 * @return The dimensions of the applet.
 	 */
 	public Dimension dimensions() {
-		@SuppressWarnings("deprecation") final Applet applet = ctx.bot().getApplet();
-		return applet != null ? new Dimension(applet.getWidth(), applet.getHeight()) : new Dimension(-1, -1);
+		final Rectangle bounds = ctx.input.inputBounds();
+		if (bounds != null) {
+			return new Dimension(bounds.width, bounds.height);
+		}
+		return new Dimension(-1, -1);
 	}
 
 	/**
@@ -265,7 +268,11 @@ public class Game extends ClientAccessor {
 	 * @return {@code true} if it is resizeable, {@code false} otherwise.
 	 */
 	public boolean resizable() {
-		return ctx.widgets.widget(Constants.VIEWPORT_WIDGET >> 16).component(Constants.VIEWPORT_WIDGET & 0xfff).screenPoint().x != 4;
+		if (ctx.input.inputBounds().width == 765 && ctx.input.inputBounds().height == 503) {
+			return false;
+		}
+		return true;
+//		return ctx.widgets.widget(Constants.VIEWPORT_WIDGET >> 16).component(Constants.VIEWPORT_WIDGET & 0xfff).screenPoint().x != 4;
 	}
 
 	/**

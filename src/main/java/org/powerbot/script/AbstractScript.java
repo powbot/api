@@ -40,6 +40,8 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 	 */
 	protected final Properties settings;
 
+	private final List<ScriptConfigurationOption> options;
+
 	private final List<Runnable>[] exec;
 	private final File dir;
 
@@ -79,6 +81,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 		if (bundle != null && bundle.definition != null) {
 			ids[0] = bundle.definition.getID().replace('/', '-');
 		}
+		this.options = bundle.definition.getConfigs();
 
 		for (final String n : ids) {
 			if (n != null && !n.isEmpty()) {
@@ -335,6 +338,10 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 		} else {
 			return false;
 		}
+	}
+
+	public List<ScriptConfigurationOption> getOptions() {
+		return options;
 	}
 
 	/**

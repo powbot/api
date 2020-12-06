@@ -108,5 +108,16 @@ public interface Script extends EventListener {
 		 * @return the properties
 		 */
 		String properties() default "";
+
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.TYPE})
+	@interface ScriptConfiguration {
+
+		String name();
+		String description();
+		ScriptConfigurationOption.OptionType optionType();
+		String defaultValue();
 	}
 }
