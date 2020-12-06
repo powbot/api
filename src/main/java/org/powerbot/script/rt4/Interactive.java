@@ -2,10 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.input.MouseMovement;
 import org.powbot.input.MouseMovementCompleted;
-import org.powerbot.script.Condition;
-import org.powerbot.script.Crosshair;
-import org.powerbot.script.Filter;
-import org.powerbot.script.MenuCommand;
+import org.powerbot.script.*;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -205,11 +202,13 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 					}, 20, 10);
 				}
 
+				Condition.sleep(Random.hicks(ctx.menu.getMenuOptions().size()));
+
 				if (proceed) {
 					interacted.complete(ctx.menu.click(f));
+				} else {
+					ctx.menu.close();
 				}
-
-				ctx.menu.close();
 			} else {
 				interacted.complete(false);
 			}
