@@ -1,9 +1,6 @@
 package org.powerbot.script;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ScriptConfigurationOption<T> {
@@ -17,13 +14,15 @@ public class ScriptConfigurationOption<T> {
 	private final OptionType optionType;
 	private final T defaultValue;
 	private boolean isConfigured;
+	private final String[] allowedValues;
 	private T value;
 
-	public ScriptConfigurationOption(final String name, final String description, final OptionType optionType, final T defaultValue) {
+	public ScriptConfigurationOption(final String name, final String description, final OptionType optionType, final T defaultValue, String[] allowedValues) {
 		this.name = name;
 		this.description = description;
 		this.optionType = optionType;
 		this.defaultValue = defaultValue;
+		this.allowedValues = allowedValues;
 	}
 
 	public static <T> ScriptConfigurationOption<T> fromAnnotation(final Script.ScriptConfiguration config) {
@@ -45,7 +44,7 @@ public class ScriptConfigurationOption<T> {
 				throw new IllegalStateException("Unexpected value: " + config.optionType());
 		}
 
-		return new ScriptConfigurationOption<T>(config.name(), config.description(), config.optionType(), defaultValue);
+		return new ScriptConfigurationOption<T>(config.name(), config.description(), config.optionType(), defaultValue, config.allowedValues());
 	}
 
 	/**
@@ -92,6 +91,14 @@ public class ScriptConfigurationOption<T> {
 		return isConfigured;
 	}
 
+	/**
+	 * Get the allowed values of this configuration
+	 * @return array
+	 */
+	public String[] getAllowedValues() {
+		return allowedValues;
+	}
+
 	public void setValue(T value) {
 		this.isConfigured = true;
 
@@ -108,11 +115,14 @@ public class ScriptConfigurationOption<T> {
 			Objects.equals(description, that.description) &&
 			optionType == that.optionType &&
 			Objects.equals(defaultValue, that.defaultValue) &&
+			Arrays.equals(allowedValues, that.allowedValues) &&
 			Objects.equals(value, that.value);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, description, optionType, defaultValue, isConfigured, value);
+		int result = Objects.hash(name, description, optionType, defaultValue, isConfigured, value);
+		result = 31 * result + Arrays.hashCode(allowedValues);
+		return result;
 	}
 }

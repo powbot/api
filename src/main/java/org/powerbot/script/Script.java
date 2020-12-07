@@ -128,13 +128,15 @@ public interface Script extends EventListener {
 		 * The data type of the configuration option
 		 * @return OptionType
 		 */
-		ScriptConfigurationOption.OptionType optionType();
+		ScriptConfigurationOption.OptionType optionType() default ScriptConfigurationOption.OptionType.STRING;
 
 		/**
 		 * The default value for this configuration option
 		 * @return string
 		 */
-		String defaultValue();
+		String defaultValue() default "";
+
+		String[] allowedValues() default {};
 
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.TYPE})
