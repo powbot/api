@@ -2,10 +2,7 @@ package org.powerbot.script;
 
 import org.powerbot.util.ScriptBundle;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -113,11 +110,18 @@ public interface Script extends EventListener {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.TYPE})
+	@Repeatable(ScriptConfiguration.List.class)
 	@interface ScriptConfiguration {
 
 		String name();
 		String description();
 		ScriptConfigurationOption.OptionType optionType();
 		String defaultValue();
+
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ElementType.TYPE})
+		@interface List {
+			ScriptConfiguration[] value();
+		}
 	}
 }
