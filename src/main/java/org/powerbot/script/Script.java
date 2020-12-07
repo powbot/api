@@ -113,9 +113,27 @@ public interface Script extends EventListener {
 	@Repeatable(ScriptConfiguration.List.class)
 	@interface ScriptConfiguration {
 
+
+		/**
+		 * The name of the configuration option, should be unique per script
+		 * @return string
+		 */
 		String name();
+		/**
+		 * A description of the configuration option to present to the end user configuring it
+		 * @return string
+		 */
 		String description();
+		/**
+		 * The data type of the configuration option
+		 * @return OptionType
+		 */
 		ScriptConfigurationOption.OptionType optionType();
+
+		/**
+		 * The default value for this configuration option
+		 * @return string
+		 */
 		String defaultValue();
 
 		@Retention(RetentionPolicy.RUNTIME)

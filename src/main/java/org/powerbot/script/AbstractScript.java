@@ -340,8 +340,21 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 		}
 	}
 
+	/**
+	 * Get all the ScriptConfigurationOption's, these should be used to configure the script without a GUI or user input
+	 *  The values each option holds are provided by the user from the remote bot management panel or CLI
+	 * @return list
+	 */
 	public List<ScriptConfigurationOption> getOptions() {
 		return options;
+	}
+
+	/**
+	 * Check if ScriptConfigurationOption's have been configured or not
+	 * @return true if options have been configured
+	 */
+	public boolean hasOptionsConfigured() {
+		return options.stream().anyMatch(ScriptConfigurationOption::isConfigured);
 	}
 
 	/**
