@@ -14,7 +14,9 @@ data class MouseMovement(
     val onCompleted: MouseMovementCompleted,
     var canceled: Boolean = false
 ) {
+    var timeoutAt: Long = System.currentTimeMillis() + 5000
+
     fun canRun(): Boolean {
-        return !canceled && valid.call()
+        return !canceled && valid.call() && System.currentTimeMillis() < timeoutAt
     }
 }
