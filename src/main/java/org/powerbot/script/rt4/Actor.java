@@ -465,12 +465,21 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	public Callable<Point> calculateScreenPosition() {
 		return new Callable<>() {
 			private Tile lastTile;
+			private int lastCameraX;
+			private int lastCameraY;
+			private int lastCameraZ;
 			private Point lastTarget;
 
 			@Override
 			public Point call() {
 				final Tile currentTile = tile();
-				if (!currentTile.equals(lastTile)) {
+				if (!currentTile.equals(lastTile) ||
+					lastCameraX != ctx.camera.x() ||
+					lastCameraY != ctx.camera.y() ||
+					lastCameraZ != ctx.camera.z()) {
+					lastCameraX = ctx.camera.x();
+					lastCameraY = ctx.camera.y();
+					lastCameraZ = ctx.camera.z();
 					lastTile = currentTile;
 					lastTarget = nextPoint();
 				}

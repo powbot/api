@@ -112,7 +112,11 @@ public class CacheComponentConfig {
 		final Block.Sector[] sectors = b.getSectors();
 		for (int i = 0; i < sectors.length; i++) {
 			final int componentId = (widgetId << 16) + i;
-			comps[i] = new CacheComponentConfig(i, componentId, sectors[i]);
+			final Block.Sector sector = sectors[i];
+			try {
+				comps[i] = new CacheComponentConfig(i, componentId, sector);
+			} catch(Throwable ignored) {
+			}
 		}
 
 		CACHE.put(widgetId, comps);

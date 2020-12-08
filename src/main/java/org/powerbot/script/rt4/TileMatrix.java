@@ -1,6 +1,8 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.script.*;
+import org.powerbot.script.InteractiveEntity;
+import org.powerbot.script.Random;
+import org.powerbot.script.Tile;
 
 import java.awt.*;
 import java.util.concurrent.Callable;
@@ -38,7 +40,7 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 	/**
 	 * A default point which represents the centered position with the given
 	 * height.
-	 * 
+	 *
 	 * @param height The hieght in which to return the point from
 	 * @return A point which represents (0.5, 0.5, <code>height</code>)
 	 */
@@ -52,10 +54,8 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 	}
 
 	/**
-	 * @deprecated
-	 * Kept for backwards compatibility.
-	 * 
 	 * @return value of {@link #bounds()}
+	 * @deprecated Kept for backwards compatibility.
 	 */
 	@Deprecated
 	public Polygon getBounds() {
@@ -64,7 +64,7 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 
 	/**
 	 * Represents the model bounds as a {@link Polygon}
-	 * 
+	 *
 	 * @return A {@link Polygon}
 	 */
 	public Polygon bounds() {
@@ -73,9 +73,9 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 		final Point br = point(1.0D, 1.0D, 0);
 		final Point bl = point(0.0D, 1.0D, 0);
 		return new Polygon(
-				new int[]{tl.x, tr.x, br.x, bl.x},
-				new int[]{tl.y, tr.y, br.y, bl.y},
-				4
+			new int[]{tl.x, tr.x, br.x, bl.x},
+			new int[]{tl.y, tr.y, br.y, bl.y},
+			4
 		);
 	}
 
@@ -86,13 +86,13 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 			return m.triangles();
 		}
 		return new Polygon[]{
-				bounds()
+			bounds()
 		};
 	}
 
 	/**
 	 * Returns the point of which the tile exists on the map.
-	 * 
+	 *
 	 * @return A {@link Point}
 	 */
 	public Point mapPoint() {
@@ -101,7 +101,7 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 
 	/**
 	 * Whether or not the tile is on the map.
-	 * 
+	 *
 	 * @return <code>true</code> if the tile is loaded on the map, otherwise,
 	 * <code>false</code>.
 	 */
@@ -115,13 +115,13 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 			return d < Math.pow(68, 2);
 		}
 		return p.y < 70 ? d < Math.pow(68, 2) : p.y < 110 ? d < Math.pow(64, 2) : p.y < 135 ? d < Math.pow(52, 2) :
-				Math.pow(centre.x - p.x, 2) + Math.pow(centre.y + 54 - p.y, 2) < Math.pow(16, 2);
+			Math.pow(centre.x - p.x, 2) + Math.pow(centre.y + 54 - p.y, 2) < Math.pow(16, 2);
 	}
 
 	/**
 	 * Generates a tile path to determine if the local player can reach the
 	 * Tile Matrix.
-	 * 
+	 *
 	 * @return <code>true</code> if the tile matrix is reachable, otherwise,
 	 * <code>false</code>.
 	 */
@@ -217,17 +217,23 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 		return tile.toString();
 	}
 
-
 	@Override
 	public Callable<Point> calculateScreenPosition() {
 		return new Callable<>() {
 			private Tile lastTile;
 			private Point lastTarget;
+			private int lastCameraX, lastCameraY, lastCameraZ;
 
 			@Override
 			public Point call() {
 				final Tile currentTile = tile();
-				if (!currentTile.equals(lastTile)) {
+				if (!currentTile.equals(lastTile) ||
+					lastCameraX != ctx.camera.x() ||
+					lastCameraY != ctx.camera.y() ||
+					lastCameraZ != ctx.camera.z()) {
+					lastCameraX = ctx.camera.x();
+					lastCameraY = ctx.camera.y();
+					lastCameraZ = ctx.camera.z();
 					lastTile = currentTile;
 					lastTarget = nextPoint();
 				}
