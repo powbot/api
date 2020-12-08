@@ -7,6 +7,7 @@ import org.powerbot.bot.rt4.client.Varbit;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.*;
+import org.powerbot.util.ScreenPosition;
 
 import java.awt.*;
 import java.util.concurrent.Callable;
@@ -396,26 +397,6 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public Callable<Point> calculateScreenPosition() {
-		return new Callable<>() {
-			private Tile lastTile;
-			private Point lastTarget;
-			private int lastCameraX, lastCameraY, lastCameraZ;
-
-			@Override
-			public Point call() {
-				final Tile currentTile = tile();
-				if (!currentTile.equals(lastTile) ||
-					lastCameraX != ctx.camera.x() ||
-					lastCameraY != ctx.camera.y() ||
-					lastCameraZ != ctx.camera.z()) {
-					lastCameraX = ctx.camera.x();
-					lastCameraY = ctx.camera.y();
-					lastCameraZ = ctx.camera.z();
-					lastTile = currentTile;
-					lastTarget = nextPoint();
-				}
-				return lastTarget;
-			}
-		};
+		return ScreenPosition.of(ctx, this);
 	}
 }

@@ -7,6 +7,7 @@ import org.powerbot.bot.rt4.client.internal.ICombatStatusData;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 import org.powerbot.script.Tile;
 import org.powerbot.script.*;
+import org.powerbot.util.ScreenPosition;
 
 import java.awt.*;
 import java.util.concurrent.Callable;
@@ -463,28 +464,6 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 
 	@Override
 	public Callable<Point> calculateScreenPosition() {
-		return new Callable<>() {
-			private Tile lastTile;
-			private int lastCameraX;
-			private int lastCameraY;
-			private int lastCameraZ;
-			private Point lastTarget;
-
-			@Override
-			public Point call() {
-				final Tile currentTile = tile();
-				if (!currentTile.equals(lastTile) ||
-					lastCameraX != ctx.camera.x() ||
-					lastCameraY != ctx.camera.y() ||
-					lastCameraZ != ctx.camera.z()) {
-					lastCameraX = ctx.camera.x();
-					lastCameraY = ctx.camera.y();
-					lastCameraZ = ctx.camera.z();
-					lastTile = currentTile;
-					lastTarget = nextPoint();
-				}
-				return lastTarget;
-			}
-		};
+		return ScreenPosition.of(ctx, this);
 	}
 }
