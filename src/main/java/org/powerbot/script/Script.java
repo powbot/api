@@ -52,7 +52,7 @@ public interface Script extends EventListener {
 		 * Returns the associated {@link ScriptBundle}.
 		 *
 		 * @return the associated {@link ScriptBundle}
- 		 */
+		 */
 		ScriptBundle bundle();
 
 		/**
@@ -68,7 +68,7 @@ public interface Script extends EventListener {
 		 * @return the collection
 		 */
 		List<Class<? extends Script>> daemons();
- 	}
+	}
 
 	/**
 	 * Manifest
@@ -99,6 +99,20 @@ public interface Script extends EventListener {
 		String version() default "";
 
 		/**
+		 * Number of days allowed for a trial
+		 *
+		 * @return number of days
+		 */
+		long trialDays() default 3L;
+
+		/**
+		 * The name of a markdown file in the repository, which should be used as content for the script page
+		 *
+		 * @return name of a markdown file
+		 */
+		String markdownFileName() default "";
+
+		/**
 		 * A series of key=value pairs separated by semicolons (;) or newlines,
 		 * e.g. {@code "hidden=true;topic=1234"}.
 		 *
@@ -116,22 +130,28 @@ public interface Script extends EventListener {
 
 		/**
 		 * The name of the configuration option, should be unique per script
+		 *
 		 * @return string
 		 */
 		String name();
+
 		/**
 		 * A description of the configuration option to present to the end user configuring it
+		 *
 		 * @return string
 		 */
 		String description();
+
 		/**
 		 * The data type of the configuration option
+		 *
 		 * @return OptionType
 		 */
 		ScriptConfigurationOption.OptionType optionType() default ScriptConfigurationOption.OptionType.STRING;
 
 		/**
 		 * The default value for this configuration option
+		 *
 		 * @return string
 		 */
 		String defaultValue() default "";
