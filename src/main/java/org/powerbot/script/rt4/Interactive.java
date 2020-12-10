@@ -1,15 +1,17 @@
 package org.powerbot.script.rt4;
 
 import org.powbot.input.MouseMovement;
-import org.powbot.input.MouseMovementCompleted;
-import org.powerbot.script.*;
+import org.powerbot.script.Condition;
+import org.powerbot.script.Crosshair;
+import org.powerbot.script.Filter;
+import org.powerbot.script.MenuCommand;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -61,8 +63,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean hover() {
-		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid, (success) -> {
-		}, false);
+		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid);
 		return ctx.input.move(movement);
 	}
 
@@ -87,10 +88,8 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean click(final int button) {
-		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid, (success) -> {
-			ctx.input.click(button);
-		}, false);
-		return ctx.input.move(movement);
+		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid);
+		return ctx.input.move(movement) && ctx.input.click(button);
 	}
 
 	/**
@@ -165,7 +164,6 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 			return false;
 		}
 
-		final CompletableFuture<Boolean> interacted = new CompletableFuture<>();
 		final Callable<Point> position = calculateScreenPosition();
 		final Callable<Boolean> valid = () -> {
 			if (Interactive.this instanceof Actor || Interactive.this instanceof GameObject) {
@@ -175,48 +173,22 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 			}
 		};
 
-		final MouseMovementCompleted completed = (boolean result) -> {
-			Condition.wait(new Condition.Check() {
-				@Override
-				public boolean poll() {
-					return ctx.menu.indexOf(f) != -1;
-				}
-			}, 20, 10);
-			final int menuIdx = ctx.menu.indexOf(f);
-
-			if (menuIdx == 0) {
-				interacted.complete(ctx.menu.click(f));
-			} else if (menuIdx > 0) {
-				boolean proceed = true;
-
-				if (!ctx.menu.opened()) {
-					ctx.input.click(false);
-					proceed = Condition.wait(new Condition.Check() {
-						@Override
-						public boolean poll() {
-							return ctx.menu.opened();
-						}
-					}, 20, 10);
-				}
-
-				Condition.sleep(Random.hicks(ctx.menu.getMenuOptions().size()));
-
-				if (proceed) {
-					interacted.complete(ctx.menu.click(f));
-				} else {
-					ctx.menu.close();
-				}
-			} else {
-				interacted.complete(false);
-			}
-		};
-
 		try {
-			final MouseMovement movement = new MouseMovement(position, valid, completed, false);
-			ctx.input.moveAsync(movement);
-			return interacted.get(10, TimeUnit.SECONDS);
-		} catch (InterruptedException | TimeoutException | ExecutionException e) {
+			final MouseMovement movement = new MouseMovement(position, valid);
+			if (ctx.input.move(movement) &&
+				Condition.wait(new Condition.Check() {
+					@Override
+					public boolean poll() {
+						return ctx.menu.indexOf(f) != -1;
+					}
+				}, 10, 80)) {
+				return ctx.menu.click(f);
+			}
 			return false;
+		} finally {
+			if (ctx.menu.opened()) {
+				ctx.menu.close();
+			}
 		}
 	}
 

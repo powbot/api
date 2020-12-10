@@ -330,8 +330,7 @@ public abstract class Input {
 	 * successfully moved.
 	 */
 	public final boolean move(final int x, final int y) {
-		return move(new MouseMovement(() -> new Point(x, y), () -> true, (success) -> {
-		}, false));
+		return move(new MouseMovement(() -> new Point(x, y), () -> true));
 	}
 
 	/**
@@ -343,15 +342,13 @@ public abstract class Input {
 	 * successfully moved.
 	 */
 	public final boolean move(final Point p) {
-		return move(new MouseMovement(() -> p, () -> true, (success) -> {
-		}, false));
+		return move(new MouseMovement(() -> p, () -> true));
 	}
 
 	@Deprecated
 	public final boolean apply(final Targetable targetable, final Filter<Point> filter) {
 		final Point targetPoint = targetable.nextPoint();
-		return move(new MouseMovement(() -> targetPoint, () -> true, (success) -> {
-		}, false));
+		return move(new MouseMovement(() -> targetPoint, () -> true));
 	}
 
 	/**
@@ -380,14 +377,6 @@ public abstract class Input {
 	 * @return {@code true} if the command was successfully executed, otherwise {@code false}
 	 */
 	public abstract boolean move(MouseMovement command);
-
-	/**
-	 * Queues a {@link MouseMovement} to be completed asynchronously.
-	 * Use the onReached callback to perform an action once the target is reached
-	 *
-	 * @param command A mouse command
-	 */
-	public abstract void moveAsync(MouseMovement command);
 
 	public abstract boolean isTouchScreen();
 

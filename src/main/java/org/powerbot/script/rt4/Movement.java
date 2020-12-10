@@ -1,7 +1,6 @@
 package org.powerbot.script.rt4;
 
 import org.powbot.input.MouseMovement;
-import org.powbot.input.MouseMovementCompleted;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Locatable;
@@ -79,15 +78,12 @@ public class Movement extends ClientAccessor {
 		}
 
 		final TileMatrix tile = new TileMatrix(ctx, loc);
-		final CompletableFuture<Boolean> interacted = new CompletableFuture<>();
 		final Callable<Point> position = tile::mapPoint;
 		final Callable<Boolean> valid = tile::onMap;
 
-		final MouseMovementCompleted completed = (boolean result) ->
-			interacted.complete(ctx.input.click(true));
-
-		final MouseMovement movement = new MouseMovement(position, valid, completed, false);
+		final MouseMovement movement = new MouseMovement(position, valid);
 		if (ctx.input.move(movement)) {
+			ctx.input.click(true);
 			return Condition.wait(() -> ClientContext.ctx().movement.destination() != Tile.NIL, 500, 5);
 		}
 		return false;
