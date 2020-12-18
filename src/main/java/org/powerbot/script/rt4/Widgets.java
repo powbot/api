@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.openjdk.jol.info.ClassLayout;
+import org.openjdk.jol.info.GraphLayout;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.script.*;
 
@@ -17,7 +19,6 @@ import java.util.concurrent.TimeUnit;
  * Widgets
  */
 public class Widgets extends IdQuery<Widget> {
-	private static final Map<Integer, Widget> CACHE = new ConcurrentHashMap<>();
 
 	public Widgets(final ClientContext ctx) {
 		super(ctx);
@@ -27,14 +28,7 @@ public class Widgets extends IdQuery<Widget> {
 		if (index < 0) {
 			return new Widget(ctx, 0);
 		}
-		if (CACHE.containsKey(index)) {
-			return CACHE.get(index);
-		}
-
-		final Widget c = new Widget(ctx, index);
-		CACHE.put(index, c);
-
-		return c;
+		return new Widget(ctx, index);
 	}
 
 	/**
@@ -57,6 +51,7 @@ public class Widgets extends IdQuery<Widget> {
 	 */
 	@Override
 	public List<Widget> get() {
+		final List<Widget> widgets = new ArrayList<>();
 		final Client client = ctx.client();
 		final org.powerbot.bot.rt4.client.Widget[][] a = client != null ? client.getWidgets() : null;
 		final int len = a != null ? a.length : 0;
@@ -64,10 +59,9 @@ public class Widgets extends IdQuery<Widget> {
 			return new ArrayList<>(0);
 		}
 		for (int i = 0; i < a.length; i++) {
-			widget(i);
+			widgets.add(widget(i));
 		}
-
-		return new ArrayList<>(CACHE.values());
+		return widgets;
 	}
 
 	/**
@@ -85,9 +79,9 @@ public class Widgets extends IdQuery<Widget> {
 	/**
 	 * Scrolls to view the provided component, if it's not already in view.
 	 *
-	 * @param pane        the viewport component
-	 * @param component   the viewport component
-	 * @param bar         the scrollbar
+	 * @param pane      the viewport component
+	 * @param component the viewport component
+	 * @param bar       the scrollbar
 	 * @return {@code true} if scrolled to view, otherwise {@code false}
 	 * @deprecated use {@link #scroll(Component, Component, Component, boolean) scroll(component, pane, bar, scroll)}
 	 */
@@ -112,16 +106,16 @@ public class Widgets extends IdQuery<Widget> {
 		final int childrenCount;
 		if (bar == null || !bar.valid() || ((childrenCount = bar.componentCount()) != 6 && childrenCount != 7)) {
 			return false;
-		}		
-		
+		}
+
 		if (pane == null || !pane.valid()) {
 			return false;
 		}
-		
-		if(pane.scrollHeight() == 0){
+
+		if (pane.scrollHeight() == 0) {
 			return true;
 		}
-		
+
 		final Point view = pane.screenPoint();
 		final int height = pane.height();
 		if (view.x < 0 || view.y < 0 || height < 1) {
@@ -136,7 +130,7 @@ public class Widgets extends IdQuery<Widget> {
 		final Component thumb = bar.component(1);
 		final int thumbSize = thumbHolder.height();
 		int y = (int) ((float) thumbSize / pane.scrollHeight() *
-				(component.relativeY() + Random.nextInt(-height / 2, height / 2 - length)));
+			(component.relativeY() + Random.nextInt(-height / 2, height / 2 - length)));
 		if (y < 0) {
 			y = 0;
 		} else if (y >= thumbSize) {

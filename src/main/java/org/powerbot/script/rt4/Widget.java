@@ -16,14 +16,13 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 	/**
 	 * Represents an interactive display window which stores {@link Component}s
 	 * and miscellaneous data.
-	 * 
-	 * @param ctx The {@link ClientContext}
+	 *
+	 * @param ctx   The {@link ClientContext}
 	 * @param index The Widget index
 	 */
 	Widget(final ClientContext ctx, final int index) {
 		super(ctx);
 		this.index = index;
-		cacheConfigs = CacheComponentConfig.load(ctx.bot().getCacheWorker(), index);
 	}
 
 	/**
@@ -35,12 +34,15 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 	}
 
 	public CacheComponentConfig[] cacheConfigs() {
+		if (cacheConfigs == null) {
+			cacheConfigs = CacheComponentConfig.load(ctx.bot().getCacheWorker(), index);
+		}
 		return cacheConfigs;
 	}
 
 	/**
 	 * Gets the component at the specified index.
-	 * 
+	 *
 	 * @param index The index of the component
 	 * @return The component at the specified index, or <code>nil</code> if the
 	 * component does not exist.
@@ -65,7 +67,7 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 
 	/**
 	 * An array of the nested components within the widget.
-	 * 
+	 *
 	 * @return A {@link Component} array
 	 */
 	public Component[] components() {
@@ -74,7 +76,7 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 			return new Component[0];
 		}
 		final Component[] comps = new Component[len];
-		for(int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			comps[i] = component(i);
 		}
 		return comps;
