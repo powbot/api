@@ -49,7 +49,7 @@ public abstract class PollingScript<C extends ClientContext> extends AbstractScr
 						poll();
 					} catch (final Throwable e) {
 						ctx.controller.stop();
-						log.log(Level.SEVERE, null, e);
+						log.log(Level.SEVERE, "Script encountered error", e);
 					}
 				}
 

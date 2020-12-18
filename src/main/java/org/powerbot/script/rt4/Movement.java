@@ -4,6 +4,7 @@ import org.powbot.input.MouseMovement;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Locatable;
+import org.powerbot.script.Random;
 import org.powerbot.script.Tile;
 
 import java.awt.*;
@@ -69,6 +70,17 @@ public class Movement extends ClientAccessor {
 	 * @return {@code true} if successfully clicked the mini-map, {@code false} otherwise.
 	 */
 	public boolean step(final Locatable locatable) {
+		return step(locatable, 1);
+	}
+
+	/**
+	 * Attempts to use the mini-map to step towards the {@link Locatable}.
+	 *
+	 * @param locatable The location of where to step towards.
+	 * @param minDistance - The minimum distance allowed between the player and locatable while still in motion before returning
+	 * @return {@code true} if successfully clicked the mini-map, {@code false} otherwise.
+	 */
+	public boolean step(final Locatable locatable, final int minDistance) {
 		Tile loc = locatable.tile();
 		if (!new TileMatrix(ctx, loc).onMap()) {
 			loc = closestOnMap(loc);
@@ -84,7 +96,10 @@ public class Movement extends ClientAccessor {
 		final MouseMovement movement = new MouseMovement(position, valid);
 		if (ctx.input.move(movement)) {
 			ctx.input.click(true);
-			return Condition.wait(() -> ClientContext.ctx().movement.destination() != Tile.NIL, 500, 5);
+			return Condition.wait(() ->
+				ClientContext.ctx().movement.destination() != Tile.NIL
+					|| ClientContext.ctx().players.local().tile().distanceTo(locatable) <= minDistance
+				, 500, 5);
 		}
 		return false;
 	}
