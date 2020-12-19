@@ -4,20 +4,33 @@ import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.*;
 
-public class BankPinPending extends PollingScript<ClientContext> {
-	public BankPinPending() {
-		priority.set(4);
+public class BankPinPending extends Daemon<ClientContext> {
+
+	public BankPinPending(ClientContext ctx) {
+		super(ctx);
+	}
+
+	private Component getPendingScreen() {
+		return ctx.widgets.component(Constants.BANKPIN_PENDING_WIDGET, Constants.BANKPIN_PENDING_COMPONENT);
 	}
 
 	@Override
-	public void poll() {
-		final Component component = ctx.widgets.component(Constants.BANKPIN_PENDING_WIDGET, Constants.BANKPIN_PENDING_COMPONENT);
-		if (!component.valid()) {
-			threshold.remove(this);
-			return;
-		}
-		threshold.add(this);
+	public String name() {
+		return "BankPinPending";
+	}
 
-		component.click();
+	@Override
+	public String description() {
+		return "Closes the bank pin pending screen.";
+	}
+
+	@Override
+	public boolean check() {
+		return getPendingScreen().valid();
+	}
+
+	@Override
+	public boolean execute() {
+		return getPendingScreen().valid() && getPendingScreen().click();
 	}
 }
