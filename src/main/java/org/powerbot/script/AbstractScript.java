@@ -50,8 +50,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 	 */
 	@SuppressWarnings("unchecked")
 	public AbstractScript() {
-		@SuppressWarnings("unchecked")
-		final List<Runnable>[] q = (List<Runnable>[]) new List[State.values().length];
+		@SuppressWarnings("unchecked") final List<Runnable>[] q = (List<Runnable>[]) new List[State.values().length];
 		exec = q;
 		for (int i = 0; i < exec.length; i++) {
 			exec[i] = new CopyOnWriteArrayList<>();
@@ -143,8 +142,12 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 	 */
 	public long getTotalRuntime() {
 		final AtomicLong[] times = ctx.controller.times();
-		final long s = times[State.STOP.ordinal()].get();
-		return TimeUnit.NANOSECONDS.toMillis((s == 0L ? System.nanoTime() : s) - times[State.START.ordinal()].get());
+		final long lastStoppedAt = times[State.STOP.ordinal()].get();
+		final long startedAt = times[State.START.ordinal()].get();
+		if (startedAt == 0) {
+			return 0;
+		}
+		return TimeUnit.NANOSECONDS.toMillis((lastStoppedAt == 0L ? System.nanoTime() : lastStoppedAt) - startedAt);
 	}
 
 	/**
@@ -154,8 +157,12 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 	 */
 	public long getRuntime() {
 		final AtomicLong[] times = ctx.controller.times();
-		final long s = times[State.STOP.ordinal()].get();
-		return TimeUnit.NANOSECONDS.toMillis((s == 0L ? System.nanoTime() : s) - times[State.START.ordinal()].get() - times[State.RESUME.ordinal()].get());
+		final long lastStoppedAt = times[State.STOP.ordinal()].get();
+		final long startedAt = times[State.START.ordinal()].get();
+		if (startedAt == 0) {
+			return 0;
+		}
+		return TimeUnit.NANOSECONDS.toMillis((lastStoppedAt == 0L ? System.nanoTime() : lastStoppedAt) - startedAt - times[State.RESUME.ordinal()].get());
 	}
 
 	/**
@@ -327,6 +334,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 
 	/**
 	 * Called if the user specified run duration has been reached, triggerig {@link Script.State#STOP} if true is returned.
+	 *
 	 * @return true if script can safely be stopped
 	 */
 	public boolean canBreak() {
@@ -342,7 +350,8 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 
 	/**
 	 * Get all the ScriptConfigurationOption's, these should be used to configure the script without a GUI or user input
-	 *  The values each option holds are provided by the user from the remote bot management panel or CLI
+	 * The values each option holds are provided by the user from the remote bot management panel or CLI
+	 *
 	 * @return list
 	 */
 	public List<ScriptConfigurationOption> getOptions() {
@@ -351,6 +360,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 
 	/**
 	 * Check if ScriptConfigurationOption's have been configured or not
+	 *
 	 * @return true if options have been configured
 	 */
 	public boolean hasOptionsConfigured() {
