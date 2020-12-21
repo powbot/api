@@ -60,6 +60,7 @@ public class Component extends Interactive {
 		if (client == null || widget == null || widget.isNull()) {
 			return new Point(-1, -1);
 		}
+
 		final int parentId = parentId();
 		int x = widget.getX(), y = widget.getY();
 		if (parentId != -1) {
@@ -308,7 +309,11 @@ public class Component extends Interactive {
 		final int x = interact.x, y = interact.y;
 		final int w = interact.width, h = interact.height;
 		if (interact.x != -1 && interact.y != -1 && interact.width != -1 && interact.height != -1) {
-			return Calculations.nextPoint(interact, new Rectangle(x + w / 2, y + h / 2, w / 4, h / 4));
+			interact.x += 1;
+			interact.y += 1;
+			interact.width -= 1;
+			interact.height -= 1;
+			return Calculations.nextPoint(interact, new Rectangle(x + w / 3, y + h / 3, w / 3, h / 3));
 		}
 		return new Point(-1, -1);
 	}

@@ -359,6 +359,16 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 		return options;
 	}
 
+	public <T> Optional<T> getOption(String name) {
+		if (!hasOptionsConfigured()) {
+			throw new IllegalArgumentException("Options were not configured.");
+		}
+		return getOptions().stream()
+			.filter(it -> it.getName().equalsIgnoreCase(name))
+			.findFirst()
+			.map(it -> (T) it.getValue());
+	}
+
 	/**
 	 * Check if ScriptConfigurationOption's have been configured or not
 	 *
