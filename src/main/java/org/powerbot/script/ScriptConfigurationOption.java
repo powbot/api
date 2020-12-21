@@ -125,4 +125,17 @@ public class ScriptConfigurationOption<T> {
 		result = 31 * result + Arrays.hashCode(allowedValues);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "ScriptConfigurationOption{" +
+			"name='" + name + '\'' +
+			", description='" + description + '\'' +
+			", optionType=" + optionType +
+			", defaultValue=" + defaultValue +
+			", isConfigured=" + isConfigured +
+			", allowedValues=" + Arrays.toString(allowedValues) +
+			", value=" + value +
+			'}';
+	}
 }
