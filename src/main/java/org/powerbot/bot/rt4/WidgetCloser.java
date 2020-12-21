@@ -6,17 +6,15 @@ import org.powerbot.script.rt4.Component;
 import org.powerbot.script.rt4.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class WidgetCloser extends PollingScript<ClientContext> {
+public class WidgetCloser extends Daemon<ClientContext> {
 	private final Map<Integer, AtomicInteger> attempts;
 
-	public WidgetCloser() {
-		priority.set(5);
+	public WidgetCloser(ClientContext ctx) {
+		super(ctx);
 		attempts = new HashMap<>();
 		for (final int i : Constants.WIDGETCLOSER_TRADE_ITEMS) {
 			attempts.put(i, new AtomicInteger(0));
@@ -24,7 +22,26 @@ public class WidgetCloser extends PollingScript<ClientContext> {
 	}
 
 	@Override
-	public void poll() {
+	public String name() {
+		return "Widget Closer";
+	}
+
+	@Override
+	public String description() {
+		return "Closes Widgets";
+	}
+
+	@Override
+	public boolean check() {
+		return Arrays.stream(Constants.WIDGETCLOSER_TRADE_ITEMS)
+			.filter(it -> {
+				final Component c = ctx.widgets.component(it >> 16, it & 0xffff);
+				return c.valid() && c.visible();
+			}).count() > 0L;
+	}
+
+	@Override
+	public boolean execute() {
 		final List<Integer> w = new ArrayList<>();
 
 		if (!ctx.bot().allowTrades()) {
@@ -54,5 +71,6 @@ public class WidgetCloser extends PollingScript<ClientContext> {
 				}
 			}
 		}
+		return false;
 	}
 }

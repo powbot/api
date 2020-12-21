@@ -41,16 +41,6 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 
 	private ClientContext(final Bot<ClientContext> bot) {
 		super(bot);
-
-		if (controller != null) {
-			final List<Class<? extends Script>> d = controller.daemons();
-			d.addAll(bot.listDaemons());
-			d.add(WidgetCloser.class);
-			d.add(BankPin.class);
-			d.add(RandomEvents.class);
-			d.add(BankPinPending.class);
-		}
-
 		bank = new Bank(this);
 		camera = new Camera(this);
 		chat = new Chat(this);

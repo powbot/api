@@ -66,6 +66,7 @@ public abstract class AbstractScript<C extends ClientContext> implements Script 
 
 				this.ctx = (C) ctor.newInstance(x);
 			} catch (final Exception e) {
+				e.printStackTrace();
 				throw new IllegalStateException(e);
 			}
 		} else {
