@@ -282,7 +282,7 @@ public class Movement extends ClientAccessor {
 	 */
 	public boolean walkTo(final Locatable locatable, final boolean refreshQuests) {
 		if (locatable == null) {
-			throw new IllegalArgumentException();
+			return false;
 		}
 		return ctx.bot().getWebWalkingService().walkTo(locatable, refreshQuests);
 	}
