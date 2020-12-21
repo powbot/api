@@ -9,7 +9,8 @@ import java.util.concurrent.Callable;
  * Item
  */
 public class Item extends GenericItem implements Identifiable, Nameable, Stackable, Actionable {
-	private static final int WIDTH = 42, HEIGHT = 36;
+	public static final int WIDTH = 31;
+	public static final int HEIGHT = 31;
 	final Component component;
 	private final int inventoryIndex, id;
 	private int stack;
@@ -36,7 +37,7 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 	 */
 	@Override
 	public void bounds(final int x1, final int x2, final int y1, final int y2, final int z1, final int z2) {
-		bounds = new int[]{x1, x2, y1, y2 };
+		bounds = new int[]{x1, x2, y1, y2};
 	}
 
 	@Override
@@ -46,7 +47,12 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 
 	@Override
 	public Point basePoint() {
-		return component.screenPoint();
+		final Point base = component.screenPoint();
+		final int column = inventoryIndex % 4;
+		final int row = inventoryIndex / 4;
+		final int x = base.x + column * 42;
+		final int y = base.y + row * 36;
+		return new Point(x, y);
 	}
 
 	@Override
@@ -55,9 +61,8 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 			return new Point(-1, -1);
 		}
 		if (inventoryIndex != -1) {
-			final Point base = component.screenPoint();
-			final int x = base.x - 3 + (inventoryIndex % 4) * WIDTH, y = base.y - 2 + (inventoryIndex / 4) * HEIGHT;
-			return new Point(x + WIDTH / 2, y + HEIGHT / 2);
+			final Point base = basePoint();
+			return new Point(base.x + WIDTH / 2, base.y + HEIGHT / 2);
 		}
 		return component.centerPoint();
 	}
@@ -76,8 +81,8 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 			final int[] itemIds = component.itemIds();
 			final int[] stackSizes = component.itemStackSizes();
 			return (itemIds.length > inventoryIndex && stackSizes.length > inventoryIndex && itemIds[inventoryIndex] == id
-					? stack = stackSizes[inventoryIndex]
-					: stack);
+				? stack = stackSizes[inventoryIndex]
+				: stack);
 		}
 		if (component.visible() && component.itemId() == id) {
 			return stack = component.itemStackSize();
@@ -97,8 +102,7 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 		}
 		if (inventoryIndex != -1) {
 			final Rectangle r = boundingRect();
-			final int xOff = r.width / 8, yOff = r.height / 8;
-			return Calculations.nextPoint(r, new Rectangle(r.x + r.width / 2 - xOff, r.y + r.height / 2 - yOff, r.width / 4, r.height / 4));
+			return Calculations.nextPoint(r, new Rectangle(r.x + r.width / 3, r.y + r.height / 3, r.width / 3, r.height / 3));
 		}
 		return component.nextPoint();
 	}
@@ -133,7 +137,7 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 
 	public Rectangle boundingRect() {
 		if (inventoryIndex == -1) return new Rectangle();
-		Point base = component.screenPoint();
+		Point base = basePoint();
 		final int x1, x2, y1, y2;
 		if (bounds != null) {
 			x1 = bounds[0];
@@ -143,7 +147,8 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 			base = centerPoint();
 			return new Rectangle(base.x + x1, base.y + y1, x2, y2);
 		}
-		return new Rectangle(base.x - 3 + (inventoryIndex % 4) * WIDTH, base.y - 2 + (inventoryIndex / 4) * HEIGHT, WIDTH, HEIGHT);
+
+		return new Rectangle(base, new Dimension(WIDTH, HEIGHT));
 	}
 
 	public int inventoryIndex() {

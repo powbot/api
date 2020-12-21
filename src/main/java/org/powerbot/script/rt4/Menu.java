@@ -68,7 +68,8 @@ public class Menu extends ClientAccessor {
 	 */
 	public int indexOf(final Filter<? super MenuCommand> filter) {
 		final java.util.List<String> actions = getMenuActions(), options = getMenuOptions();
-		for (int i = 0; i < ctx.client().getMenuCount(); i++) {
+		final int itemCount = ctx.client().getMenuCount();
+		for (int i = 0; i < itemCount; i++) {
 			if (filter.accept(new MenuCommand(actions.size() > i ? actions.get(i) : null, options.size() > i ? options.get(i) : null))) {
 				return i;
 			}
@@ -89,7 +90,8 @@ public class Menu extends ClientAccessor {
 	private java.util.List<String> stripMenuValues(final String[] values) {
 		final java.util.List<String> list = new ArrayList<>();
 		if (values != null) {
-			for (int i = ctx.client().getMenuCount() - 1; i >= 0; i--) {
+			final int itemCount = ctx.client().getMenuCount();
+			for (int i = itemCount - 1; i >= 0; i--) {
 				if (values[i] == null) continue;
 				list.add(StringUtils.stripHtml(values[i]));
 			}
@@ -223,9 +225,10 @@ public class Menu extends ClientAccessor {
 	 * @return the array of menu items
 	 */
 	public String[] items() {
+		final int itemCount = ctx.client().getMenuCount();
 		final MenuCommand[] m = commands();
-		final String[] arr = new String[ctx.client().getMenuCount()];
-		for (int i = 0; i < ctx.client().getMenuCount(); i++) {
+		final String[] arr = new String[itemCount];
+		for (int i = 0; i < itemCount; i++) {
 			arr[i] = (m[i].action + " " + m[i].option).trim();
 		}
 		return arr;
@@ -237,9 +240,10 @@ public class Menu extends ClientAccessor {
 	 * @return A {@link MenuCommand} array.
 	 */
 	public MenuCommand[] commands() {
+		final int itemCount = ctx.client().getMenuCount();
 		final java.util.List<String> actions = getMenuActions(), options = getMenuOptions();
-		final MenuCommand[] arr = new MenuCommand[ctx.client().getMenuCount()];
-		for (int i = 0; i < ctx.client().getMenuCount(); i++) {
+		final MenuCommand[] arr = new MenuCommand[itemCount];
+		for (int i = 0; i < itemCount; i++) {
 			arr[i] = new MenuCommand(actions.size() > i ? actions.get(i) : null, options.size() > i ? options.get(i) : null);
 		}
 		return arr;
