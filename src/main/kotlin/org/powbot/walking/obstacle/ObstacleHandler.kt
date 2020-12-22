@@ -1,6 +1,5 @@
 package org.powbot.walking.obstacle
 
-import com.sun.org.slf4j.internal.LoggerFactory
 import org.powbot.walking.obstacle.ObstacleHandlerCamera.turnCameraOrientation
 import org.powbot.walking.obstacle.ObstacleHandlerUtils.isChatting
 import org.powbot.walking.obstacle.SOS.handleSOSDoors
@@ -12,11 +11,12 @@ import org.powerbot.script.Condition
 import org.powerbot.script.Random
 import org.powerbot.script.Tile
 import org.powerbot.script.rt4.*
+import java.util.logging.Logger
 
 
 object ObstacleHandler  {
     
-    val log = LoggerFactory.getLogger(ObstacleHandler::class.java)
+    val log = Logger.getLogger("ObstacleHandler")
 
     val rGaussian = Random.nextGaussian(35, 100, 24.0)
     const val DramenStaff = 772
@@ -90,7 +90,7 @@ object ObstacleHandler  {
         }
             .select { `object` -> `object`.tile().distanceTo(nextReachable) < 9 }.nearest(nextReachable)) {
             val calcDist: Double = go.tile().distanceTo(Tile(nextTile.x(), nextTile.y(), p.tile().floor()))
-            log.debug(
+            log.info(
                 "Obstacle name: " + go.name().toString() +
                     " | Distance: " + calcDist.toString() + " | Orientation: " + go.orientation()
             )
@@ -182,7 +182,7 @@ object ObstacleHandler  {
             }
         }
         if (obstacle == null) return false
-        log.debug("Next tile not reachable. Handling " + obstacle.name())
+        log.info("Next tile not reachable. Handling " + obstacle.name())
 
         if (obstacle.inViewport()) {
             if (nextTile.floor() > p.tile().floor()) {
@@ -216,7 +216,7 @@ object ObstacleHandler  {
                             "Jump-from" -> return if (ctx.skills.realLevel(Constants.SKILLS_AGILITY) >= 14) {
                                 handleObstacle(obstacle, action, nextTile)
                             } else {
-                                log.debug(
+                                log.info(
                                     "Not high enough agility level."
                                 )
                                 false
@@ -233,7 +233,7 @@ object ObstacleHandler  {
                             ) {
                                 handleObstacle(obstacle, action, nextTile)
                             } else {
-                                log.debug("No axe available.")
+                                log.info("No axe available.")
                                 false
                             }
                             "Travel" -> return if (obstacle.interact(action)) {
@@ -361,7 +361,7 @@ object ObstacleHandler  {
                     }
                 }
             } else {
-                log.debug(
+                log.info(
                     "Less than 875 coins in inventory." +
                         " Need more to enter the dungeon."
                 )
