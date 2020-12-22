@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import org.powerbot.bot.rt4.client.ItemConfig
 import org.powerbot.script.*
+import org.powerbot.script.rt4.CacheItemConfig
 import org.powerbot.script.rt4.ClientContext
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -59,7 +61,7 @@ class InventoryWatcher : GameActionListener, MessageListener {
 
         channel
             .asFlow()
-            .debounce(600)
+            .debounce(100)
             .collect {
                 check()
             }
@@ -69,20 +71,25 @@ class InventoryWatcher : GameActionListener, MessageListener {
         new.forEach {
             if (!old.containsKey(it.key)) {
                 if (initialized.get())
-                    ClientContext.ctx().bot().dispatcher.dispatch(InventoryChangeEvent(it.key, it.value, it.value))
+                    ClientContext.ctx().bot().dispatcher.dispatch(
+                        InventoryChangeEvent(it.key, it.value, it.value, CacheItemConfig.load(ClientContext.ctx().bot().cacheWorker, it.key)?.name)
+                    )
             } else if (old[it.key] != it.value) {
                 if (initialized.get())
                     ClientContext.ctx().bot().dispatcher.dispatch(InventoryChangeEvent(
                         it.key,
                         it.value - (old[it.key] ?: 0),
-                        it.value
+                        it.value,
+                        CacheItemConfig.load(ClientContext.ctx().bot().cacheWorker, it.key)?.name
                     ))
             }
         }
         old.forEach {
             if (!new.containsKey(it.key)) {
                 if (initialized.get())
-                    ClientContext.ctx().bot().dispatcher.dispatch(InventoryChangeEvent(it.key, it.value * -1, 0))
+                    ClientContext.ctx().bot().dispatcher.dispatch(
+                        InventoryChangeEvent(it.key, it.value * -1, 0, CacheItemConfig.load(ClientContext.ctx().bot().cacheWorker, it.key)?.name)
+                    )
             }
         }
     }
