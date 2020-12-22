@@ -27,7 +27,7 @@ public class Movement extends ClientAccessor {
 	 */
 	public TilePath newTilePath(final Tile... tiles) {
 		if (tiles == null) {
-			throw new IllegalArgumentException("tiles are null");
+			return new TilePath(ctx, new Tile[0]);
 		}
 		return new TilePath(ctx, tiles);
 	}

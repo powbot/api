@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.EventListener;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Logger;
 
 /**
  * ClientContext
