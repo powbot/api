@@ -2,6 +2,7 @@ package org.powerbot.script;
 
 import org.powerbot.bot.*;
 import org.powerbot.bot.cache.*;
+import org.powerbot.script.action.ActionEmitter;
 
 import java.applet.Applet;
 import java.lang.reflect.Type;
@@ -48,4 +49,7 @@ public abstract class Bot<C extends ClientContext<? extends Client>> {
 	public abstract AbstractCacheWorker getCacheWorker();
 
 	public abstract WebWalkingService getWebWalkingService();
+
+	public abstract ActionEmitter getActionEmitter();
+
 }

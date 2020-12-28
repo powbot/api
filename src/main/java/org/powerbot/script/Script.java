@@ -113,6 +113,13 @@ public interface Script extends EventListener {
 		String markdownFileName() default "";
 
 		/**
+		 * Whether the script is private or public
+		 *
+		 * @return private/public
+		 */
+		boolean priv() default false;
+
+		/**
 		 * A series of key=value pairs separated by semicolons (;) or newlines,
 		 * e.g. {@code "hidden=true;topic=1234"}.
 		 *

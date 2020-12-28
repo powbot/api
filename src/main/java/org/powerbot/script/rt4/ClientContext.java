@@ -5,6 +5,7 @@ import org.powerbot.bot.model.ModelCache;
 import org.powerbot.bot.rt4.*;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.script.*;
+import org.powerbot.script.action.ActionEmitter;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 	public final Worlds worlds;
 	public final Projectiles projectiles;
 	public final Components components;
+	public final ActionEmitter actionEmitter;
 	public static final ModelCache modelCache = new ModelCache();
 	public static final InventoryWatcher inventoryWatcher = new InventoryWatcher();
 
@@ -63,6 +65,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 		worlds = new Worlds(this);
 		projectiles = new Projectiles(this);
 		components = new Components(this);
+		actionEmitter = bot.getActionEmitter();
 	}
 
 	/**
@@ -95,6 +98,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 		worlds = ctx.worlds;
 		projectiles = ctx.projectiles;
 		components = ctx.components;
+		actionEmitter = ctx.actionEmitter;
 	}
 
 	/**

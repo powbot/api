@@ -108,6 +108,9 @@
                                 <exclude>META-INF/**</exclude>
                                 <exclude>module-info.class</exclude>
                                 <exclude>plugin.xml</exclude>
+                                <exclude>**/*.kotlin_metadata</exclude>
+                                <exclude>**/*.kotlin_module</exclude>
+                                <exclude>**/*.kotlin_builtins</exclude>
                             </excludes>
                         </filter>
                     </filters>
