@@ -1,7 +1,15 @@
 package org.powerbot.script;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -95,6 +103,33 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 		}
 		setArray(items, a);
 		return getThis();
+	}
+
+	/**
+	 * Selects distinct elements
+	 *
+	 * @return {@code this}
+	 */
+	public T distinct() {
+		return distinct(k -> k);
+	}
+
+	/**
+	 * Selects distinct elements by a specific key
+	 *
+	 * @param function the applied function
+	 * @return {@code this} for chaining
+	 */
+	public T distinct(Function<? super K, ?> function) {
+		final Set<Object> distinct = new HashSet<>();
+		return select(k -> {
+			Object applied = function.apply(k);
+			if (!distinct.contains(applied)) {
+				distinct.add(applied);
+				return true;
+			}
+			return false;
+		});
 	}
 
 	/**
