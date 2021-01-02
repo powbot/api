@@ -602,7 +602,7 @@ public class Bank extends ItemQuery<Item> {
 				if (s == null) {
 					continue;
 				}
-				if (item.name().toLowerCase().contains(s.toLowerCase())) {
+				if (item.name().equalsIgnoreCase(s)) {
 					return true;
 				}
 			}
