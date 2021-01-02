@@ -120,10 +120,10 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param function the applied function
 	 * @return {@code this} for chaining
 	 */
-	public T distinct(Function<? super K, ?> function) {
-		final Set<Object> distinct = new HashSet<>();
+	public <Q> T distinct(Function<? super K, Q> function) {
+		final Set<Q> distinct = new HashSet<>();
 		return select(k -> {
-			Object applied = function.apply(k);
+			final Q applied = function.apply(k);
 			if (!distinct.contains(applied)) {
 				distinct.add(applied);
 				return true;
