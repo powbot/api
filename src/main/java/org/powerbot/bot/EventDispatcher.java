@@ -2,6 +2,8 @@ package org.powerbot.bot;
 
 
 import org.powerbot.script.GameActionEvent;
+import org.powerbot.script.GameTickEvent;
+import org.powerbot.script.UpdateNpcsEvent;
 
 import java.io.Closeable;
 import java.util.*;
@@ -18,6 +20,7 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 	protected final Map<EventListener, List<Integer>> listenersToId;
 	private final BlockingQueue<EventObject> queue;
 	protected final Map<Class<? extends EventListener>, Integer> masks;
+	private boolean dispatchGameTick;
 
 	protected EventDispatcher() {
 		thread = new AtomicReference<>(null);
@@ -25,6 +28,7 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 		listenersToId = new ConcurrentHashMap<>();
 		queue = new LinkedBlockingQueue<>();
 		masks = new HashMap<>();
+		dispatchGameTick = false;
 	}
 
 	private List<Integer> getMasks(final EventListener e) {
@@ -33,6 +37,18 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 	}
 
 	public final void dispatch(final EventObject e) {
+		if (e instanceof  AbstractEvent) {
+			if (((AbstractEvent) e).eventId == EventType.UPDATE_NPCS_EVENT.id()) {
+				this.dispatchGameTick = true;
+			}
+			if (((AbstractEvent) e).eventId == EventType.GAME_TICK_EVENT.id()) {
+				if (!dispatchGameTick) {
+					return;
+				}
+				dispatchGameTick = false;
+			}
+		}
+
 		queue.offer(e);
 	}
 
