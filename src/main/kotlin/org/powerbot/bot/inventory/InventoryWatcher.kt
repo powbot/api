@@ -17,7 +17,7 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 @InternalCoroutinesApi
-class InventoryWatcher : GameActionListener, MessageListener {
+class InventoryWatcher : GameActionListener, MessageListener, GameTickListener {
 
     val logger = Logger.getLogger(javaClass.name)
     var initialized: AtomicBoolean = AtomicBoolean(false)
@@ -37,11 +37,6 @@ class InventoryWatcher : GameActionListener, MessageListener {
                 if (!ClientContext.ctx().game.loggedIn() || ClientContext.ctx().client().clientState != 30) {
                     initialized.set(false)
                 } else {
-                    Condition.wait({
-                        ClientContext.ctx().players.local().animation() == -1 &&
-                            !ClientContext.ctx().players.local().inMotion()
-                    }, 500, 20)
-
                     val items = ClientContext.ctx().inventory.items()
                         .filterNotNull().filter { it.id() > 0 }
                         .groupBy { it.id() }
@@ -109,6 +104,12 @@ class InventoryWatcher : GameActionListener, MessageListener {
             GlobalScope.launch {
                 channel.send(true)
             }
+        }
+    }
+
+    override fun onGameTick(evt: GameTickEvent) {
+        GlobalScope.launch {
+            channel.send(true)
         }
     }
 }
