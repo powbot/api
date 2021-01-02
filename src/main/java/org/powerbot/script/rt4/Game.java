@@ -129,7 +129,7 @@ public class Game extends ClientAccessor {
 			case FRIENDS_LIST:
 			case IGNORED_LIST:
 			case CLAN_CHAT:
-			case OPTIONS:
+			case SETTINGS:
 			case EMOTES:
 			case MUSIC:
 				return 6;
@@ -507,7 +507,9 @@ public class Game extends ClientAccessor {
 		ACCOUNT_MANAGEMENT("Account Management", 1709),
 		IGNORED_LIST("Ignore List", 783),
 		LOGOUT("Logout", 907, 542),
-		OPTIONS("Options", 908),
+		SETTINGS("Settings", 908),
+		@Deprecated
+		OPTIONS(SETTINGS.tips, SETTINGS.textures),
 		EMOTES("Emotes", 909),
 		MUSIC("Music Player", 910),
 		NONE("", -1);
@@ -543,7 +545,9 @@ public class Game extends ClientAccessor {
 		FRIENDS_LIST(Tab.FRIENDS_LIST, 1225, 10),
 		IGNORED_LIST(Tab.IGNORED_LIST, 1225, 15),
 		LOGOUT(Tab.LOGOUT, 1226, 5),
-		OPTIONS(Tab.OPTIONS, 1225, 20),
+		SETTINGS(Tab.SETTINGS, 1225, 20),
+		@Deprecated
+		OPTIONS(SETTINGS.tab, SETTINGS.varpbit, SETTINGS.shift),
 		EMOTES(Tab.EMOTES, 1225, 25),
 		CLAN_CHAT(Tab.CLAN_CHAT, 1225, 5),
 		MUSIC(Tab.MUSIC, 1226, 0);
