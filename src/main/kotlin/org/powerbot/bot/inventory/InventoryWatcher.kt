@@ -92,6 +92,11 @@ class InventoryWatcher : GameActionListener, MessageListener, GameTickListener {
     override fun onAction(evt: GameActionEvent) {
         GlobalScope.launch {
             channel.send(true)
+            Condition.wait({
+                ClientContext.ctx().players.local().animation() == -1 &&
+                    !ClientContext.ctx().players.local().inMotion()
+            }, 300, 10)
+            channel.send(true)
         }
     }
 
