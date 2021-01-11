@@ -1,6 +1,7 @@
 package org.powerbot.bot;
 
 
+import org.powerbot.script.ClientContext;
 import org.powerbot.script.GameActionEvent;
 import org.powerbot.script.GameTickEvent;
 import org.powerbot.script.UpdateNpcsEvent;
@@ -42,6 +43,8 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 				this.dispatchGameTick = true;
 			}
 			if (((AbstractEvent) e).eventId == EventType.GAME_TICK_EVENT.id()) {
+				ClientContext.ctx().bot().getActionEmitter().processQueue();
+
 				if (!dispatchGameTick) {
 					return;
 				}
