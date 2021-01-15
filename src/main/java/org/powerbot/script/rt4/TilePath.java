@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.jetbrains.annotations.Nullable;
 import org.powerbot.script.*;
 
 import java.util.Arrays;
@@ -93,6 +94,7 @@ public class TilePath extends Path {
 		return tiles.length > 0 && next() != null && end().distanceTo(ctx.players.local()) > Math.sqrt(2);
 	}
 
+	@Nullable
 	@Override
 	public Tile next() {
 		/* Wait for map not to be loading */

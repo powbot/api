@@ -401,8 +401,7 @@ object ObstacleHandler  {
 
     private fun getNextTile(t: Array<Tile>): Tile? {
         val ctx = ctx()
-        val nextTile: Tile = ctx.movement.newTilePath(*t)
-            .next() //The next tile, as suggested by the RSBot api, this will be the next reachable tile.
+        val nextTile: Tile = ctx.movement.newTilePath(*t)?.next() ?: return null //The next tile, as suggested by the RSBot api, this will be the next reachable tile.
         var index = 0 //The index at which the next tile (by our definition) is at. Default to 0 (start tile).
         val p: Player = ctx.players.local()
 
