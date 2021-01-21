@@ -89,6 +89,9 @@ object ObstacleHandler  {
             ObjectNames.any { gameObject.name().contains(it, true) }
         }
             .select { `object` -> `object`.tile().distanceTo(nextReachable) < 9 }.nearest(nextReachable)) {
+            if (org.powerbot.script.ClientContext.ctx().controller.script() == null) {
+                return false
+            }
             val calcDist: Double = go.tile().distanceTo(Tile(nextTile.x(), nextTile.y(), p.tile().floor()))
             log.info(
                 "Obstacle name: " + go.name().toString() +
@@ -271,7 +274,20 @@ object ObstacleHandler  {
         return false
     }
 
-    private fun handleObstacle(obstacle: GameObject, action: String, nextTile: Tile): Boolean {
+    private fun handleObstacle(obstacle: GameObject, _action: String, nextTile: Tile): Boolean {
+        val action = when (_action) {
+            "Climb" ->
+                if (nextTile.floor() > ClientContext.ctx().client().floor
+                    && obstacle.actions()?.contains("Climb-up") == true) {
+                    "Climb-up"
+                } else if (nextTile.floor() < ClientContext.ctx().client().floor
+                    && obstacle.actions()?.contains("Climb-down") == true) {
+                    "Climb-down"
+                } else {
+                    _action
+                }
+            else -> _action
+        }
         return if (obstacle.interact(action) || ctx().input.click(obstacle.basePoint(), true)) {
             handlePostInteraction(obstacle, nextTile)
         } else {
