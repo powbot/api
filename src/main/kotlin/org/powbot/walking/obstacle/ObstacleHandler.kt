@@ -26,7 +26,7 @@ object ObstacleHandler  {
     val ChatWidgets = intArrayOf(231, 219, 217)
 
     val ObjectNames = listOf(
-        "door", "hole", "gate", "rope", "entrance", "cave", "rift", "dripping vine", "stairs",
+        "door", "curtain", "hole", "gate", "rope", "entrance", "cave", "rift", "dripping vine", "stairs",
         "stepping stone", "gate of war", "vines", "portal of death", "oozing barrier", "gangplank",
         "portal", "cave", "steps", "lift", "chasm", "staircase", "spirit tree", "shantay pass",
         "ladder", "trapdoor", "statue", "stile"
