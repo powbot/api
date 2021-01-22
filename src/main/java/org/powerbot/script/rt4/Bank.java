@@ -46,15 +46,23 @@ public class Bank extends ItemQuery<Item> {
 			final GameObject object = ctx.objects.poll();
 			return t.distanceTo(npc) < t.distanceTo(object) ? npc : object;
 		}
+		
 		final double dist = Math.min(t.distanceTo(ctx.npcs.peek()), t.distanceTo(ctx.objects.peek()));
 		final double d2 = Math.min(2d, Math.max(0d, dist - 1d));
-		final List<Interactive> interactives = new ArrayList<>();
-		ctx.npcs.within(dist + Random.nextInt(2, 5)).within(ctx.npcs.peek(), d2);
+
+		final List<Interactive> objectInteractives = new ArrayList<>();
 		ctx.objects.within(dist + Random.nextInt(2, 5)).within(ctx.objects.peek(), d2);
-		ctx.npcs.addTo(interactives);
-		ctx.objects.addTo(interactives);
-		final int len = interactives.size();
-		return len == 0 ? ctx.npcs.nil() : interactives.get(Random.nextInt(0, len));
+		ctx.objects.addTo(objectInteractives);
+		final int objLen = objectInteractives.size();
+		if (objLen > 0) {
+			return objectInteractives.get(Random.nextInt(0, objLen));
+		}
+
+		final List<Interactive> npcInteractives = new ArrayList<>();
+		ctx.npcs.within(dist + Random.nextInt(2, 5)).within(ctx.npcs.peek(), d2);
+		ctx.npcs.addTo(npcInteractives);
+		final int npcLen = objectInteractives.size();
+		return npcLen == 0 ? ctx.npcs.nil() : npcInteractives.get(Random.nextInt(0, npcLen));
 	}
 
 	/**
