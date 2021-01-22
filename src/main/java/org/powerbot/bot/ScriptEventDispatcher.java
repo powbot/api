@@ -20,6 +20,13 @@ public class ScriptEventDispatcher<C extends Client, E extends EventListener> ex
 	}
 
 	@Override
+	public void clear() {
+		ctx.bot().getDispatcher().removeAll(c);
+
+		c.clear();
+	}
+
+	@Override
 	public Iterator<E> iterator() {
 		return new ListIterator<>(ctx, c.iterator());
 	}

@@ -147,6 +147,12 @@ public abstract class EventDispatcher extends AbstractCollection<EventListener> 
 		return false;
 	}
 
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		c.forEach(this::remove);
+		return true;
+	}
+
 	public final boolean contains(final Class<? extends EventListener> o) {
 		for (final EventListener e : listeners) {
 			if (e.getClass().isAssignableFrom(o)) {
