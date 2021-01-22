@@ -11,6 +11,9 @@ public class Camera extends ClientAccessor {
 	public final float[] offset;
 	public final float[] center;
 
+	public static final double ZOOM_MAX = 4.33;
+	public static final double ZOOM_MIN = 0.54;
+
 	public Camera(final ClientContext factory) {
 		super(factory);
 		offset = new float[3];
@@ -212,5 +215,18 @@ public class Camera extends ClientAccessor {
 		final Tile t1 = local != null ? local.tile() : null;
 		final Tile t2 = mobile != null ? mobile.tile() : null;
 		return t1 != null && t2 != null ? ((int) Math.toDegrees(Math.atan2(t2.y() - t1.y(), t2.x() - t1.x()))) - 90 : 0;
+	}
+
+	/**
+	 * Get the zoom of the client as a value betweem 0-100 (0 == zoomed out, 100 == zoomed in)
+	 * @return zoom
+	 */
+	public int getZoom() {
+		final boolean resizable = ctx.game.resizable();
+		final double height = resizable ? ctx.game.dimensions().height : (Game.FIXED_VIEWPORT_END_Y - Game.FIXED_VIEWPORT_START_Y);
+		final double zoom = ctx.client().getTileSize();
+
+		double zoomReal = (Math.round((zoom / height) * 100.0) / 100.0) - ZOOM_MIN;
+		return (int) ((zoomReal / (ZOOM_MAX - ZOOM_MIN)) * 100.0);
 	}
 }

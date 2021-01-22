@@ -22,9 +22,6 @@ public class Game extends ClientAccessor {
 	public static final int FIXED_VIEWPORT_END_X = 515;
 	public static final int FIXED_VIEWPORT_END_Y = 338;
 
-	public static final double ZOOM_MAX = 4.33;
-	public static final double ZOOM_MIN = 0.54;
-
 	public Settings settings;
 
 	static {
@@ -319,19 +316,6 @@ public class Game extends ClientAccessor {
 				x <= (d.width - 1) && y <= (d.height - 1);
 		}
 		return x >= FIXED_VIEWPORT_START_X && y >= FIXED_VIEWPORT_START_Y && x <= FIXED_VIEWPORT_END_X && y <= FIXED_VIEWPORT_END_Y;
-	}
-
-	/**
-	 * Get the zoom of the client as a value betweem 0-100 (0 == zoomed out, 100 == zoomed in)
-	 * @return zoom
-	 */
-	public int getZoom() {
-		final boolean resizable = ctx.game.resizable();
-		final double height = resizable ? ctx.game.dimensions().height : (FIXED_VIEWPORT_END_Y - FIXED_VIEWPORT_START_Y);
-		final double zoom = ctx.client().getTileSize();
-
-		double zoomReal = (Math.round((zoom / height) * 100.0) / 100.0) - ZOOM_MIN;
-		return (int) ((zoomReal / (ZOOM_MAX - ZOOM_MIN)) * 100.0);
 	}
 
 	/**
