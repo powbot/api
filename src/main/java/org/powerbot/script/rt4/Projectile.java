@@ -36,7 +36,7 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 
 	@Override
 	public Tile tile() {
-		return Tile.NIL;
+		return new Tile(getX(), getY(), ctx.client().getFloor());
 	}
 
 	public boolean isStarted() {
