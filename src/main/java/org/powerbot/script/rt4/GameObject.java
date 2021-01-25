@@ -279,7 +279,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 
 		final Point center = modelCenterPoint();
-		if (center != null) {
+		if (center != null && center.x > -1) {
 			return center;
 		}
 		return basePoint();
