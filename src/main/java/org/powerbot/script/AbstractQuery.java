@@ -308,7 +308,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @return {@code true} if the query cache contains no items
 	 */
 	public boolean isEmpty() {
-		return getFiltered().count() == 0;
+		return size() > 0;
 	}
 
 	/**
