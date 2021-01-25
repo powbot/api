@@ -273,7 +273,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	public K poll() {
 		final Stream<K> items = getFiltered();
 		return items.findFirst().map(item -> {
-			limit(1, this.items.get().size() - 1);
+			this.items.get().remove(item);
 			return item;
 		}).orElse(nil());
 	}
