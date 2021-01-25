@@ -18,7 +18,11 @@ public class DrawMobs extends ClientAccessor implements PaintListener {
 		}
 		final Player local = ctx.players.local();
 		final FontMetrics metrics = render.getFontMetrics();
-		for (final Npc npc : ctx.npcs.select().select(n -> n.inViewport())) {
+		for (final Npc npc : ctx.npcs.select()) {
+			if (!npc.inViewport()) {
+				continue;
+			}
+
 			final Point location = npc.tile().distanceTo(local) > 4 ? npc.basePoint() : npc.modelCenterPoint();
 			if (location.x == -1 || location.y == -1) {
 				continue;
