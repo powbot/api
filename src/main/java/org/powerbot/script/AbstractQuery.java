@@ -244,8 +244,6 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 */
 	@Override
 	public Iterator<K> iterator() {
-		System.out.println(items.get().size());
-		System.out.println(getFiltered().count());
 		final Iterator<K> i = getFiltered()
 			.iterator();
 
