@@ -43,7 +43,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean inViewport() {
-		return ctx.game.inViewport(nextPoint()) || ctx.game.inViewport(centerPoint()) || ctx.game.inViewport(basePoint());
+		return ctx.game.inViewport(basePoint()) || ctx.game.inViewport(nextPoint()) || ctx.game.inViewport(centerPoint());
 	}
 
 	/**
