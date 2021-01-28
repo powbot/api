@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.widget.ComponentStream;
+import org.powbot.stream.Streamable;
 import org.powerbot.script.*;
 
 import java.awt.*;
@@ -8,7 +10,7 @@ import java.util.Queue;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class Components extends AbstractQuery<Components, Component, ClientContext> {
+public class Components extends AbstractQuery<Components, Component, ClientContext> implements Streamable<ComponentStream> {
 	public Components(final ClientContext ctx) {
 		super(ctx);
 	}
@@ -426,4 +428,8 @@ public class Components extends AbstractQuery<Components, Component, ClientConte
 		});
 	}
 
+	@Override
+	public ComponentStream toStream() {
+		return new ComponentStream(ctx, get().stream());
+	}
 }

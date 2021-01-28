@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.Streamable;
+import org.powbot.stream.item.BankItemStream;
 import org.powerbot.script.Random;
 import org.powerbot.script.*;
 
@@ -13,7 +15,7 @@ import static org.powerbot.script.rt4.Constants.*;
  * Bank
  * A utility class for withdrawing and depositing items, opening and closing the bank, and finding the closest usable bank.
  */
-public class Bank extends ItemQuery<Item> {
+public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> {
 
 	private static final Set<Tile> BANK_UNREACHABLES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Constants.BANK_UNREACHABLES)));
 	private static final Set<String> BANK_ACTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Bank", "Use", "Open", "bank", "use", "open")));
@@ -786,6 +788,14 @@ public class Bank extends ItemQuery<Item> {
 	 */
 	public boolean depositEquipment() {
 		return ctx.widgets.widget(Constants.BANK_WIDGET).component(Constants.BANK_DEPOSIT_EQUIPMENT).interact("Deposit");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BankItemStream toStream() {
+		return new BankItemStream(ctx, get().stream());
 	}
 
 	/**
