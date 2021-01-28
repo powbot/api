@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.locatable.interactive.GroundItemStream;
+import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.*;
 import org.powerbot.bot.rt4.client.*;
 import org.powerbot.script.Tile;
@@ -11,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * GroundItems
  */
-public class GroundItems extends BasicQuery<GroundItem> {
+public class GroundItems extends BasicQuery<GroundItem> implements Streamable<GroundItemStream> {
 	public GroundItems(final ClientContext ctx) {
 		super(ctx);
 	}
@@ -70,5 +72,13 @@ public class GroundItems extends BasicQuery<GroundItem> {
 	@Override
 	public GroundItem nil() {
 		return new GroundItem(ctx, Tile.NIL, new ItemNode(null));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GroundItemStream toStream() {
+		return new GroundItemStream(ctx, get().stream());
 	}
 }

@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.Streamable;
+import org.powbot.stream.widget.WidgetStream;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Random;
@@ -13,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Widgets
  */
-public class Widgets extends IdQuery<Widget> {
+public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream> {
 
 	public Widgets(final ClientContext ctx) {
 		super(ctx);
@@ -290,5 +292,13 @@ public class Widgets extends IdQuery<Widget> {
 	@Override
 	public Widget nil() {
 		return new Widget(ctx, 0);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public WidgetStream toStream() {
+		return new WidgetStream(ctx, get().stream());
 	}
 }

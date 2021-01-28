@@ -55,7 +55,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @return a sequential {@link Stream} over the elements in this collection
 	 * @deprecated use {@link #get()} then {@link List#stream()}
 	 */
-	public final Stream<K> stream() {
+	public Stream<K> stream() {
 		return get().stream();
 	}
 

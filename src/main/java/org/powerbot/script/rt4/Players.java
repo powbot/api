@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.locatable.interactive.PlayerStream;
+import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.client.*;
 
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Players
  */
-public class Players extends PlayerQuery<Player> {
+public class Players extends PlayerQuery<Player> implements Streamable<PlayerStream> {
 	public Players(final ClientContext ctx) {
 		super(ctx);
 	}
@@ -45,6 +47,14 @@ public class Players extends PlayerQuery<Player> {
 			return r;
 		}
 		return new Player(ctx, client.getPlayer());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PlayerStream toStream() {
+		return new PlayerStream(ctx, get().stream());
 	}
 
 	@Override

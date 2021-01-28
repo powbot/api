@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.locatable.interactive.GameObjectStream;
+import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.Tile;
 import org.powerbot.script.Locatable;
@@ -11,7 +13,7 @@ import java.util.List;
 /**
  * Objects
  */
-public class Objects extends BasicQuery<GameObject> {
+public class Objects extends BasicQuery<GameObject> implements Streamable<GameObjectStream> {
 	private final GameObject NIL;
 
 	public Objects(final ClientContext ctx) {
@@ -107,4 +109,14 @@ public class Objects extends BasicQuery<GameObject> {
 	public GameObject nil() {
 		return NIL;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GameObjectStream toStream() {
+		return new GameObjectStream(ctx, get().stream());
+	}
+
+
 }
