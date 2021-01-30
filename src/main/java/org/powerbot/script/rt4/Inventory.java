@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.item.InventoryItemStream;
 import org.powbot.stream.item.ItemStream;
 import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.client.Client;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Inventory
  */
-public class Inventory extends ItemQuery<Item> implements Streamable<ItemStream> {
+public class Inventory extends ItemQuery<Item> implements Streamable<InventoryItemStream> {
 	public Inventory(final ClientContext ctx) {
 		super(ctx);
 	}
@@ -320,7 +321,7 @@ public class Inventory extends ItemQuery<Item> implements Streamable<ItemStream>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ItemStream toStream() {
-		return new ItemStream(ctx, get().stream());
+	public InventoryItemStream toStream() {
+		return new InventoryItemStream(ctx, get().stream());
 	}
 }

@@ -1,6 +1,8 @@
 package org.powerbot.script.rt4;
 
 import org.powbot.input.MouseMovement;
+import org.powbot.walking.FailureReason;
+import org.powbot.walking.WebWalkingResult;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Locatable;
@@ -285,5 +287,20 @@ public class Movement extends ClientAccessor {
 			return false;
 		}
 		return ctx.bot().getWebWalkingService().walkTo(locatable, refreshQuests);
+	}
+
+	/**
+	 * Uses web walking to walk to a destination
+	 *
+	 * @param locatable the destination tile
+	 * @param refreshQuests set to true to force refreshing completed quests
+	 * @param forceWeb set to true to force using web and don't try walking using local walking first
+	 * @return true if player walked to the destination tile
+	 */
+	public WebWalkingResult moveTo(final Locatable locatable, final boolean refreshQuests, final boolean forceWeb) {
+		if (locatable == null) {
+			return new WebWalkingResult(false, false, FailureReason.TargetNull);
+		}
+		return ctx.bot().getWebWalkingService().moveTo(locatable, refreshQuests, forceWeb);
 	}
 }
