@@ -21,6 +21,7 @@ import java.util.stream.Stream;
  * @param <K> the subject type
  * @param <C> the {@link ClientContext}
  */
+@Deprecated
 public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C extends ClientContext> extends ClientAccessor<C> implements Supplier<List<K>>, Iterable<K>, Nillable<K> {
 	private final ThreadLocal<List<K>> items;
 
@@ -29,6 +30,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @param ctx the {@link ClientContext} to associate with
 	 */
+	@Deprecated
 	public AbstractQuery(final C ctx) {
 		super(ctx);
 
@@ -40,6 +42,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return must always return {@code this}
 	 */
+	@Deprecated
 	protected abstract T getThis();
 
 	/**
@@ -47,6 +50,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return a new data set for subsequent queries
 	 */
+	@Deprecated
 	public abstract List<K> get();
 
 	/**
@@ -55,6 +59,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @return a sequential {@link Stream} over the elements in this collection
 	 * @deprecated use {@link #get()} then {@link List#stream()}
 	 */
+	@Deprecated
 	public Stream<K> stream() {
 		return get().stream();
 	}
@@ -64,6 +69,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T select() {
 		final List<K> items = this.items.get(), a = get();
 		setArray(items, a);
@@ -77,6 +83,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *          source of items to replace the existing cache with
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T select(final Iterable<K> c) {
 		final List<K> items = this.items.get(), a = new ArrayList<>();
 		for (final K k : c) {
@@ -93,6 +100,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param f the condition
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T select(final Filter<? super K> f) {
 		final List<K> items = this.items.get(), a = new ArrayList<>(items.size());
 		for (final K k : items) {
@@ -109,6 +117,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return {@code this}
 	 */
+	@Deprecated
 	public T distinct() {
 		return distinct(k -> k);
 	}
@@ -119,6 +128,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param function the applied function
 	 * @return {@code this} for chaining
 	 */
+	@Deprecated
 	public <Q> T distinct(Function<? super K, Q> function) {
 		final Set<Q> distinct = new HashSet<>();
 		return select(k -> {
@@ -137,6 +147,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param c the comparator
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T sort(final Comparator<? super K> c) {
 		final List<K> items = this.items.get(), a = new ArrayList<>(items);
 		a.sort(c);
@@ -149,6 +160,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T shuffle() {
 		final List<K> items = this.items.get(), a = new ArrayList<>(items);
 		Collections.shuffle(a);
@@ -161,6 +173,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T reverse() {
 		final List<K> items = this.items.get(), a = new ArrayList<>(items);
 		Collections.reverse(a);
@@ -179,6 +192,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param count the maximum number of items to retain
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T limit(final int count) {
 		return limit(0, count);
 	}
@@ -190,6 +204,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param count  the maximum number of items to retain
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T limit(final int offset, final int count) {
 		final List<K> items = this.items.get(), a = new ArrayList<>(count);
 		final int c = Math.min(offset + count, items.size());
@@ -205,6 +220,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T first() {
 		return limit(1);
 	}
@@ -215,6 +231,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param c the {@link Collection} to add to
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T addTo(final Collection<? super K> c) {
 		c.addAll(items.get());
 		return getThis();
@@ -224,6 +241,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public Iterator<K> iterator() {
 		final Iterator<K> i = items.get().iterator();
 
@@ -250,6 +268,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return the first item in the query cache, or the value of {@link #nil()} if it is empty
 	 */
+	@Deprecated
 	public K poll() {
 		final List<K> items = this.items.get();
 		if (items.isEmpty()) {
@@ -265,6 +284,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return the first item in the query cache, or the value of {@link #nil()} if it is empty
 	 */
+	@Deprecated
 	public K peek() {
 		final List<K> items = this.items.get();
 		return items.isEmpty() ? nil() : items.get(0);
@@ -276,6 +296,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param c the handler for each iteration, which should return {@code false} to break iteration
 	 * @return {@code this} for the purpose of chaining
 	 */
+	@Deprecated
 	public T each(final Filter<? super K> c) {
 		for (final K k : this) {
 			if (!c.accept(k)) {
@@ -291,6 +312,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return {@code true} if the query cache contains no items
 	 */
+	@Deprecated
 	public boolean isEmpty() {
 		return items.get().isEmpty();
 	}
@@ -301,6 +323,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 * @param k item whose presence in this query cache is to be tested
 	 * @return {@code true} if the query cache contains the specified item
 	 */
+	@Deprecated
 	public boolean contains(final K k) {
 		return items.get().contains(k);
 	}
@@ -310,6 +333,7 @@ public abstract class AbstractQuery<T extends AbstractQuery<T, K, C>, K, C exten
 	 *
 	 * @return the number of items in the query cache
 	 */
+	@Deprecated
 	public int size() {
 		return items.get().size();
 	}
