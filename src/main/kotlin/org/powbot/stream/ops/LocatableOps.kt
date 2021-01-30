@@ -26,4 +26,8 @@ interface LocatableOps<T: Locatable, S: SimpleStream<T, S>>: WrappedStream<T, S>
     fun nearest(locatable: Locatable): S {
         return sorted(Locatable.NearestTo(locatable.tile()))
     }
+
+    fun nearest(): S {
+        return nearest(ctx.players.local().tile())
+    }
 }
