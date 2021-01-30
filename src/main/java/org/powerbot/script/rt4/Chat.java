@@ -1,22 +1,18 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.*;
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.*;
-import org.powerbot.bot.rt4.client.internal.IMessageEntry;
+import org.powbot.stream.widget.ChatOptionStream;
+import org.powbot.stream.Streamable;
 import org.powerbot.script.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Chat
  * A utility class for simplifying interacting with the chat box.
  */
-public class Chat extends TextQuery<ChatOption> {
+public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOptionStream> {
 	private final AtomicBoolean registered = new AtomicBoolean(false);
 
 	public Chat(final ClientContext ctx) {
@@ -160,12 +156,19 @@ public class Chat extends TextQuery<ChatOption> {
 		return ctx.widgets.component(Constants.CHAT_INPUT, Constants.CHAT_INPUT_TEXT);
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public ChatOption nil() {
 		return new ChatOption(ctx, -1, null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ChatOptionStream toStream() {
+		return new ChatOptionStream(ctx, get().stream());
 	}
 }

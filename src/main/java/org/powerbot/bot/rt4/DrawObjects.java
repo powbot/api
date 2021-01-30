@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class DrawObjects extends ClientAccessor implements PaintListener {
 	private static final Color[] C = {Color.GREEN, Color.WHITE, Color.BLACK, Color.BLUE, Color.PINK};
@@ -32,7 +33,7 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 			final FontMetrics metrics = render.getFontMetrics();
 			final int textHeight = metrics.getHeight();
 
-			for (final GameObject object : ctx.objects.select(8).select(o -> o.type() == type)) {
+			for (final GameObject object : ctx.objects.toStream().within(8).filter(o -> o.type() == type).collect(Collectors.toList())) {
 				final Tile t = object.tile();
 				if (t == null) {
 					continue;

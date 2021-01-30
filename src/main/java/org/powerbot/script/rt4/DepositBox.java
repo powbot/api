@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.item.DepositBoxItemStream;
+import org.powbot.stream.Streamable;
 import org.powerbot.script.*;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
  * DepositBox
  * A utility class for depositing items, opening and closing a deposit box, and finding the closest usable bank deposit box.
  */
-public class DepositBox extends ItemQuery<Item> {
+public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBoxItemStream> {
 	private static final int EMPTY_SLOT_ZOOM = 1777;
 
 	public DepositBox(final ClientContext ctx) {
@@ -208,6 +210,14 @@ public class DepositBox extends ItemQuery<Item> {
 		}
 
 		return select().count() == select(filter).count();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public DepositBoxItemStream toStream() {
+		return new DepositBoxItemStream(ctx, get().stream());
 	}
 
 	@Override

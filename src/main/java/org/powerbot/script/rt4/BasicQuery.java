@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
  *
  * @param <K> the type of entity within the viewport
  */
+@Deprecated
 public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable & Viewable & Actionable> extends AbstractQuery<BasicQuery<K>, K, org.powerbot.script.rt4.ClientContext>
 		implements Locatable.Query<BasicQuery<K>>, Identifiable.Query<BasicQuery<K>>,
 		Nameable.Query<BasicQuery<K>>, Viewable.Query<BasicQuery<K>>, Actionable.Query<BasicQuery<K>> {
@@ -21,6 +22,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	protected BasicQuery<K> getThis() {
 		return this;
 	}
@@ -29,6 +31,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> at(final Locatable l) {
 		return select(new Locatable.Matcher(l.tile()));
 	}
@@ -37,6 +40,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> within(final double radius) {
 		return within(ctx.players.local().tile(), radius);
 	}
@@ -45,6 +49,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> within(final Locatable locatable, final double radius) {
 		return select(new Locatable.WithinRange(locatable.tile(), radius));
 	}
@@ -53,6 +58,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> within(final Area area) {
 		return select(new Locatable.WithinArea(area));
 	}
@@ -61,6 +67,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> nearest() {
 		return nearest(ctx.players.local().tile());
 	}
@@ -69,6 +76,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> nearest(final Locatable locatable) {
 		return sort(new Locatable.NearestTo(locatable.tile()));
 	}
@@ -77,6 +85,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> id(final int... ids) {
 		return select(new Identifiable.Matcher(ids));
 	}
@@ -85,6 +94,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> name(final Pattern... names) {
 		return select(new Nameable.Matcher(names));
 	}
@@ -93,6 +103,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> action(final Pattern... actions) {
 		return select(new Actionable.Matcher(actions));
 	}
@@ -101,6 +112,7 @@ public abstract class BasicQuery<K extends Locatable & Identifiable & Nameable &
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public BasicQuery<K> viewable() {
 		//DO NOT REPLACE WITH METHOD REFERENCE
 		//see #2119
