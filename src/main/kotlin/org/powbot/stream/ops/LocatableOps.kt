@@ -1,6 +1,6 @@
 package org.powbot.stream.ops
 
-import WrappedStream
+import org.powbot.stream.WrappedStream
 import org.powbot.stream.SimpleStream
 import org.powerbot.script.Area
 import org.powerbot.script.Locatable
