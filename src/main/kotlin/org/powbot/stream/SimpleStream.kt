@@ -1,6 +1,5 @@
 package org.powbot.stream
 
-import WrappedStream
 import org.powerbot.script.rt4.ClientContext
 import java.util.*
 import java.util.function.*

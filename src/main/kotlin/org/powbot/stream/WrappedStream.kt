@@ -1,4 +1,5 @@
-import org.powbot.stream.SimpleStream
+package org.powbot.stream
+
 import org.powerbot.script.rt4.ClientContext
 import java.util.*
 import java.util.function.*
