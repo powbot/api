@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Proxy<T> {
-	public final WeakReference<T> wrapped;
+	private final WeakReference<T> wrapped;
 	private final T obj;
 
 	private static final Map<Class<? extends Proxy>, Class> typeCache = new HashMap<>();
 
 	public Proxy(final T wrapped) {
-		this(wrapped, true);
+		this(wrapped, wrapped != null && !wrapped.getClass().getCanonicalName().contains("Impl"));
 	}
 
 	public Proxy(final T wrapped, final boolean wrap) {
@@ -58,7 +58,7 @@ public class Proxy<T> {
 		if (wrapped != null)
 			return System.identityHashCode(wrapped.get());
 		if (obj != null)
-			return System.identityHashCode(obj);
+			return obj.hashCode();
 
 		return 0;
 	}

@@ -11,7 +11,7 @@ public class PlayerComposite extends Proxy<IPlayerComposite> {
 
 	public int[] getAppearance() {
 		if (!isNull()) {
-			return wrapped.get().getAppearance();
+			return get().getAppearance();
 		}
 
 		return null;

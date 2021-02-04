@@ -25,7 +25,7 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 	 * @param tile The tile the item is located on
 	 * @param node The ItemNode
 	 */
-	GroundItem(final ClientContext ctx, final Tile tile, final ItemNode node) {
+	public GroundItem(final ClientContext ctx, final Tile tile, final ItemNode node) {
 		super(ctx);//TODO: valid
 		this.tile = tile.matrix(ctx);
 		boundingModel = this.tile.boundingModel;

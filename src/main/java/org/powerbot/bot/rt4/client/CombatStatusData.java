@@ -11,7 +11,7 @@ public class CombatStatusData extends Proxy<ICombatStatusData> {
 
 	public int getHealthRatio() {
 		if (!isNull()) {
-			return wrapped.get().getHealthRatio();
+			return get().getHealthRatio();
 		}
 
 		return -1;
@@ -19,7 +19,7 @@ public class CombatStatusData extends Proxy<ICombatStatusData> {
 
 	public int getCycleEnd() {
 		if (!isNull()) {
-			return wrapped.get().getCycleEnd();
+			return get().getCycleEnd();
 		}
 
 		return -1;

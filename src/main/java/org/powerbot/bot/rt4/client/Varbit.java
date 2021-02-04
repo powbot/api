@@ -13,7 +13,7 @@ public class Varbit extends Node<IVarbit> {
 
 	public int getIndex() {
 		if (!isNull()) {
-			return wrapped.get().getIndex();
+			return get().getIndex();
 		}
 
 		return -1;
@@ -21,7 +21,7 @@ public class Varbit extends Node<IVarbit> {
 
 	public int getStartBit() {
 		if (!isNull()) {
-			return wrapped.get().getStartBit();
+			return get().getStartBit();
 		}
 
 		return -1;
@@ -29,7 +29,7 @@ public class Varbit extends Node<IVarbit> {
 
 	public int getEndBit() {
 		if (!isNull()) {
-			return wrapped.get().getEndBit();
+			return get().getEndBit();
 		}
 
 		return -1;

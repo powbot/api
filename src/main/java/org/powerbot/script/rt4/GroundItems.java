@@ -1,12 +1,16 @@
 package org.powerbot.script.rt4;
 
+import org.jetbrains.annotations.NotNull;
 import org.powerbot.bot.rt4.*;
 import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.Tile;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * GroundItems
@@ -31,6 +35,22 @@ public class GroundItems extends BasicQuery<GroundItem> {
 	}
 
 	private List<GroundItem> get(int radius, final int floor) {
+		if (ctx.client().isMobile()) {
+			return getMobileGroundItems(radius, floor);
+		} else {
+			return getDesktopGroundItems(radius, floor);
+		}
+	}
+
+	private List<GroundItem> getMobileGroundItems(int radius, int floor) {
+		final Tile currentPosition = ctx.players.local().tile();
+		return ((IMobileClient) ctx.client().get()).getAllGroundItems().stream()
+			.filter(it -> currentPosition.distanceTo(it) < radius && it.tile().floor() == floor)
+			.collect(Collectors.toList());
+	}
+
+	@NotNull
+	private List<GroundItem> getDesktopGroundItems(int radius, int floor) {
 		if (radius < 1) {
 			radius = 110;
 		}

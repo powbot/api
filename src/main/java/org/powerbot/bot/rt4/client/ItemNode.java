@@ -11,7 +11,7 @@ public class ItemNode extends Node<IItemNode> {
 
 	public int getItemId() {
 		if (!isNull()) {
-			return wrapped.get().getItemId();
+			return get().getItemId();
 		}
 
 		return -1;
@@ -19,7 +19,7 @@ public class ItemNode extends Node<IItemNode> {
 
 	public int getStackSize() {
 		if (!isNull()) {
-			return wrapped.get().getStackSize();
+			return get().getStackSize();
 		}
 
 		return -1;

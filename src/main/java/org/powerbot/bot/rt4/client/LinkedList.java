@@ -12,7 +12,7 @@ public class LinkedList<T> extends Proxy<ILinkedList> {
 
 	public Node getSentinel() {
 		if (!isNull()) {
-			return new Node(wrapped.get().getSentinel());
+			return new Node(get().getSentinel());
 		}
 
 		return null;

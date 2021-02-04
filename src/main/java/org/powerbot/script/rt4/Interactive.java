@@ -1,10 +1,7 @@
 package org.powerbot.script.rt4;
 
 import org.powbot.input.MouseMovement;
-import org.powerbot.script.Condition;
-import org.powerbot.script.Crosshair;
-import org.powerbot.script.Filter;
-import org.powerbot.script.MenuCommand;
+import org.powerbot.script.*;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -43,7 +40,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean inViewport() {
-		return ctx.game.inViewport(nextPoint()) || ctx.game.inViewport(centerPoint()) || ctx.game.inViewport(basePoint());
+		return ctx.game.inViewport(basePoint()) || ctx.game.inViewport(centerPoint()) || ctx.game.inViewport(nextPoint());
 	}
 
 	/**
@@ -174,16 +171,21 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 		};
 
 		try {
+//			if (ctx.client().isMobile() && (Interactive.this instanceof Actor || Interactive.this instanceof GameObject)) {
+//				// We need to do this in order to load the menu
+//				final Point target = position.call();
+//				ctx.input.move(target);
+//				ctx.input.drag(new Point(target.x + 3, target.y + 3), false);
+//				Condition.sleep(Random.nextInt(10, 20));
+//			}
+
 			final MouseMovement movement = new MouseMovement(position, valid);
-			if (ctx.input.move(movement) &&
-				Condition.wait(new Condition.Check() {
-					@Override
-					public boolean poll() {
-						return ctx.menu.indexOf(f) != -1;
-					}
-				}, 10, 80)) {
+			if (ctx.input.move(movement)) {
 				return ctx.menu.click(f);
 			}
+			return false;
+		} catch (Throwable t) {
+			t.printStackTrace();
 			return false;
 		} finally {
 			if (ctx.menu.opened()) {

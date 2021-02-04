@@ -2,6 +2,8 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
+import org.powerbot.bot.rt4.client.internal.IActor;
 import org.powerbot.bot.rt4.client.internal.ICombatStatus;
 import org.powerbot.bot.rt4.client.internal.ICombatStatusData;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
@@ -139,8 +141,13 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		if (client == null) {
 			return false;
 		}
-		final CombatStatusData[] data = getBarData();
-		return data != null && data[1] != null && data[1].getCycleEnd() < client.getCycle();
+
+		if (client.isMobile()) {
+			return ((IMobileClient) client.get()).isHealthBarVisible((IActor) getActor().get());
+		} else {
+			final CombatStatusData[] data = getBarData();
+			return data != null && data[1] != null && data[1].getCycleEnd() < client.getCycle();
+		}
 	}
 
 	/**
@@ -152,15 +159,24 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		if (!valid()) {
 			return -1;
 		}
-		final CombatStatusData[] data = getBarData();
-		if (data == null || data[1] == null) {
-			return 100;
-		}
-		if (getBarComponent() == null) {
-			return 100;
+
+		final Client client = ctx.client();
+		if (client == null) {
+			return -1;
 		}
 
-		return (int) Math.ceil(data[1].getHealthRatio() * 100d / getBarComponent().getWidth());
+		if (client.isMobile()) {
+			return ((IMobileClient) client.get()).getHealthPercent((IActor) getActor().get());
+		} else {
+			final CombatStatusData[] data = getBarData();
+			if (data == null || data[1] == null) {
+				return 100;
+			}
+			if (getBarComponent() == null) {
+				return 100;
+			}
+			return (int) Math.ceil(data[1].getHealthRatio() * 100d / getBarComponent().getWidth());
+		}
 	}
 
 	/**
@@ -253,6 +269,14 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		return NIL_POINT;
 	}
 
+	public int getHeight() {
+		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		if (actor != null) {
+			return actor.getHeight();
+		}
+		return 0;
+	}
+
 	@Override
 	public Point nextPoint() {
 		final org.powerbot.bot.rt4.client.Actor actor = getActor();
@@ -341,6 +365,9 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			return null;
 		}
 		final Node tail = barList.getSentinel();
+		if (tail == null) {
+			return null;
+		}
 		final CombatStatus health;
 		final CombatStatus secondary;
 		final Node current;
@@ -379,7 +406,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 				continue;
 			}
 
-			final CombatStatus status = new CombatStatus(node.wrapped.get());
+			final CombatStatus status = new CombatStatus(node.get());
 
 			return status.getBarComponent();
 		}

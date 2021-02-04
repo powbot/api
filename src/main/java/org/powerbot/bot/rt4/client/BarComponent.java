@@ -11,7 +11,7 @@ public class BarComponent extends Proxy<IBarComponent> {
 
 	public int getWidth() {
 		if (!isNull()) {
-			return wrapped.get().getWidth();
+			return get().getWidth();
 		}
 
 		return -1;

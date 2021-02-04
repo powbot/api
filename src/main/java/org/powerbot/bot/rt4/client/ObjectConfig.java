@@ -11,7 +11,7 @@ public class ObjectConfig extends Proxy<IObjectConfig> {
 
 	public String getName() {
 		if (!isNull()) {
-			return wrapped.get().getName();
+			return get().getName();
 		}
 
 		return null;
@@ -19,7 +19,7 @@ public class ObjectConfig extends Proxy<IObjectConfig> {
 
 	public String[] getActions() {
 		if (!isNull()) {
-			return wrapped.get().getActions();
+			return get().getActions();
 		}
 
 		return null;
@@ -27,7 +27,7 @@ public class ObjectConfig extends Proxy<IObjectConfig> {
 
 	public int[] getConfigs() {
 		if (!isNull()) {
-			return wrapped.get().getConfigs();
+			return get().getConfigs();
 		}
 
 		return null;
@@ -35,7 +35,7 @@ public class ObjectConfig extends Proxy<IObjectConfig> {
 
 	public int getVarpbitIndex() {
 		if (!isNull()) {
-			return wrapped.get().getVarpbitIndex();
+			return get().getVarpbitIndex();
 		}
 
 		return -1;
@@ -43,7 +43,7 @@ public class ObjectConfig extends Proxy<IObjectConfig> {
 
 	public int getVarbit() {
 		if (!isNull()) {
-			return wrapped.get().getVarbit();
+			return get().getVarbit();
 		}
 
 		return -1;

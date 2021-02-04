@@ -69,7 +69,7 @@ public abstract class Input {
 	 * @return {@code true} if user input is being blocked, otherwise,
 	 * {@code false}.
 	 */
-	public final boolean blocking() {
+	public boolean blocking() {
 		return blocking.get();
 	}
 
@@ -88,7 +88,7 @@ public abstract class Input {
 	 *
 	 * @return {@code true} if keybaord events are allowed.
 	 */
-	public final boolean keyboard() {
+	public boolean keyboard() {
 		return keyboard.get();
 	}
 
@@ -139,7 +139,7 @@ public abstract class Input {
 	 * @param s the text to send
 	 * @return whether or not the keys were successfully sent.
 	 */
-	public final boolean sendln(final String s) {
+	public boolean sendln(final String s) {
 		return send(s + "\n");
 	}
 
@@ -196,7 +196,7 @@ public abstract class Input {
 	 * @param button The button index to simulate.
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean click(final int x, final int y, final int button) {
+	public boolean click(final int x, final int y, final int button) {
 		return click(new Point(x, y), button);
 	}
 
@@ -210,7 +210,7 @@ public abstract class Input {
 	 *             will click the right.
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean click(final int x, final int y, final boolean left) {
+	public boolean click(final int x, final int y, final boolean left) {
 		return click(new Point(x, y), left);
 	}
 
@@ -222,7 +222,7 @@ public abstract class Input {
 	 * @param button The button index to simulate.
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean click(final Point point, final int button) {
+	public boolean click(final Point point, final int button) {
 		return move(point) && click(button);
 	}
 
@@ -235,7 +235,7 @@ public abstract class Input {
 	 *              will click the right.
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean click(final Point point, final boolean left) {
+	public boolean click(final Point point, final boolean left) {
 		return move(point) && click(left);
 	}
 
@@ -246,7 +246,7 @@ public abstract class Input {
 	 *             will click the right.
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean click(final boolean left) {
+	public boolean click(final boolean left) {
 		return click(left ? MouseEvent.BUTTON1 : MouseEvent.BUTTON3);
 	}
 
@@ -256,7 +256,7 @@ public abstract class Input {
 	 * @param button The button index to simulate.
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean click(final int button) {
+	public boolean click(final int button) {
 		press(button);
 		Condition.sleep(spline.getPressDuration());
 		release(button);
@@ -273,7 +273,7 @@ public abstract class Input {
 	 *             will click the right.
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean drag(final Point p, final boolean left) {
+	public boolean drag(final Point p, final boolean left) {
 		return drag(p, left ? MouseEvent.BUTTON1 : MouseEvent.BUTTON3);
 	}
 
@@ -286,7 +286,7 @@ public abstract class Input {
 	 * @param button the button
 	 * @return Whether or not the mouse click has been successfully simulated.
 	 */
-	public final boolean drag(final Point p, final int button) {
+	public boolean drag(final Point p, final int button) {
 		press(button);
 		Condition.sleep(spline.getPressDuration());
 		final boolean b = move(p);
@@ -303,7 +303,7 @@ public abstract class Input {
 	 * @return {@code true} if the point is within bounds and was
 	 * successfully moved.
 	 */
-	public final boolean hop(final Point p) {
+	public boolean hop(final Point p) {
 		return setLocation(p);
 	}
 
@@ -315,7 +315,7 @@ public abstract class Input {
 	 * @return {@code true} if the point is within bounds and was
 	 * successfully moved.
 	 */
-	public final boolean hop(final int x, final int y) {
+	public boolean hop(final int x, final int y) {
 		return hop(new Point(x, y));
 	}
 
@@ -329,7 +329,7 @@ public abstract class Input {
 	 * @return {@code true} if the point is within bounds and was
 	 * successfully moved.
 	 */
-	public final boolean move(final int x, final int y) {
+	public boolean move(final int x, final int y) {
 		return move(new MouseMovement(() -> new Point(x, y), () -> true));
 	}
 
@@ -341,12 +341,12 @@ public abstract class Input {
 	 * @return {@code true} if the point is within bounds and was
 	 * successfully moved.
 	 */
-	public final boolean move(final Point p) {
+	public boolean move(final Point p) {
 		return move(new MouseMovement(() -> p, () -> true));
 	}
 
 	@Deprecated
-	public final boolean apply(final Targetable targetable, final Filter<Point> filter) {
+	public boolean apply(final Targetable targetable, final Filter<Point> filter) {
 		final Point targetPoint = targetable.nextPoint();
 		return move(new MouseMovement(() -> targetPoint, () -> true));
 	}
@@ -357,7 +357,7 @@ public abstract class Input {
 	 * @return {@code true} if the mouse wheel has been successfully
 	 * simulated, otherwise, {@code false}.
 	 */
-	public final boolean scroll() {
+	public boolean scroll() {
 		return scroll(true);
 	}
 

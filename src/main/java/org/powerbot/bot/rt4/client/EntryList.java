@@ -11,7 +11,7 @@ public class EntryList extends Proxy<IEntryList> {
 
 	public Entry getSentinel() {
 		if (!isNull()) {
-			return new Entry(wrapped.get().getSentinel());
+			return new Entry(get().getSentinel());
 		}
 
 		return null;

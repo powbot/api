@@ -124,9 +124,11 @@ public class Inventory extends ItemQuery<Item> {
 
 	public Component component() {
 		Component c;
-		for (final int[] alt : Constants.INVENTORY_ALTERNATIVES) {
-			if ((c = ctx.widgets.widget(alt[0]).component(alt[1])).valid() && c.visible()) {
-				return c;
+		if (!ctx.client().isMobile()) {
+			for (final int[] alt : Constants.INVENTORY_ALTERNATIVES) {
+				if ((c = ctx.widgets.widget(alt[0]).component(alt[1])).valid() && c.visible()) {
+					return c;
+				}
 			}
 		}
 		return ctx.widgets.widget(Constants.INVENTORY_WIDGET).component(Constants.INVENTORY_ITEMS);
@@ -159,7 +161,7 @@ public class Inventory extends ItemQuery<Item> {
 			for (final Item i : items) {
 				i.click(true);
 				Condition.sleep(Random.getDelay());
-				if(ctx.controller.isStopping()){
+				if (ctx.controller.isStopping()) {
 					break;
 				}
 			}
@@ -168,12 +170,16 @@ public class Inventory extends ItemQuery<Item> {
 		} else {
 			for (final Item i : items) {
 				i.interact("Drop", i.name());
-				if(ctx.controller.isStopping()){
+				if (ctx.controller.isStopping()) {
 					break;
 				}
 			}
 			return true;
 		}
+	}
+
+	public boolean enableShiftDropping() {
+		return false;
 	}
 
 	/**
@@ -246,19 +252,21 @@ public class Inventory extends ItemQuery<Item> {
 
 	/**
 	 * Finds the center point of the inventory's index
+	 *
 	 * @param index 0-(Constants.INVENTORY_SIZE-1), index of inventory
 	 * @return indexCenterPoint of the index param
 	 * @throws IndexOutOfBoundsException if index is below 0 or above (Constants.INVENTORY_SIZE-1)
 	 */
 	public Point indexCenterPoint(final int index) {
-		if (index < 0 || index > Constants.INVENTORY_SIZE - 1){
+		if (index < 0 || index > Constants.INVENTORY_SIZE - 1) {
 			throw new IndexOutOfBoundsException();
 		}
 		return indexCenterPoint(inventoryRow(index), inventoryColumn(index));
 	}
-	
+
 	/**
 	 * Finds the boundingRectangle of the desired index, not every area within the rectangle will click the item
+	 *
 	 * @param index 0-(Constants.INVENTORY_SIZE-1), index of inventory
 	 * @return boundingRectangle of the index param
 	 * @throws IndexOutOfBoundsException if index is below 0 or above (Constants.INVENTORY_SIZE-1)
@@ -266,45 +274,45 @@ public class Inventory extends ItemQuery<Item> {
 	public Rectangle boundingRect(final int index) {
 		final int xFactor = Constants.INVENTORY_ITEM_WIDTH / 2, yFactor = Constants.INVENTORY_ITEM_HEIGHT / 2;
 		final Point centerPoint = indexCenterPoint(index);
-		return new Rectangle(centerPoint.x-xFactor, centerPoint.y-yFactor, Constants.INVENTORY_ITEM_WIDTH, Constants.INVENTORY_ITEM_HEIGHT);
+		return new Rectangle(centerPoint.x - xFactor, centerPoint.y - yFactor, Constants.INVENTORY_ITEM_WIDTH, Constants.INVENTORY_ITEM_HEIGHT);
 	}
-	
+
 	/**
 	 * Drags the given item to the given index
-	 * 
-	 * @param item Item to be dragged
+	 *
+	 * @param item  Item to be dragged
 	 * @param index Index to drag the item to
 	 * @return True if the item is at the index or the drag was successful, false otherwise
 	 * @throws IndexOutOfBoundsException if index is below 0 or above (Constants.INVENTORY_SIZE-1)
 	 */
-	public boolean drag(final Item item, final int index){
-		if(!item.valid()){
+	public boolean drag(final Item item, final int index) {
+		if (!item.valid()) {
 			return false;
 		}
-		
-		if(item.inventoryIndex() == index){
+
+		if (item.inventoryIndex() == index) {
 			return true;
 		}
-		
-		if(index < 0 || index > Constants.INVENTORY_SIZE-1){
+
+		if (index < 0 || index > Constants.INVENTORY_SIZE - 1) {
 			throw new IndexOutOfBoundsException();
 		}
-		
-		if(!ctx.input.move(item.nextPoint())){
+
+		if (!ctx.input.move(item.nextPoint())) {
 			return false;
 		}
-		
+
 		final Rectangle r = boundingRect(index);
 		final int xOff = r.width / 8, yOff = r.height / 8;
 		final Rectangle objectRectangle = new Rectangle(r.x + r.width / 2 - xOff, r.y + r.height / 2 - yOff, r.width / 4, r.height / 4);
-		
+
 		return ctx.input.drag(Calculations.nextPoint(r, objectRectangle), true);
 	}
 
 	public boolean shiftDroppingEnabled() {
 		return ctx.varpbits.varpbit(1055, 17, 0x1) == 1;
 	}
-	
+
 	public boolean isFull() {
 		return ctx.inventory.select().size() >= Constants.INVENTORY_SIZE;
 	}

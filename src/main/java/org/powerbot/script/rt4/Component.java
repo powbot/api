@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.IWidgetNode;
 import org.powerbot.script.Calculations;
 
@@ -135,14 +136,19 @@ public class Component extends Interactive {
 			return p;
 		}
 
-		final int uid = id() >>> 16;
-		HashTable<IWidgetNode> cache = new HashTable<>(ctx.client().get().getWidgetTable());
-		for (IWidgetNode node = cache.getHead(); node != null; node = cache.getNext()) {
-			if (uid == node.getUid()) {
-				return (int) node.getNodeId();
+		if (client.isMobile()) {
+			return ((IMobileClient) client.get()).getWidgetParentId(id());
+		} else {
+			final int uid = id() >>> 16;
+			HashTable<IWidgetNode> cache = new HashTable<>(ctx.client().get().getWidgetTable());
+			for (IWidgetNode node = cache.getHead(); node != null; node = cache.getNext()) {
+				System.out.println("Looking for " + uid + " -> " + node.getUid());
+				if (uid == node.getUid()) {
+					return (int) node.getNodeId();
+				}
 			}
+			return -1;
 		}
-		return -1;
 	}
 
 	public synchronized Component component(final int index) {
