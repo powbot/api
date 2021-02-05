@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.Streamable;
+import org.powbot.stream.widget.WorldStream;
 import org.powerbot.script.*;
 
 import java.util.ArrayList;
@@ -8,7 +10,7 @@ import java.util.List;
 /**
  * This class is used to manipulate the world switcher interface.
  */
-public class Worlds extends AbstractQuery<Worlds, World, ClientContext> implements Identifiable.Query<Worlds> {
+public class Worlds extends AbstractQuery<Worlds, World, ClientContext> implements Identifiable.Query<Worlds>, Streamable<WorldStream> {
 	public static final int WORLD_WIDGET = 69, LOGOUT_WIDGET = 182;
 	private ArrayList<World> cache = new ArrayList<>();
 
@@ -159,5 +161,13 @@ public class Worlds extends AbstractQuery<Worlds, World, ClientContext> implemen
 	@Override
 	public Worlds id(final int... ids) {
 		return select(new Identifiable.Matcher(ids));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public WorldStream toStream() {
+		return new WorldStream(ctx, get().stream());
 	}
 }

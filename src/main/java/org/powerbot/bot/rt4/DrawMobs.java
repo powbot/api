@@ -4,6 +4,7 @@ import org.powerbot.script.PaintListener;
 import org.powerbot.script.rt4.*;
 
 import java.awt.*;
+import java.util.stream.Collectors;
 
 public class DrawMobs extends ClientAccessor implements PaintListener {
 
@@ -18,11 +19,7 @@ public class DrawMobs extends ClientAccessor implements PaintListener {
 		}
 		final Player local = ctx.players.local();
 		final FontMetrics metrics = render.getFontMetrics();
-		for (final Npc npc : ctx.npcs.select()) {
-			if (!npc.inViewport()) {
-				continue;
-			}
-
+		for (final Npc npc : ctx.npcs.toStream().viewable().collect(Collectors.toList())) {
 			final Point location = npc.tile().distanceTo(local) > 4 ? npc.basePoint() : npc.modelCenterPoint();
 			if (location.x == -1 || location.y == -1) {
 				continue;

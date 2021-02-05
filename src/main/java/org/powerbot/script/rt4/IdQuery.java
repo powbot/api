@@ -7,6 +7,7 @@ import org.powerbot.script.*;
  *
  * @param <K> the type of query which must extend {@link Identifiable}
  */
+@Deprecated
 public abstract class IdQuery<K extends Identifiable> extends AbstractQuery<IdQuery<K>, K, ClientContext>
 		implements Identifiable.Query<IdQuery<K>> {
 
@@ -18,6 +19,7 @@ public abstract class IdQuery<K extends Identifiable> extends AbstractQuery<IdQu
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	protected IdQuery<K> getThis() {
 		return this;
 	}
@@ -26,6 +28,7 @@ public abstract class IdQuery<K extends Identifiable> extends AbstractQuery<IdQu
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public IdQuery<K> id(final int... ids) {
 		return select(new Identifiable.Matcher(ids));
 	}

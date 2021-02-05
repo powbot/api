@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.locatable.interactive.NpcStream;
+import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.client.*;
 
 import java.util.ArrayList;
@@ -8,7 +10,7 @@ import java.util.List;
 /**
  * Npcs
  */
-public class Npcs extends BasicQuery<Npc> {
+public class Npcs extends BasicQuery<Npc> implements Streamable<NpcStream> {
 	public Npcs(final ClientContext ctx) {
 		super(ctx);
 	}
@@ -35,6 +37,14 @@ public class Npcs extends BasicQuery<Npc> {
 			}
 		}
 		return r;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public NpcStream toStream() {
+		return new NpcStream(ctx, get().stream());
 	}
 
 	@Override

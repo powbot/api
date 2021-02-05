@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
  *
  * @param <K> the type of query which must extend any one of the specified types
  */
+@Deprecated
 public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & Viewable & Actionable> extends AbstractQuery<ItemQuery<K>, K, ClientContext>
 		implements Identifiable.Query<ItemQuery<K>>, Nameable.Query<ItemQuery<K>>, Stackable.Query<ItemQuery<K>>, Actionable.Query<ItemQuery<K>>, Viewable.Query<ItemQuery<K>> {
 	public ItemQuery(final ClientContext ctx) {
@@ -19,6 +20,7 @@ public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	protected ItemQuery<K> getThis() {
 		return this;
 	}
@@ -27,6 +29,7 @@ public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public ItemQuery<K> id(final int... ids) {
 		return select(new Identifiable.Matcher(ids));
 	}
@@ -35,6 +38,7 @@ public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public ItemQuery<K> name(final Pattern... names) {
 		return select(new Nameable.Matcher(names));
 	}
@@ -43,6 +47,7 @@ public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public ItemQuery<K> action(final Pattern... actions) {
 		return select(new Actionable.Matcher(actions));
 	}
@@ -51,6 +56,7 @@ public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public ItemQuery<K> viewable() {
 		return select(Viewable::inViewport);
 	}
@@ -59,6 +65,7 @@ public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public int count() {
 		return size();
 	}
@@ -67,6 +74,7 @@ public abstract class ItemQuery<K extends Identifiable & Nameable & Stackable & 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public int count(final boolean stacks) {
 		if (!stacks) {
 			return count();

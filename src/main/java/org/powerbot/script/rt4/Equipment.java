@@ -1,5 +1,9 @@
 package org.powerbot.script.rt4;
 
+import org.powbot.stream.item.EquipmentItemStream;
+import org.powbot.stream.item.ItemStream;
+import org.powbot.stream.Streamable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +11,7 @@ import java.util.List;
  * Equipment
  * A utility class for interacting with worn items on the player.
  */
-public class Equipment extends ItemQuery<Item> {
+public class Equipment extends ItemQuery<Item> implements Streamable<EquipmentItemStream> {
 	public Equipment(final ClientContext factory) {
 		super(factory);
 	}
@@ -56,6 +60,14 @@ public class Equipment extends ItemQuery<Item> {
 	@Override
 	public Item nil() {
 		return new Item(ctx, null, -1, -1);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public EquipmentItemStream toStream() {
+		return new EquipmentItemStream(ctx, get().stream());
 	}
 
 	/**
