@@ -11,7 +11,7 @@ public class Player extends Actor<IPlayer> {
 
 	public int getCombatLevel() {
 		if (!isNull()) {
-			return wrapped.get().getCombatLevel();
+			return get().getCombatLevel();
 		}
 
 		return -1;
@@ -19,7 +19,7 @@ public class Player extends Actor<IPlayer> {
 
 	public String getName() {
 		if (!isNull()) {
-			return new StringRecord(wrapped.get().getName()).getValue();
+			return new StringRecord(get().getName()).getValue();
 		}
 
 		return null;
@@ -27,7 +27,7 @@ public class Player extends Actor<IPlayer> {
 
 	public int getTeam() {
 		if (!isNull()) {
-			return wrapped.get().getTeam();
+			return get().getTeam();
 		}
 
 		return -1;
@@ -35,7 +35,7 @@ public class Player extends Actor<IPlayer> {
 
 	public PlayerComposite getComposite() {
 		if (!isNull()) {
-			return new PlayerComposite(wrapped.get().getComposite());
+			return new PlayerComposite(get().getComposite());
 		}
 
 		return null;

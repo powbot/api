@@ -11,7 +11,7 @@ public class Cache extends Proxy<ICache> {
 
 	public IterableHashTable getTable() {
 		if (!isNull()) {
-			return new IterableHashTable(wrapped.get().getTable());
+			return new IterableHashTable(get().getTable());
 		}
 
 		return null;

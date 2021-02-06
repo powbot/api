@@ -14,7 +14,7 @@ public class Tile extends Proxy<ITile> {
 
 	public ItemPile getItemPile() {
 		if (!isNull()) {
-			return new ItemPile(wrapped.get().getItemPile());
+			return new ItemPile(get().getItemPile());
 		}
 
 		return null;
@@ -22,7 +22,7 @@ public class Tile extends Proxy<ITile> {
 
 	public BoundaryObject getBoundaryObject() {
 		if (!isNull()) {
-			return new BoundaryObject(wrapped.get().getBoundaryObject());
+			return new BoundaryObject(get().getBoundaryObject());
 		}
 
 		return null;
@@ -30,7 +30,7 @@ public class Tile extends Proxy<ITile> {
 
 	public WallObject getWallObject() {
 		if (!isNull()) {
-			return new WallObject(wrapped.get().getWallObject());
+			return new WallObject(get().getWallObject());
 		}
 
 		return null;
@@ -38,7 +38,7 @@ public class Tile extends Proxy<ITile> {
 
 	public FloorObject getFloorObject() {
 		if (!isNull()) {
-			return new FloorObject(wrapped.get().getFloorObject());
+			return new FloorObject(get().getFloorObject());
 		}
 
 		return null;
@@ -46,7 +46,7 @@ public class Tile extends Proxy<ITile> {
 
 	public GameObject[] getGameObjects() {
 		if (!isNull()) {
-			final IGameObject[] objects = wrapped.get().getGameObjects();
+			final IGameObject[] objects = get().getGameObjects();
 			final GameObject[] wrapped = objects != null ? new GameObject[objects.length] : null;
 			if (objects != null) {
 				for (int i = 0; i < objects.length; i++) {
@@ -61,7 +61,7 @@ public class Tile extends Proxy<ITile> {
 
 	public int getGameObjectLength() {
 		if (!isNull()) {
-			return wrapped.get().getGameObjectLength();
+			return get().getGameObjectLength();
 		}
 
 		return -1;

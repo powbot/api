@@ -16,11 +16,13 @@ public class TMenu extends ClientAccessor implements TextPaintListener {
 	}
 
 	public int draw(int idx, final Graphics render) {
-		drawLine(render, idx++, "Menu");
+		drawLine(render, idx++, "Menu [x:" + ctx.client().getMenuX() + ", y:" + ctx.client().getMenuY() + ", w:" + ctx.client().getMenuWidth() + ", h:" + ctx.client().getMenuHeight() + ", o:" + ctx.client().isMenuOpen());
 		final String[] menuItems = ctx.menu.items();
 		for (final String menuItem : menuItems) {
 			drawLine(render, idx++, " -> " + menuItem);
 		}
+
+		render.drawRect(ctx.client().getMenuX(), ctx.client().getMenuY(), ctx.client().getMenuWidth(), ctx.client().getMenuHeight());
 		return idx;
 	}
 }

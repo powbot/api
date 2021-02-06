@@ -149,38 +149,50 @@ public class Menu extends ClientAccessor {
 	 */
 	private boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
 		final Client client = ctx.client();
-		int slot;
-		if (client == null || (slot = indexOf(filter)) == -1) {
+		if (client == null) {
 			return false;
 		}
 
+		if (ctx.client().isMobile() && !ctx.client().isMenuOpen()) {
+			// TODO: set tap to click to on
+			if (!ctx.input.click(true)) return false;
+		}
+
+		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 60)) {
+			System.out.println("Item is not in menu!");
+			return false;
+		}
+
+		final int slot = indexOf(filter);
 		if (click && !client.isMenuOpen() && slot == 0) {
 			return ctx.input.click(true);
 		}
 
 		if (!client.isMenuOpen()) {
+			System.out.println("Menu is not open, right clicking");
 			if (!ctx.input.click(false)) {
 				return false;
 			}
 		}
-		if (!Condition.wait(new Condition.Check() {
-			@Override
-			public boolean poll() {
-				return client.isMenuOpen();
-			}
-		}, 15, 10) || (slot = indexOf(filter)) == -1) {
+
+		if (!Condition.wait(client::isMenuOpen, 10, 60)) {
 			return false;
 		}
-		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + 19 + slot * 15, client.getMenuWidth(), 15);
+
+		final int headerOffset = ctx.client().isMobile() ? 29 : 19;
+		final int itemOffset = ctx.client().isMobile() ? 24 : 15;
+
+		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + headerOffset + slot * itemOffset, client.getMenuWidth(), itemOffset);
 		Condition.sleep(Random.hicks(slot));
 		if (!ctx.input.move(
 			Random.nextInt(rectangle.x, rectangle.x + rectangle.width),
 			Random.nextInt(rectangle.y, rectangle.y + rectangle.height)) || !client.isMenuOpen()) {
+			System.out.println("returning because suck");
 			return false;
 		}
-		final Point p = ctx.input.getLocation();
-		return client.isMenuOpen() && rectangle.contains(p) && (!click || ctx.input.click(true));
+		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
 	}
+
 
 	/**
 	 * Attempts to close the menu.
@@ -207,9 +219,17 @@ public class Menu extends ClientAccessor {
 		x1 = Math.max(4, x1 + Random.nextInt(-30, -10));
 		x2 = x2 + client.getMenuWidth() + Random.nextInt(10, 30);
 		if (x2 <= w - 5 && (x1 - mx >= 5 || Random.nextBoolean())) {
-			ctx.input.move(x2, y2);
+			if (ctx.client().isMobile()) {
+				ctx.input.drag(new Point(x2, y2), false);
+			} else {
+				ctx.input.move(x2, y2);
+			}
 		} else {
-			ctx.input.move(x1, y1);
+			if (ctx.client().isMobile()) {
+				ctx.input.drag(new Point(x1, y1), false);
+			} else {
+				ctx.input.move(x1, y1);
+			}
 		}
 		return Condition.wait(new Condition.Check() {
 			@Override

@@ -11,7 +11,7 @@ public class CombatStatus extends Proxy<ICombatStatus> {
 
 	public LinkedList getList() {
 		if (!isNull()) {
-			return new LinkedList(wrapped.get().getList());
+			return new LinkedList(get().getList());
 		}
 
 		return null;
@@ -19,7 +19,7 @@ public class CombatStatus extends Proxy<ICombatStatus> {
 
 	public BarComponent getBarComponent() {
 		if (!isNull()) {
-			return new BarComponent(wrapped.get().getBarComponent());
+			return new BarComponent(get().getBarComponent());
 		}
 
 		return null;

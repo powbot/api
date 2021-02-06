@@ -11,7 +11,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getId() {
 		if (!isNull()) {
-			return wrapped.get().getId();
+			return get().getId();
 		}
 
 		return -1;
@@ -19,7 +19,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getTargetIndex() {
 		if (!isNull()) {
-			return wrapped.get().getTargetIndex();
+			return get().getTargetIndex();
 		}
 
 		return -1;
@@ -27,7 +27,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getStartX() {
 		if (!isNull()) {
-			return wrapped.get().getStartX();
+			return get().getStartX();
 		}
 
 		return -1;
@@ -35,7 +35,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getStartY() {
 		if (!isNull()) {
-			return wrapped.get().getStartY();
+			return get().getStartY();
 		}
 
 		return -1;
@@ -43,7 +43,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getPlane() {
 		if (!isNull()) {
-			return wrapped.get().getPlane();
+			return get().getPlane();
 		}
 
 		return -1;
@@ -51,7 +51,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public boolean isStarted() {
 		if (!isNull()) {
-			return wrapped.get().isStarted();
+			return get().isStarted();
 		}
 
 		return false;
@@ -59,7 +59,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getSlope() {
 		if (!isNull()) {
-			return wrapped.get().getSlope();
+			return get().getSlope();
 		}
 
 		return -1;
@@ -67,7 +67,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getEndHeight() {
 		if (!isNull()) {
-			return wrapped.get().getEndHeight();
+			return get().getEndHeight();
 		}
 
 		return -1;
@@ -75,7 +75,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getOrientation() {
 		if (!isNull()) {
-			return wrapped.get().getOrientation();
+			return get().getOrientation();
 		}
 
 		return -1;
@@ -83,7 +83,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getStartDistance() {
 		if (!isNull()) {
-			return wrapped.get().getStartDistance();
+			return get().getStartDistance();
 		}
 
 		return -1;
@@ -91,7 +91,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public int getCycleStart() {
 		if (!isNull()) {
-			return wrapped.get().getCycleStart();
+			return get().getCycleStart();
 		}
 
 		return -1;
@@ -99,7 +99,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public double getX() {
 		if (!isNull()) {
-			return wrapped.get().getX();
+			return get().getX();
 		}
 
 		return -1D;
@@ -107,7 +107,7 @@ public class Projectile extends Proxy<IProjectile> {
 
 	public double getY() {
 		if (!isNull()) {
-			return wrapped.get().getY();
+			return get().getY();
 		}
 
 		return -1D;

@@ -11,7 +11,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public int getX() {
 		if (!isNull()) {
-			return wrapped.get().getX();
+			return get().getX();
 		}
 
 		return -1;
@@ -19,7 +19,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public int getZ() {
 		if (!isNull()) {
-			return wrapped.get().getZ();
+			return get().getZ();
 		}
 
 		return -1;
@@ -27,7 +27,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public int getHeight() {
 		if (!isNull()) {
-			return wrapped.get().getHeight();
+			return get().getHeight();
 		}
 
 		return -1;
@@ -35,7 +35,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public int getAnimation() {
 		if (!isNull()) {
-			return wrapped.get().getAnimation();
+			return get().getAnimation();
 		}
 
 		return -1;
@@ -43,7 +43,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public int getSpeed() {
 		if (!isNull()) {
-			return wrapped.get().getSpeed();
+			return get().getSpeed();
 		}
 
 		return -1;
@@ -51,7 +51,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public String getOverheadMessage() {
 		if (!isNull()) {
-			return wrapped.get().getOverheadMessage();
+			return get().getOverheadMessage();
 		}
 
 		return null;
@@ -59,7 +59,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public int getOrientation() {
 		if (!isNull()) {
-			return wrapped.get().getOrientation();
+			return get().getOrientation();
 		}
 
 		return -1;
@@ -67,7 +67,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public int getInteractingIndex() {
 		if (!isNull()) {
-			return wrapped.get().getInteractingIndex();
+			return get().getInteractingIndex();
 		}
 
 		return -1;
@@ -75,7 +75,7 @@ public class Actor<T extends IActor> extends Proxy<T> {
 
 	public LinkedList getCombatStatusList() {
 		if (!isNull()) {
-			return new LinkedList(wrapped.get().getCombatStatusList());
+			return new LinkedList(get().getCombatStatusList());
 		}
 
 		return null;

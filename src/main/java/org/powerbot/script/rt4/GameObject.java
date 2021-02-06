@@ -4,6 +4,7 @@ import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
@@ -90,21 +91,26 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 
 		if (c.stageOperationId != -1) {
-			final Cache cache = client.getVarbitCache();
-			final HashTable<INode> table = new HashTable<>(cache.wrapped.get().getTable());
-			final INode varbitNode = table.lookup(c.stageOperationId);
-			if (varbitNode instanceof IVarbit) {
-				final Varbit varBit = new Varbit((IVarbit) varbitNode);
-				final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
-				index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
+			if (ctx.client().isMobile()) {
+				index = ((IMobileClient) ctx.client().get()).getObjectConfigIndex(c.stageOperationId);
 			} else {
-				final CacheVarbitConfig cachedVarbit = CacheVarbitConfig.load(ctx.bot().getCacheWorker(), c.stageOperationId);
-				final int mask = lookup[cachedVarbit.endBit - cachedVarbit.startBit];
-				index = ctx.varpbits.varpbit(cachedVarbit.configId) >> cachedVarbit.startBit & mask;
+				final Cache cache = client.getVarbitCache();
+				final HashTable<INode> table = new HashTable<>(cache.get().getTable());
+				final INode varbitNode = table.lookup(c.stageOperationId);
+				if (varbitNode instanceof IVarbit) {
+					final Varbit varBit = new Varbit((IVarbit) varbitNode);
+					final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
+					index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
+				} else {
+					final CacheVarbitConfig cachedVarbit = CacheVarbitConfig.load(ctx.bot().getCacheWorker(), c.stageOperationId);
+					final int mask = lookup[cachedVarbit.endBit - cachedVarbit.startBit];
+					index = ctx.varpbits.varpbit(cachedVarbit.configId) >> cachedVarbit.startBit & mask;
+				}
 			}
 		} else if (c.stageIndex >= 0) {
 			index = ctx.varpbits.varpbit(c.stageIndex);
 		}
+
 		if (index >= 0) {
 			final int[] configs = c.materialPointers;
 			if (configs != null && index < configs.length && configs[index] != -1) {

@@ -1,11 +1,13 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Tile;
 
 import java.applet.Applet;
 import java.awt.*;
+import java.util.function.Function;
 
 import static org.powerbot.script.rt4.Constants.*;
 
@@ -86,14 +88,14 @@ public class Game extends ClientAccessor {
 			interacted = ctx.input.send(key);
 		} else {
 			final Component c = getByTexture(tab.textures);
-			interacted = c != null && c.click(command -> {
+			interacted = c != null && ((ctx.client().isMobile() && c.click(true)) || c.click(command -> {
 				for (final String tip : tab.tips) {
 					if (command.action.equals(tip)) {
 						return true;
 					}
 				}
 				return false;
-			});
+			}));
 		}
 		return interacted && Condition.wait(new Condition.Check() {
 			@Override
@@ -128,18 +130,18 @@ public class Game extends ClientAccessor {
 	private int openedTabIndexOffset(final Tab tab) {
 		if (resizable() && bottomLineTabs()) {
 			switch (tab) {
-			case LOGOUT:
-				return 1;
-			case ACCOUNT_MANAGEMENT:
-			case FRIENDS_LIST:
-			case IGNORED_LIST:
-			case CLAN_CHAT:
-			case SETTINGS:
-			case EMOTES:
-			case MUSIC:
-				return 6;
-			default:
-				return 7;
+				case LOGOUT:
+					return 1;
+				case ACCOUNT_MANAGEMENT:
+				case FRIENDS_LIST:
+				case IGNORED_LIST:
+				case CLAN_CHAT:
+				case SETTINGS:
+				case EMOTES:
+				case MUSIC:
+					return 6;
+				default:
+					return 7;
 			}
 		}
 
@@ -147,7 +149,15 @@ public class Game extends ClientAccessor {
 	}
 
 	private Component getByTexture(final int... textures) {
-		final Widget w = ctx.widgets.widget(resizable() ? bottomLineTabs() ? 164 : 161 : 548);
+		Widget w = new Widget(ctx, 0);
+		if (ctx.client().isMobile()) {
+			w = ctx.widgets.widget(601);
+		} else if (resizable()) {
+			w = ctx.widgets.widget(bottomLineTabs() ? 164 : 161);
+		} else {
+			w = ctx.widgets.widget(548);
+		}
+
 		for (final Component c : w.components()) {
 			for (final int t : textures) {
 				if (c.textureId() == t) {
@@ -259,7 +269,7 @@ public class Game extends ClientAccessor {
 	/**
 	 * Whether or not the 2-dimension point is within the viewport of the applet.
 	 *
-	 * @param p The 2-dimensional point to check.
+	 * @param p         The 2-dimensional point to check.
 	 * @param resizable true if in resizable mode
 	 * @return {@code true} if it is within bounds, {@code false} otherwise.
 	 */
@@ -303,13 +313,15 @@ public class Game extends ClientAccessor {
 	/**
 	 * Whether or not the 2-dimension point is within the viewport of the applet.
 	 *
-	 * @param x The x-axis value
-	 * @param y The y-axis value
+	 * @param x         The x-axis value
+	 * @param y         The y-axis value
 	 * @param resizable true if client is resizable
 	 * @return {@code true} if it is within bounds, {@code false} otherwise.
 	 */
 	public boolean pointInViewport(final int x, final int y, final boolean resizable) {
-		if (resizable) {
+		if (ctx.client().isMobile()) {
+			return true;
+		} else if (resizable) {
 			final Dimension d = dimensions();
 			return x >= 0 && y >= 0 && (x > 520 || y <= d.height - 170) &&
 				(x < d.width - 245 || y < d.height - 340 && y > 170) &&
@@ -368,7 +380,7 @@ public class Game extends ClientAccessor {
 		int x = relativeX >> 7;
 		int y = relativeZ >> 7;
 		if (x < 0 || y < 0 || x > 103 || y > 103 ||
-				floor < 0 || floor > 3) {
+			floor < 0 || floor > 3) {
 			return 0;
 		}
 		final byte[][][] meta = client.getLandscapeMeta();
@@ -402,7 +414,10 @@ public class Game extends ClientAccessor {
 		if (client == null) {
 			return new Point(-1, -1);
 		}
-		return worldToScreen(relativeX, relativeZ, h, resizable());
+
+		return ctx.bot().getMobileClient()
+			.map(it -> it.worldToScreen(relativeX, relativeZ, h))
+			.orElseGet(() -> worldToScreen(relativeX, relativeZ, h, resizable()));
 	}
 
 	public Point worldToScreen(final int relativeX, final int relativeZ, final int h, final boolean resizable) {
@@ -487,7 +502,15 @@ public class Game extends ClientAccessor {
 	 * @return The component of the mini-map.
 	 */
 	public Component mapComponent() {
-		final Widget i = ctx.widgets.widget(resizable() ? bottomLineTabs() ? 164 : 161 : 548);
+		Widget i = new Widget(ctx, 0);
+		if (ctx.client().isMobile()) {
+			i = ctx.widgets.widget(601);
+		} else if (resizable()) {
+			i = ctx.widgets.widget(bottomLineTabs() ? 164 : 161);
+		} else {
+			i = ctx.widgets.widget(548);
+		}
+
 		for (final Component c : i.components()) {
 			if (c.contentType() == 1338) {
 				return c;

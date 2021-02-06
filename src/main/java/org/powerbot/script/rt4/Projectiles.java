@@ -5,6 +5,8 @@ import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.*;
 import org.powerbot.bot.rt4.client.Projectile;
 import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
+import org.powerbot.bot.rt4.client.internal.IProjectile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +34,15 @@ public class Projectiles extends IdQuery<org.powerbot.script.rt4.Projectile> imp
 			return items;
 		}
 
-		for (final Projectile n : NodeQueue.get(client.getProjectiles(), Projectile.class)) {
-			final org.powerbot.script.rt4.Projectile p = new org.powerbot.script.rt4.Projectile(ctx, n);
-			items.add(p);
+		if (client.isMobile()) {
+			for (final IProjectile projectile : ((IMobileClient) client.get()).getAllProjectiles()) {
+				items.add(new org.powerbot.script.rt4.Projectile(ctx, new Projectile(projectile)));
+			}
+		} else {
+			for (final Projectile n : NodeQueue.get(client.getProjectiles(), Projectile.class)) {
+				final org.powerbot.script.rt4.Projectile p = new org.powerbot.script.rt4.Projectile(ctx, n);
+				items.add(p);
+			}
 		}
 
 		return items;

@@ -16,7 +16,7 @@ public class ItemPile extends Proxy<IItemPile> {
 		if (!isNull()) {
 			//TODO support this
 			return null;
-			//return new ItemNode(wrapped.get().getItem1());
+			//return new ItemNode(get().getItem1());
 		}
 
 		return null;
@@ -29,7 +29,7 @@ public class ItemPile extends Proxy<IItemPile> {
 		if (!isNull()) {
 			//TODO support this
 			return null;
-			//return new ItemNode(wrapped.get().getItem2());
+			//return new ItemNode(get().getItem2());
 		}
 
 		return null;
@@ -42,7 +42,7 @@ public class ItemPile extends Proxy<IItemPile> {
 		if (!isNull()) {
 			//TODO support this
 			return null;
-		//	return new ItemNode(wrapped.get().getItem3());
+		//	return new ItemNode(get().getItem3());
 		}
 
 		return null;

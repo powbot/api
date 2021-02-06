@@ -11,7 +11,7 @@ public class Entry<T extends IEntry> extends Node<T> {
 
 	public Entry getNext() {
 		if (!isNull()) {
-			return new Entry(wrapped.get().getNext());
+			return new Entry(get().getNext());
 		}
 
 		return null;
