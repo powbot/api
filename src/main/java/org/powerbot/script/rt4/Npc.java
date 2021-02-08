@@ -5,6 +5,7 @@ import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.NpcConfig;
 import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.bot.rt4.client.internal.IModel;
 import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.Actionable;
@@ -148,4 +149,19 @@ public class Npc extends Actor implements Identifiable, Actionable {
 		return c != null ? c.modelIds : null;
 	}
 
+	@Override
+	public Model getCachedModel() {
+		final Cache cache = ctx.client().getNpcModelCache();
+		if (cache != null) {
+			final HashTable<INode> table = new HashTable<>(cache.get().getTable());
+			final INode modelNode = table.lookup(id());
+			if (modelNode instanceof IModel) {
+				return new Model(ctx, ((IModel) modelNode).getVerticesX().clone(),
+					((IModel) modelNode).getVerticesY().clone(), ((IModel) modelNode).getVerticesZ().clone(),
+					((IModel) modelNode).getIndicesX().clone(), ((IModel) modelNode).getIndicesY().clone(),
+					((IModel) modelNode).getIndicesZ().clone(), modelOrientation());
+			}
+		}
+		return null;
+	}
 }

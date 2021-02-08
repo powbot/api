@@ -32,6 +32,13 @@ public class Model {
 
 	public Model(final int[] verticesX, final int[] verticesY, final int[] verticesZ,
 				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final int orientation) {
+		this(org.powerbot.script.ClientContext.ctx(), verticesX, verticesY, verticesZ,
+			indicesX, indicesY, indicesZ, orientation);
+	}
+
+	public Model(final ClientContext ctx, final int[] verticesX, final int[] verticesY, final int[] verticesZ,
+				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final int orientation) {
+		this.ctx = ctx;
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;
 		this.verticesZ = verticesZ;
