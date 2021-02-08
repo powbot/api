@@ -683,22 +683,20 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 
 
 	public int getClientWidth() {
-		return 762;
-//		if (!isNull()) {
-//			return get().getClientWidth();
-//		}
-//
-//		return -1;
+		if (!isNull()) {
+			return get().getClientWidth();
+		}
+
+		return -1;
 	}
 
 
 	public int getClientHeight() {
-//		if (!isNull()) {
-//			return get().getClientHeight();
-//		}
-//
-//		return -1;
-		return 503;
+		if (!isNull()) {
+			return get().getClientHeight();
+		}
+
+		return -1;
 	}
 
 	public boolean isMobile() {
