@@ -144,7 +144,6 @@ public class Component extends Interactive implements Textable, Identifiable {
 			final int uid = id() >>> 16;
 			HashTable<IWidgetNode> cache = new HashTable<>(ctx.client().get().getWidgetTable());
 			for (IWidgetNode node = cache.getHead(); node != null; node = cache.getNext()) {
-				System.out.println("Looking for " + uid + " -> " + node.getUid());
 				if (uid == node.getUid()) {
 					return (int) node.getNodeId();
 				}

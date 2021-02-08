@@ -1,6 +1,5 @@
 package org.powerbot.bot.rt4.client;
 
-import org.powerbot.bot.*;
 import org.powerbot.bot.rt4.client.internal.IGameObject;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 
