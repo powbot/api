@@ -13,7 +13,7 @@ public interface IMobileClient {
 
 	int getLandscapeMeta(int x, int y, int z);
 
-	Point worldToScreen(int x, int y, int z);
+	Point worldToScreen(int x, int y, int z, boolean realHeight);
 
 	int getNpcConfigIndex(int varBit);
 

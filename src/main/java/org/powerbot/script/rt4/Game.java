@@ -376,6 +376,7 @@ public class Game extends ClientAccessor {
 		if (client == null) {
 			return 0;
 		}
+
 		int floor = client.getFloor();
 		int x = relativeX >> 7;
 		int y = relativeZ >> 7;
@@ -383,6 +384,11 @@ public class Game extends ClientAccessor {
 			floor < 0 || floor > 3) {
 			return 0;
 		}
+
+		if (client.isMobile()) {
+			return ((IMobileClient) client.get()).getTileHeight(floor, x, y);
+		}
+
 		final byte[][][] meta = client.getLandscapeMeta();
 		final int[][][] heights = client.getTileHeights();
 		if (meta == null) {
@@ -416,7 +422,7 @@ public class Game extends ClientAccessor {
 		}
 
 		return ctx.bot().getMobileClient()
-			.map(it -> it.worldToScreen(relativeX, relativeZ, h))
+			.map(it -> it.worldToScreen(relativeX, relativeZ, h, false))
 			.orElseGet(() -> worldToScreen(relativeX, relativeZ, h, resizable()));
 	}
 
@@ -440,7 +446,9 @@ public class Game extends ClientAccessor {
 	 * @return The 2-dimensional point on screen.
 	 */
 	public Point worldToScreen(final int relativeX, final int relativeY, final int relativeZ, final int h) {
-		return worldToScreen(relativeX, relativeY, relativeZ, h, resizable());
+		return ctx.bot().getMobileClient()
+			.map(it -> it.worldToScreen(relativeX, relativeZ, relativeY, true))
+			.orElseGet(() -> worldToScreen(relativeX, relativeY, relativeZ, h, resizable()));
 	}
 
 	/**
@@ -483,8 +491,8 @@ public class Game extends ClientAccessor {
 			int mx = 256, my = 167;
 			if (resizable) {
 				final Dimension d = dimensions();
-				mx = d.width / 2;
-				my = d.height / 2;
+				mx = ctx.client().getClientWidth() / 2;
+				my = ctx.client().getClientHeight() / 2;
 			}
 			final int proj = client.getTileSize();
 			return new Point(

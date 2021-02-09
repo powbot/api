@@ -28,7 +28,6 @@ interface LocatableOps<T: Locatable, S: SimpleStream<T, S>>: WrappedStream<T, S>
     }
 
     fun nearest(): S {
-        println("hit nearest")
         return nearest(ctx.players.local().tile())
     }
 }
