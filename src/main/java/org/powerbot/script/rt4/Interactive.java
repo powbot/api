@@ -188,7 +188,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 			t.printStackTrace();
 			return false;
 		} finally {
-			if (ctx.menu.opened()) {
+			if (!Condition.wait(() -> !ctx.menu.opened(), 100, 10)) {
 				ctx.menu.close();
 			}
 		}

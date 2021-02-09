@@ -154,12 +154,20 @@ public class Menu extends ClientAccessor {
 		}
 
 		if (ctx.client().isMobile() && !ctx.client().isMenuOpen()) {
-			// TODO: set tap to click to on
-			if (!ctx.input.click(true)) return false;
+			if (!ctx.input.click(true)) {
+				return false;
+			}
+
+			if (!Condition.wait(() -> ctx.client().isMenuOpen(), 10, 60)) {
+				return false;
+			}
 		}
 
+
 		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 60)) {
-			System.out.println("Item is not in menu!");
+			if (opened()) {
+				close();
+			}
 			return false;
 		}
 
@@ -169,7 +177,6 @@ public class Menu extends ClientAccessor {
 		}
 
 		if (!client.isMenuOpen()) {
-			System.out.println("Menu is not open, right clicking");
 			if (!ctx.input.click(false)) {
 				return false;
 			}
@@ -187,7 +194,6 @@ public class Menu extends ClientAccessor {
 		if (!ctx.input.move(
 			Random.nextInt(rectangle.x, rectangle.x + rectangle.width),
 			Random.nextInt(rectangle.y, rectangle.y + rectangle.height)) || !client.isMenuOpen()) {
-			System.out.println("returning because suck");
 			return false;
 		}
 		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
