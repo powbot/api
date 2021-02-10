@@ -3,6 +3,9 @@ package org.powerbot.script.rt4;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.script.*;
 
+import java.awt.*;
+import java.awt.event.MouseEvent;
+
 /**
  * Camera
  * A utility class with methods to retrieve camera values and control the mouse and keyboard to manipulate the viewport camera.
@@ -121,14 +124,14 @@ public class Camera extends ClientAccessor {
 	 */
 	public boolean angle(final char direction) {
 		switch (direction) {
-		case 'n':
-			return angle(0);
-		case 'w':
-			return angle(90);
-		case 's':
-			return angle(180);
-		case 'e':
-			return angle(270);
+			case 'n':
+				return angle(0);
+			case 'w':
+				return angle(90);
+			case 's':
+				return angle(180);
+			case 'e':
+				return angle(270);
 		}
 		throw new RuntimeException("invalid direction " + direction + ", expecting n,w,s,e");
 	}
@@ -141,30 +144,34 @@ public class Camera extends ClientAccessor {
 	 */
 	public boolean angle(final int degrees) {
 		final int d = degrees % 360;
-		final int a = angleTo(d);
-		if (Math.abs(a) <= 5) {
-			return true;
-		}
-		final boolean l = a > 5;
+		if (ctx.client().isMobile()) {
+			turnTo(degrees, pitch());
+		} else {
+			final int a = angleTo(d);
+			if (Math.abs(a) <= 5) {
+				return true;
+			}
+			final boolean l = a > 5;
 
-		ctx.input.send(l ? "{VK_LEFT down}" : "{VK_RIGHT down}");
-		final float dir = Math.signum(angleTo(d));
-		for (; ; ) {
-			final int a2 = angleTo(d);
-			if (!Condition.wait(new Condition.Check() {
-				@Override
-				public boolean poll() {
-					return angleTo(d) != a2;
+			ctx.input.send(l ? "{VK_LEFT down}" : "{VK_RIGHT down}");
+			final float dir = Math.signum(angleTo(d));
+			for (; ; ) {
+				final int a2 = angleTo(d);
+				if (!Condition.wait(new Condition.Check() {
+					@Override
+					public boolean poll() {
+						return angleTo(d) != a2;
+					}
+				}, 10, 10)) {
+					break;
 				}
-			}, 10, 10)) {
-				break;
+				final int at = angleTo(d);
+				if (Math.abs(at) <= 15 || Math.signum(at) != dir) {
+					break;
+				}
 			}
-			final int at = angleTo(d);
-			if (Math.abs(at) <= 15 || Math.signum(at) != dir) {
-				break;
-			}
+			ctx.input.send(l ? "{VK_LEFT up}" : "{VK_RIGHT up}");
 		}
-		ctx.input.send(l ? "{VK_LEFT up}" : "{VK_RIGHT up}");
 		return Math.abs(angleTo(d)) <= 15;
 	}
 
@@ -184,6 +191,89 @@ public class Camera extends ClientAccessor {
 			da -= 360;
 		}
 		return da;
+	}
+
+	/**
+	 * Returns the screen point vector required to change the camera from the start to the end positions.
+	 *
+	 * @param startYaw   The starting camera yaw.
+	 * @param startPitch The starting camera pitch.
+	 * @param endYaw     The ending camera yaw.
+	 * @param endPitch   The ending camera pitch.
+	 * @return The screen point vector.
+	 */
+	private Point getCameraVector(int startYaw, int startPitch, int endYaw, int endPitch) {
+		double cPitch = endPitch - startPitch; // Defines the change in pitch required.
+
+		// Yaw is a periodic feature [0, 359]. The change in pitch may differ across the end-point of the cycle.
+		double cYawCyclA = (endYaw + 360) - startYaw; // Forwards across the 360 endpoint.
+		double cYawCyclB = endYaw - (startYaw + 360); // Backwards across the 360 endpoint.
+		double cYawNorm = endYaw - startYaw; // Change in-between [0, 359], no endpoint crossed.
+
+		double cYaw; // Defines the shortest change in yaw required.
+
+		// Compare the absolute differences to determine the shortest path.
+		if (Math.abs(cYawNorm) < Math.abs(cYawCyclA) && Math.abs(cYawNorm) < Math.abs(cYawCyclB)) {
+			cYaw = cYawNorm;
+		} else if (Math.abs(cYawCyclA) < Math.abs(cYawNorm) && Math.abs(cYawCyclA) < Math.abs(cYawCyclB)) {
+			cYaw = cYawCyclA;
+		} else {
+			cYaw = cYawCyclB;
+		}
+
+		// Define the screen vector components. Math.PI and (4/3) represent calculated slopes.
+		int changeX = (int) ((-Math.PI) * cYaw);
+		int changeY = (int) ((4d / 3) * cPitch);
+
+		return new Point(changeX, changeY);
+	}
+
+	/**
+	 * Turn the in-game camera to the specificed yaw and pitch.
+	 *
+	 * @param yaw   The desired yaw.
+	 * @param pitch The desired pitch.
+	 */
+	public void turnTo(int yaw, int pitch) {
+		final java.util.Random r = new java.util.Random();
+
+		final org.powerbot.script.rt4.Camera camera = this.ctx.camera;
+		final Input input = this.ctx.input;
+		final Point vector = this.getCameraVector(camera.yaw(), camera.pitch(), yaw, pitch); // Retrieve the screen vector for the camera turn.
+
+		// Define the min and max screen boundaries in which the vector can be dragged.
+		int minX, minY, maxX, maxY;
+		minX = minY = 0; // By default, we assume that the base of the boundary starts at 0.
+
+
+		maxX = ctx.client().getCanvas().getWidth(); // By default, we assume that the max of the boundary end with the screen.
+		maxY = ctx.client().getCanvas().getHeight();
+
+		// Adjust the boundaries based on the values of the components in the screen vector.
+		if (vector.x < 0) {
+			minX = -vector.x;
+		} else {
+			maxX -= vector.x;
+		}
+
+		if (vector.y < 0) {
+			minY = -vector.y;
+		} else {
+			maxY -= vector.y;
+		}
+
+		// Defines the range of X and Y.
+		final int xRange = maxX - minX;
+		final int yRange = maxY - minY;
+
+		// Finds a random starting point to start the drag.
+		final int randX = minX + (xRange > 0 ? r.nextInt(xRange) : 0);
+		final int randY = minY + (yRange > 0 ? r.nextInt(yRange) : 0);
+
+		// Drags the camera from the starting point by the screen vector amount.
+
+		input.move(new Point(randX, randY));
+		input.drag(new Point(randX + vector.x, randY + vector.y), MouseEvent.BUTTON2);
 	}
 
 	/**
@@ -219,6 +309,7 @@ public class Camera extends ClientAccessor {
 
 	/**
 	 * Get the zoom of the client as a value betweem 0-100 (0 == zoomed out, 100 == zoomed in)
+	 *
 	 * @return zoom
 	 */
 	public int getZoom() {

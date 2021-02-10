@@ -153,7 +153,9 @@ public class Menu extends ClientAccessor {
 			return false;
 		}
 
+
 		if (ctx.client().isMobile() && !ctx.client().isMenuOpen()) {
+
 			if (!ctx.input.click(true)) {
 				return false;
 			}
