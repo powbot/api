@@ -71,7 +71,7 @@ public interface Modelable {
 				renderableModel.getVerticesZ().clone(), renderableModel.getIndicesX().clone(), renderableModel.getIndicesY().clone(),
 				renderableModel.getIndicesZ().clone(), modelOrientation());
 		}
-		
+
 		final Cache cache = getModelCache();
 		final long modelCacheId = getModelCacheId();
 		if (cache != null && modelCacheId > 0) {
