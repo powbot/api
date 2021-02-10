@@ -150,18 +150,17 @@ public class Npc extends Actor implements Identifiable, Actionable {
 	}
 
 	@Override
-	public Model getCachedModel() {
-		final Cache cache = ctx.client().getNpcModelCache();
-		if (cache != null) {
-			final HashTable<INode> table = new HashTable<>(cache.get().getTable());
-			final INode modelNode = table.lookup(id());
-			if (modelNode instanceof IModel) {
-				return new Model(ctx, ((IModel) modelNode).getVerticesX().clone(),
-					((IModel) modelNode).getVerticesY().clone(), ((IModel) modelNode).getVerticesZ().clone(),
-					((IModel) modelNode).getIndicesX().clone(), ((IModel) modelNode).getIndicesY().clone(),
-					((IModel) modelNode).getIndicesZ().clone(), modelOrientation());
-			}
+	public long getModelCacheId() {
+		return id();
+	}
+
+	@Override
+	public Cache getModelCache() {
+		final Client client = ctx.client();
+		if (client == null) {
+			return null;
 		}
-		return null;
+
+		return client.getNpcModelCache();
 	}
 }

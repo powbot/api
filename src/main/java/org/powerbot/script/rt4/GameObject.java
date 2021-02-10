@@ -3,7 +3,9 @@ package org.powerbot.script.rt4;
 import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.PlayerComposite;
 import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.bot.rt4.client.internal.IModel;
 import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
@@ -400,5 +402,30 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	@Override
 	public Callable<Point> calculateScreenPosition() {
 		return ScreenPosition.of(ctx, this);
+	}
+
+	@Override
+	public long getModelCacheId() {
+		// This id doesn't seem to be right?
+
+		int type = object.getMeta() & 0x3f;
+		int face = modelOrientation();
+		int id = id();
+		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id);
+		if (c == null || c.meshType == null) {
+			return ((long) id << 10) + face;
+		}
+
+		return face + (type << 3) + ((long) id << 10);
+	}
+
+	@Override
+	public Cache getModelCache() {
+		final Client client = ctx.client();
+		if (client == null) {
+			return null;
+		}
+
+		return client.getObjectModelCache();
 	}
 }
