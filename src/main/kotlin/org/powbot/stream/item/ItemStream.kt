@@ -13,6 +13,12 @@ abstract class ItemStream<T : Item, S : SimpleStream<T, S>>(ctx: ClientContext, 
     ActionableOps<T, S>,
     NameableOps<T, S> {
 
+    /**
+     * Count how many items are in the stream
+     *
+     * @param countStacks - true to sum up stack sizes, false to just get a count of the entities
+     * @return count
+     */
     fun count(countStacks: Boolean): Long {
         if (!countStacks) {
             return count()

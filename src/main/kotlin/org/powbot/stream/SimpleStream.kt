@@ -5,6 +5,12 @@ import java.util.*
 import java.util.function.*
 import java.util.function.Function
 import java.util.stream.*
+import java.util.UUID
+
+import java.util.IdentityHashMap
+
+
+
 
 
 abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientContext, override var stream: Stream<T>) :
@@ -373,5 +379,19 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
      */
     fun isNotEmpty(): Boolean {
         return this.stream.count() > 0
+    }
+
+    private fun <T> shuffler(): Comparator<T> {
+        val uniqueIds: MutableMap<T, UUID> = IdentityHashMap()
+        return Comparator.comparing { e ->
+            uniqueIds.computeIfAbsent(e,
+                { k: T -> UUID.randomUUID() })
+        }
+    }
+
+    fun shuffle(): S {
+        this.stream = stream.sorted(shuffler())
+
+        return this as S
     }
 }
