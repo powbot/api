@@ -8,18 +8,17 @@ import org.powerbot.bot.rt4.client.Varbit;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
-import org.powerbot.script.Actionable;
-import org.powerbot.script.Identifiable;
-import org.powerbot.script.StringUtils;
+import org.powerbot.script.*;
 
 import java.awt.*;
 
 /**
  * Npc
  */
-public class Npc extends Actor implements Identifiable, Actionable {
+public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 255, 15);
 	private static final int[] lookup;
+	public static final Npc NIL = new Npc(org.powerbot.script.ClientContext.ctx(), null);
 
 	static {
 		lookup = new int[32];
@@ -155,4 +154,8 @@ public class Npc extends Actor implements Identifiable, Actionable {
 		return c != null ? c.modelIds : null;
 	}
 
+	@Override
+	public Npc nil() {
+		return NIL;
+	}
 }

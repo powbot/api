@@ -7,7 +7,7 @@ import java.util.function.Function
 import java.util.stream.*
 
 
-open class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientContext, override var stream: Stream<T>) :
+abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientContext, override var stream: Stream<T>) :
     WrappedStream<T, S> {
 
     /**
@@ -312,5 +312,66 @@ open class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientConte
      */
     override fun count(): Long {
         return stream.count()
+    }
+
+    /**
+     * nil value of the entity
+     *
+     * @return nil
+     */
+    abstract fun nil(): T
+
+    /**
+     * Get the first entity from the stream
+     *
+     * @return the entity or a nil object of the entity
+     */
+    fun first(): T {
+        return findFirst().orElse(nil())
+    }
+
+    /**
+     * Get any entity from the stream
+     *
+     * @return the entity or a nil object of the entity
+     */
+    fun any(): T {
+        return findAny().orElse(nil())
+    }
+
+    /**
+     * Check if the stream contains any of the provided entities
+     *
+     * @return boolean
+     */
+    fun contains(t: Collection<T>): Boolean {
+        return t.toList().any { _t -> this.stream.anyMatch { it == _t } }
+    }
+
+    /**
+     * Check if the stream contains any of the provided entities
+     *
+     * @return boolean
+     */
+    fun contains(vararg t: T): Boolean {
+        return t.toList().any { _t -> this.stream.anyMatch { it == _t } }
+    }
+
+    /**
+     * Check if the stream is empty or not
+     *
+     * @return boolean
+     */
+    fun isEmpty(): Boolean {
+        return this.stream.count() == 0L
+    }
+
+    /**
+     * Check if the stream is NOT empty or not
+     *
+     * @return boolean
+     */
+    fun isNotEmpty(): Boolean {
+        return this.stream.count() > 0
     }
 }

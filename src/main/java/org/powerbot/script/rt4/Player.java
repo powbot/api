@@ -1,14 +1,16 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.client.*;
+import org.powerbot.script.Nillable;
 
 import java.awt.*;
 
 /**
  * Player
  */
-public class Player extends Actor {
+public class Player extends Actor implements Nillable<Player> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 0, 15);
+	public static final Player NIL = new Player(org.powerbot.script.ClientContext.ctx(), null);
 	private final org.powerbot.bot.rt4.client.Player player;
 
 	Player(final ClientContext ctx, final org.powerbot.bot.rt4.client.Player player) {
@@ -88,5 +90,10 @@ public class Player extends Actor {
 	@Override
 	public int[] modelIds() {
 		return null;
+	}
+
+	@Override
+	public Player nil() {
+		return NIL;
 	}
 }

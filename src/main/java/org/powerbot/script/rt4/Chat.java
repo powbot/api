@@ -161,7 +161,7 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 	 */
 	@Override
 	public ChatOption nil() {
-		return new ChatOption(ctx, -1, null);
+		return ChatOption.NIL;
 	}
 
 	/**

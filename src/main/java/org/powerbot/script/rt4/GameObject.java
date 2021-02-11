@@ -17,9 +17,10 @@ import java.util.concurrent.Callable;
 /**
  * GameObject
  */
-public class GameObject extends Interactive implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable, Modelable {
+public class GameObject extends Interactive implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable, Modelable, Nillable<GameObject> {
 	public static final Color TARGET_COLOR = new Color(0, 255, 0, 20);
 	private static final int[] lookup;
+	public static final GameObject NIL = new GameObject(org.powerbot.script.ClientContext.ctx(), null, Type.UNKNOWN);
 
 	static {
 		lookup = new int[32];
@@ -255,7 +256,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public boolean valid() {
-		return this != ctx.objects.nil()
+		return this != NIL
 			&& !(object == null || object.object.isNull())
 			&& ctx.objects.select(this, 0).contains(this);
 	}
@@ -377,6 +378,11 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	@Override
 	public IRenderable renderable() {
 		return object.object.getRenderable();
+	}
+
+	@Override
+	public GameObject nil() {
+		return NIL;
 	}
 
 	public enum Type {

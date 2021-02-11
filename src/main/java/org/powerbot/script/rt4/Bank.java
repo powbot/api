@@ -173,7 +173,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 
 	@Override
 	public Item nil() {
-		return new Item(ctx, null, -1, -1, -1);
+		return Item.NIL;
 	}
 
 	/**

@@ -6,8 +6,10 @@ import org.powerbot.script.*;
 /**
  * Projectile
  */
-public class Projectile extends ClientAccessor implements Locatable, Identifiable, Validatable {
+public class Projectile extends ClientAccessor implements Locatable, Identifiable, Validatable, Nillable<Projectile> {
 	private final org.powerbot.bot.rt4.client.Projectile projectile;
+
+	public static final Projectile NIL = new Projectile(org.powerbot.script.ClientContext.ctx(), new org.powerbot.bot.rt4.client.Projectile(null));
 
 	public Projectile(final ClientContext ctx, final org.powerbot.bot.rt4.client.Projectile projectile) {
 		super(ctx);
@@ -21,7 +23,7 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 
 	@Override
 	public boolean valid() {
-		return !projectile.isNull() && ctx.projectiles.select().contains(this);
+		return !projectile.isNull() && ctx.projectiles.toStream().contains(this);
 	}
 
 	@Override
@@ -121,4 +123,8 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 		}
 	}
 
+	@Override
+	public Projectile nil() {
+		return NIL;
+	}
 }

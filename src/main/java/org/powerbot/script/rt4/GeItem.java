@@ -1,5 +1,7 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.script.Nillable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +10,7 @@ import java.util.Map;
  * Grand Exchange pricing.
  */
 public class GeItem extends org.powerbot.script.GeItem {
+	public static final GeItem NIL = new GeItem(0);
 	static final Map<Integer, Integer> prices = new HashMap<>();
 
 	/**
@@ -26,7 +29,7 @@ public class GeItem extends org.powerbot.script.GeItem {
 	 */
 	@Override
 	public org.powerbot.script.GeItem nil() {
-		return new GeItem(0);
+		return NIL;
 	}
 
 	/**
@@ -38,4 +41,6 @@ public class GeItem extends org.powerbot.script.GeItem {
 	public static int getPrice(final int id) {
 		return prices.getOrDefault(id, -1);
 	}
+
+
 }

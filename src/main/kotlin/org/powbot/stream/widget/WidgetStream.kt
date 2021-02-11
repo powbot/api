@@ -8,4 +8,8 @@ import java.util.stream.Stream
 
 open class WidgetStream(ctx: ClientContext, stream: Stream<Widget>) :
     SimpleStream<Widget, WidgetStream>(ctx, stream),
-    IdentifiableOps<Widget, WidgetStream>
+    IdentifiableOps<Widget, WidgetStream> {
+    override fun nil(): Widget {
+        return Widget.NIL
+    }
+}
