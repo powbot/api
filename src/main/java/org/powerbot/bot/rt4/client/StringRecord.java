@@ -11,7 +11,7 @@ public class StringRecord extends Proxy<IStringRecord> {
 
 	public String getValue() {
 		if (!isNull()) {
-			return wrapped.get().getValue();
+			return get().getValue();
 		}
 
 		return null;

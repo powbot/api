@@ -6,6 +6,7 @@ import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.NpcConfig;
 import org.powerbot.bot.rt4.client.Varbit;
 import org.powerbot.bot.rt4.client.internal.IModel;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.Actionable;
@@ -75,14 +76,20 @@ public class Npc extends Actor implements Identifiable, Actionable {
 		final int varbit = c.getVarbit(), si = c.getVarpbitIndex();
 		int index = -1;
 		if (varbit != -1) {
-			final Cache cache = client.getVarbitCache();
-			final HashTable<INode> table = new HashTable<>(cache.wrapped.get().getTable());
-			final INode varbitNode = table.lookup(varbit);
-			if (varbitNode instanceof IVarbit) {
-				final Varbit varBit = new Varbit((IVarbit) varbitNode);
-				final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
-				index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
+			if (ctx.client().isMobile()) {
+				index = ((IMobileClient) ctx.client().get()).getNpcConfigIndex(varbit);
 			} else {
+				final Cache cache = client.getVarbitCache();
+				final HashTable<INode> table = new HashTable<>(cache.get().getTable());
+				final INode varbitNode = table.lookup(varbit);
+				if (varbitNode instanceof IVarbit) {
+					final Varbit varBit = new Varbit((IVarbit) varbitNode);
+					final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
+					index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
+				}
+			}
+
+			if (index == -1) {
 				final CacheVarbitConfig cachedVarbit = CacheVarbitConfig.load(ctx.bot().getCacheWorker(), varbit);
 				final int mask = lookup[cachedVarbit.endBit - cachedVarbit.startBit];
 				index = ctx.varpbits.varpbit(cachedVarbit.configId) >> cachedVarbit.startBit & mask;

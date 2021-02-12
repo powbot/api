@@ -1,6 +1,7 @@
 package org.powerbot.bot.rt4.client;
 
 import org.powerbot.bot.*;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.*;
 
 import javax.security.auth.PrivateCredentialPermission;
@@ -118,7 +119,6 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 			}
 			return wrapped;
 		}
-
 		return null;
 	}
 
@@ -679,5 +679,27 @@ public class Client extends Proxy<IClient> implements org.powerbot.script.Client
 			return get().getPreferences();
 		}
 		return null;
+	}
+
+
+	public int getClientWidth() {
+		if (!isNull()) {
+			return get().getClientWidth();
+		}
+
+		return -1;
+	}
+
+
+	public int getClientHeight() {
+		if (!isNull()) {
+			return get().getClientHeight();
+		}
+
+		return -1;
+	}
+
+	public boolean isMobile() {
+		return get() instanceof IMobileClient;
 	}
 }

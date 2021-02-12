@@ -10,7 +10,7 @@ public class Npc extends Actor<INpc> {
 
 	public NpcConfig getConfig() {
 		if (!isNull()) {
-			return new NpcConfig(wrapped.get().getConfig());
+			return new NpcConfig(get().getConfig());
 		}
 		return new NpcConfig(null);
 	}

@@ -12,7 +12,7 @@ public class MessageEntry extends Entry<IMessageEntry> {
 
 	public String getSender() {
 		if (!isNull()) {
-			return wrapped.get().getSender();
+			return get().getSender();
 		}
 
 		return null;
@@ -20,7 +20,7 @@ public class MessageEntry extends Entry<IMessageEntry> {
 
 	public String getMessage() {
 		if (!isNull()) {
-			return wrapped.get().getMessage();
+			return get().getMessage();
 		}
 
 		return null;
@@ -28,7 +28,7 @@ public class MessageEntry extends Entry<IMessageEntry> {
 
 	public int getType() {
 		if (!isNull()) {
-			return wrapped.get().getType();
+			return get().getType();
 		}
 
 		return -1;

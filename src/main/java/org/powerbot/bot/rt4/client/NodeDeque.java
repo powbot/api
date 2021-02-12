@@ -11,7 +11,7 @@ public class NodeDeque extends Proxy<INodeDeque> {
 
 	public Node getSentinel() {
 		if (!isNull()) {
-			return new Node(wrapped.get().getSentinel());
+			return new Node(get().getSentinel());
 		}
 
 		return null;

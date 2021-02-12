@@ -156,4 +156,8 @@ public interface IClient extends IGameEngine {
 
 	IPreferences getPreferences();
 
+	int getClientWidth();
+
+	int getClientHeight();
+
 }

@@ -2,11 +2,13 @@ package org.powerbot.script;
 
 import org.powerbot.bot.*;
 import org.powerbot.bot.cache.*;
+import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.action.ActionEmitter;
 
 import java.applet.Applet;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -51,5 +53,7 @@ public abstract class Bot<C extends ClientContext<? extends Client>> {
 	public abstract WebWalkingService getWebWalkingService();
 
 	public abstract ActionEmitter getActionEmitter();
+
+	public abstract Optional<IMobileClient> getMobileClient();
 
 }

@@ -11,7 +11,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getX() {
 		if (!isNull()) {
-			return wrapped.get().getX();
+			return get().getX();
 		}
 
 		return -1;
@@ -19,7 +19,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getY() {
 		if (!isNull()) {
-			return wrapped.get().getY();
+			return get().getY();
 		}
 
 		return -1;
@@ -27,7 +27,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getWidth() {
 		if (!isNull()) {
-			return wrapped.get().getWidth();
+			return get().getWidth();
 		}
 
 		return -1;
@@ -35,7 +35,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getHeight() {
 		if (!isNull()) {
-			return wrapped.get().getHeight();
+			return get().getHeight();
 		}
 
 		return -1;
@@ -43,7 +43,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getBorderThickness() {
 		if (!isNull()) {
-			return wrapped.get().getBorderThickness();
+			return get().getBorderThickness();
 		}
 
 		return -1;
@@ -51,7 +51,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getType() {
 		if (!isNull()) {
-			return wrapped.get().getType();
+			return get().getType();
 		}
 
 		return -1;
@@ -59,7 +59,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getId() {
 		if (!isNull()) {
-			return wrapped.get().getId();
+			return get().getId();
 		}
 
 		return -1;
@@ -67,7 +67,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getParentId() {
 		if (!isNull()) {
-			return wrapped.get().getParentId();
+			return get().getParentId();
 		}
 
 		return -1;
@@ -75,7 +75,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public Widget[] getChildren() {
 		if (!isNull()) {
-			final IWidget[] widgets = wrapped.get().getChildren();
+			final IWidget[] widgets = get().getChildren();
 			final Widget[] wrapped = widgets != null ? new Widget[widgets.length] : null;
 			if (widgets != null) {
 				for (int i = 0; i < widgets.length; i++) {
@@ -91,7 +91,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getContentType() {
 		if (!isNull()) {
-			return wrapped.get().getContentType();
+			return get().getContentType();
 		}
 
 		return -1;
@@ -99,7 +99,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getModelId() {
 		if (!isNull()) {
-			return wrapped.get().getModelId();
+			return get().getModelId();
 		}
 
 		return -1;
@@ -107,7 +107,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getModelType() {
 		if (!isNull()) {
-			return wrapped.get().getModelType();
+			return get().getModelType();
 		}
 
 		return -1;
@@ -115,7 +115,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getModelZoom() {
 		if (!isNull()) {
-			return wrapped.get().getModelZoom();
+			return get().getModelZoom();
 		}
 
 		return -1;
@@ -123,7 +123,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public String[] getActions() {
 		if (!isNull()) {
-			return wrapped.get().getActions();
+			return get().getActions();
 		}
 
 		return null;
@@ -131,7 +131,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getAngleX() {
 		if (!isNull()) {
-			return wrapped.get().getAngleX();
+			return get().getAngleX();
 		}
 
 		return -1;
@@ -139,7 +139,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getAngleY() {
 		if (!isNull()) {
-			return wrapped.get().getAngleY();
+			return get().getAngleY();
 		}
 
 		return -1;
@@ -147,7 +147,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getAngleZ() {
 		if (!isNull()) {
-			return wrapped.get().getAngleZ();
+			return get().getAngleZ();
 		}
 
 		return -1;
@@ -155,7 +155,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public String getText() {
 		if (!isNull()) {
-			return wrapped.get().getText();
+			return get().getText();
 		}
 
 		return null;
@@ -163,7 +163,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getTextColor() {
 		if (!isNull()) {
-			return wrapped.get().getTextColor();
+			return get().getTextColor();
 		}
 
 		return -1;
@@ -171,7 +171,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getScrollX() {
 		if (!isNull()) {
-			return wrapped.get().getScrollX();
+			return get().getScrollX();
 		}
 
 		return -1;
@@ -179,7 +179,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getScrollY() {
 		if (!isNull()) {
-			return wrapped.get().getScrollY();
+			return get().getScrollY();
 		}
 
 		return -1;
@@ -187,7 +187,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getScrollWidth() {
 		if (!isNull()) {
-			return wrapped.get().getScrollWidth();
+			return get().getScrollWidth();
 		}
 
 		return -1;
@@ -195,7 +195,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getScrollHeight() {
 		if (!isNull()) {
-			return wrapped.get().getScrollHeight();
+			return get().getScrollHeight();
 		}
 
 		return -1;
@@ -203,7 +203,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getBoundsIndex() {
 		if (!isNull()) {
-			return wrapped.get().getBoundsIndex();
+			return get().getBoundsIndex();
 		}
 
 		return -1;
@@ -211,7 +211,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getTextureId() {
 		if (!isNull()) {
-			return wrapped.get().getTextureId();
+			return get().getTextureId();
 		}
 
 		return -1;
@@ -219,7 +219,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int[] getItemIds() {
 		if (!isNull()) {
-			return wrapped.get().getItemIds();
+			return get().getItemIds();
 		}
 
 		return null;
@@ -227,7 +227,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int[] getItemStackSizes() {
 		if (!isNull()) {
-			return wrapped.get().getItemStackSizes();
+			return get().getItemStackSizes();
 		}
 
 		return null;
@@ -235,7 +235,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public boolean isHidden() {
 		if (!isNull()) {
-			return wrapped.get().isHidden();
+			return get().isHidden();
 		}
 
 		return false;
@@ -243,7 +243,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public String getTooltip() {
 		if (!isNull()) {
-			return wrapped.get().getTooltip();
+			return get().getTooltip();
 		}
 
 		return null;
@@ -251,7 +251,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getItemId() {
 		if (!isNull()) {
-			return wrapped.get().getItemId();
+			return get().getItemId();
 		}
 
 		return -1;
@@ -259,7 +259,7 @@ public class Widget extends Proxy<IWidget> {
 
 	public int getItemStackSize() {
 		if (!isNull()) {
-			return wrapped.get().getItemStackSize();
+			return get().getItemStackSize();
 		}
 
 		return -1;

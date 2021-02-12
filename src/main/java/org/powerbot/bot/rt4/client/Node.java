@@ -11,7 +11,7 @@ public class Node<T extends INode> extends Proxy<T> {
 
 	public Node getNext() {
 		if (!isNull()) {
-			return new Node(wrapped.get().getNext());
+			return new Node(get().getNext());
 		}
 
 		return null;
@@ -19,7 +19,7 @@ public class Node<T extends INode> extends Proxy<T> {
 
 	public long getNodeId() {
 		if (!isNull()) {
-			return wrapped.get().getNodeId();
+			return get().getNodeId();
 		}
 
 		return -1L;
@@ -30,7 +30,7 @@ public class Node<T extends INode> extends Proxy<T> {
 	 */
 	public long getId() {
 		if (!isNull()) {
-			return wrapped.get().getNodeId();
+			return get().getNodeId();
 		}
 
 		return -1L;

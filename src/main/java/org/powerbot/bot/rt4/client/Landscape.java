@@ -12,7 +12,7 @@ public class Landscape extends Proxy<ILandscape> {
 
 	public Tile[][][] getTiles() {
 		if (!isNull()) {
-			final ITile[][][] tiles = wrapped.get().getTiles();
+			final ITile[][][] tiles = get().getTiles();
 			if (tiles == null) {
 				return null;
 			}

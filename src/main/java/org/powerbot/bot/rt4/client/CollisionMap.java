@@ -11,7 +11,7 @@ public class CollisionMap extends Proxy<ICollisionMap> {
 
 	public int[][] getFlags() {
 		if (!isNull()) {
-			return wrapped.get().getFlags();
+			return get().getFlags();
 		}
 
 		return null;
@@ -19,7 +19,7 @@ public class CollisionMap extends Proxy<ICollisionMap> {
 
 	public int getOffsetX() {
 		if (!isNull()) {
-			return wrapped.get().getOffsetX();
+			return get().getOffsetX();
 		}
 
 		return -1;
@@ -27,7 +27,7 @@ public class CollisionMap extends Proxy<ICollisionMap> {
 
 	public int getOffsetY() {
 		if (!isNull()) {
-			return wrapped.get().getOffsetY();
+			return get().getOffsetY();
 		}
 
 		return -1;

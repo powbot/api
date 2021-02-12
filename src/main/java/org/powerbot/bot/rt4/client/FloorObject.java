@@ -14,7 +14,7 @@ public class FloorObject extends BasicObject<IFloorObject> {
 	@Override
 	public long getUid() {
 		if (!isNull()) {
-			return wrapped.get().getUid();
+			return get().getUid();
 		}
 
 		return -1L;
@@ -23,7 +23,7 @@ public class FloorObject extends BasicObject<IFloorObject> {
 	@Override
 	public int getMeta() {
 		if (!isNull()) {
-			return wrapped.get().getMeta();
+			return get().getMeta();
 		}
 
 		return -1;
@@ -32,7 +32,7 @@ public class FloorObject extends BasicObject<IFloorObject> {
 	@Override
 	public int getX() {
 		if (!isNull()) {
-			return wrapped.get().getX();
+			return get().getX();
 		}
 		return -1;
 	}
@@ -40,7 +40,7 @@ public class FloorObject extends BasicObject<IFloorObject> {
 	@Override
 	public int getZ() {
 		if (!isNull()) {
-			return wrapped.get().getZ();
+			return get().getZ();
 		}
 		return -1;
 	}
@@ -68,7 +68,7 @@ public class FloorObject extends BasicObject<IFloorObject> {
 	@Override
 	public IRenderable getRenderable() {
 		if (!isNull()) {
-			return wrapped.get().getRenderable();
+			return get().getRenderable();
 		}
 		return null;
 	}

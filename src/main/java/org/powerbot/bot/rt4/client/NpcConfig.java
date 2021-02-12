@@ -11,7 +11,7 @@ public class NpcConfig extends Proxy<INpcConfig> {
 
 	public int getId() {
 		if (!isNull()) {
-			return wrapped.get().getId();
+			return get().getId();
 		}
 
 		return -1;
@@ -19,7 +19,7 @@ public class NpcConfig extends Proxy<INpcConfig> {
 
 	public int getLevel() {
 		if (!isNull()) {
-			return wrapped.get().getLevel();
+			return get().getLevel();
 		}
 
 		return -1;
@@ -27,7 +27,7 @@ public class NpcConfig extends Proxy<INpcConfig> {
 
 	public String getName() {
 		if (!isNull()) {
-			return wrapped.get().getName();
+			return get().getName();
 		}
 
 		return null;
@@ -35,7 +35,7 @@ public class NpcConfig extends Proxy<INpcConfig> {
 
 	public String[] getActions() {
 		if (!isNull()) {
-			return wrapped.get().getActions();
+			return get().getActions();
 		}
 
 		return null;
@@ -43,7 +43,7 @@ public class NpcConfig extends Proxy<INpcConfig> {
 
 	public int[] getConfigs() {
 		if (!isNull()) {
-			return wrapped.get().getConfigs();
+			return get().getConfigs();
 		}
 
 		return null;
@@ -51,7 +51,7 @@ public class NpcConfig extends Proxy<INpcConfig> {
 
 	public int getVarpbitIndex() {
 		if (!isNull()) {
-			return wrapped.get().getVarpbitIndex();
+			return get().getVarpbitIndex();
 		}
 
 		return -1;
@@ -59,7 +59,7 @@ public class NpcConfig extends Proxy<INpcConfig> {
 
 	public int getVarbit() {
 		if (!isNull()) {
-			return wrapped.get().getVarbit();
+			return get().getVarbit();
 		}
 
 		return -1;

@@ -11,7 +11,7 @@ public class WidgetNode extends Node<IWidgetNode> {
 
 	public int getUid() {
 		if (!isNull()) {
-			return wrapped.get().getUid();
+			return get().getUid();
 		}
 
 		return -1;

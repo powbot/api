@@ -11,7 +11,7 @@ public class ItemConfig extends Node<IItemConfig> {
 
 	public String getName() {
 		if (!isNull()) {
-			return wrapped.get().getName();
+			return get().getName();
 		}
 
 		return null;
@@ -19,7 +19,7 @@ public class ItemConfig extends Node<IItemConfig> {
 
 	public boolean isMembers() {
 		if (!isNull()) {
-			return wrapped.get().isMembers();
+			return get().isMembers();
 		}
 
 		return false;
@@ -27,7 +27,7 @@ public class ItemConfig extends Node<IItemConfig> {
 
 	public String[] getActions1() {
 		if (!isNull()) {
-			return wrapped.get().getActions1();
+			return get().getActions1();
 		}
 
 		return null;
@@ -35,7 +35,7 @@ public class ItemConfig extends Node<IItemConfig> {
 
 	public String[] getActions2() {
 		if (!isNull()) {
-			return wrapped.get().getActions2();
+			return get().getActions2();
 		}
 
 		return null;

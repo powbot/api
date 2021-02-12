@@ -12,7 +12,7 @@ public class HashTable extends Proxy<IHashTable> {
 
 	public Node[] getBuckets() {
 		if (!isNull()) {
-			final INode[] nodes = wrapped.get().getBuckets();
+			final INode[] nodes = get().getBuckets();
 			final Node[] buckets = nodes != null ? new Node[nodes.length] : null;
 			if (nodes != null) {
 				for (int i = 0; i < nodes.length; i++) {
@@ -28,7 +28,7 @@ public class HashTable extends Proxy<IHashTable> {
 
 	public int getSize() {
 		if (!isNull()) {
-			return wrapped.get().getSize();
+			return get().getSize();
 		}
 
 		return -1;
