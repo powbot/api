@@ -91,7 +91,7 @@ public class GroundItems extends BasicQuery<GroundItem> implements Streamable<Gr
 
 	@Override
 	public GroundItem nil() {
-		return new GroundItem(ctx, Tile.NIL, new ItemNode(null));
+		return GroundItem.NIL;
 	}
 
 	/**

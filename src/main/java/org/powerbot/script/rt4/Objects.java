@@ -14,11 +14,9 @@ import java.util.List;
  * Objects
  */
 public class Objects extends BasicQuery<GameObject> implements Streamable<GameObjectStream> {
-	private final GameObject NIL;
 
 	public Objects(final ClientContext ctx) {
 		super(ctx);
-		NIL = new GameObject(ctx, null, GameObject.Type.UNKNOWN);
 	}
 
 	public BasicQuery<GameObject> select(final int radius) {
@@ -107,7 +105,7 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 
 	@Override
 	public GameObject nil() {
-		return NIL;
+		return GameObject.NIL;
 	}
 
 	/**

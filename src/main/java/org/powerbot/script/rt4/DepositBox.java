@@ -222,7 +222,7 @@ public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBox
 
 	@Override
 	public Item nil() {
-		return ctx.inventory.nil();
+		return Item.NIL;
 	}
 
 	public enum Amount {

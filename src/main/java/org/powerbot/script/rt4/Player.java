@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.*;
+import org.powerbot.script.Nillable;
 import org.powerbot.bot.rt4.client.internal.IModel;
 import org.powerbot.bot.rt4.client.internal.INode;
 
@@ -10,8 +11,9 @@ import java.awt.*;
 /**
  * Player
  */
-public class Player extends Actor {
+public class Player extends Actor implements Nillable<Player> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 0, 15);
+	public static final Player NIL = new Player(org.powerbot.script.ClientContext.ctx(), null);
 	private final org.powerbot.bot.rt4.client.Player player;
 
 	Player(final ClientContext ctx, final org.powerbot.bot.rt4.client.Player player) {
@@ -94,6 +96,10 @@ public class Player extends Actor {
 	}
 
 	@Override
+	public Player nil() {
+		return NIL;
+  }
+  
 	public long getModelCacheId() {
 		final PlayerComposite composite = player != null ? player.getComposite() : null;
 		if (composite == null) {

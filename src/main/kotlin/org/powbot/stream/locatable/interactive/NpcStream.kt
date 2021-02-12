@@ -6,4 +6,8 @@ import org.powerbot.script.rt4.Npc
 import java.util.stream.*
 
 class NpcStream(ctx: ClientContext, stream: Stream<Npc>) : ActorStream<Npc, NpcStream>(ctx, stream),
-    ActionableOps<Npc, NpcStream>
+    ActionableOps<Npc, NpcStream> {
+    override fun nil(): Npc {
+        return Npc.NIL
+    }
+}

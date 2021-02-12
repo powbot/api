@@ -7,4 +7,8 @@ import org.powerbot.script.rt4.ChatOption
 import java.util.stream.*
 
 class ChatOptionStream(ctx: ClientContext, stream: Stream<ChatOption>) : SimpleStream<ChatOption, ChatOptionStream>(ctx, stream),
-    TextOps<ChatOption, ChatOptionStream>
+    TextOps<ChatOption, ChatOptionStream> {
+    override fun nil(): ChatOption {
+        return ChatOption.NIL
+    }
+}

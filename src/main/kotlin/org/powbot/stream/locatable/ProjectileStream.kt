@@ -9,4 +9,10 @@ import java.util.stream.*
 
 class ProjectileStream(ctx: ClientContext, stream: Stream<Projectile>) : SimpleStream<Projectile, ProjectileStream>(ctx, stream),
     IdentifiableOps<Projectile, ProjectileStream>,
-    LocatableOps<Projectile, ProjectileStream>
+    LocatableOps<Projectile, ProjectileStream> {
+
+    override fun nil(): Projectile {
+        return Projectile.NIL
+    }
+
+}

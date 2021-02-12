@@ -9,9 +9,11 @@ import java.util.Iterator;
 /**
  * Widget
  */
-public class Widget extends ClientAccessor implements Identifiable, Validatable, Iterable<Component> {
+public class Widget extends ClientAccessor implements Identifiable, Validatable, Iterable<Component>, Nillable<Widget> {
 	private final int index;
 	private CacheComponentConfig[] cacheConfigs;
+
+	public static final Widget NIL = new Widget(org.powerbot.script.ClientContext.ctx(), -1);
 
 	/**
 	 * Represents an interactive display window which stores {@link Component}s
@@ -135,5 +137,10 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 		}
 		final Widget w = (Widget) o;
 		return w.index == index;
+	}
+
+	@Override
+	public Widget nil() {
+		return NIL;
 	}
 }

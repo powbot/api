@@ -291,7 +291,7 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 
 	@Override
 	public Widget nil() {
-		return new Widget(ctx, 0);
+		return Widget.NIL;
 	}
 
 	/**

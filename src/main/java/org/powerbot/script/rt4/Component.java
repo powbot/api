@@ -6,6 +6,7 @@ import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.IWidgetNode;
 import org.powerbot.script.Calculations;
 import org.powerbot.script.Identifiable;
+import org.powerbot.script.Nillable;
 import org.powerbot.script.Textable;
 
 import java.awt.*;
@@ -15,7 +16,9 @@ import java.util.concurrent.Callable;
  * Component
  * An object representing a graphical component of the Runescape user interfcace.
  */
-public class Component extends Interactive implements Textable, Identifiable {
+public class Component extends Interactive implements Textable, Identifiable, Nillable<Component> {
+	public static final Component NIL = new Component(org.powerbot.script.ClientContext.ctx(), Widget.NIL, -1);
+
 	public static final Color TARGET_STROKE_COLOR = new Color(0, 255, 0, 150);
 	public static final Color TARGET_FILL_COLOR = new Color(0, 0, 0, 50);
 
@@ -391,5 +394,10 @@ public class Component extends Interactive implements Textable, Identifiable {
 				return lastTarget;
 			}
 		};
+	}
+
+	@Override
+	public Component nil() {
+		return NIL;
 	}
 }

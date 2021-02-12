@@ -49,6 +49,6 @@ public class Npcs extends BasicQuery<Npc> implements Streamable<NpcStream> {
 
 	@Override
 	public Npc nil() {
-		return new Npc(ctx, null);
+		return Npc.NIL;
 	}
 }

@@ -59,6 +59,6 @@ public class Players extends PlayerQuery<Player> implements Streamable<PlayerStr
 
 	@Override
 	public Player nil() {
-		return new Player(ctx, null);
+		return Player.NIL;
 	}
 }

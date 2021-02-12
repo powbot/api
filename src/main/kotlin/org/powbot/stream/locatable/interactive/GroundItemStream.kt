@@ -10,4 +10,9 @@ import java.util.stream.*
 class GroundItemStream(ctx: ClientContext, stream: Stream<GroundItem>) : InteractiveStream<GroundItem, GroundItemStream>(ctx, stream),
     ActionableOps<GroundItem, GroundItemStream>,
     LocatableOps<GroundItem, GroundItemStream>,
-    NameableOps<GroundItem, GroundItemStream>
+    NameableOps<GroundItem, GroundItemStream> {
+
+    override fun nil(): GroundItem {
+        return GroundItem.NIL
+    }
+}
