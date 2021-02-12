@@ -13,7 +13,7 @@ public class PlayerComposite extends Proxy<IPlayerComposite> {
 
 	public long getUid() {
 		if (!isNull()) {
-			return wrapped.get().getUid();
+			return get().getUid();
 		}
 
 		return -1;
