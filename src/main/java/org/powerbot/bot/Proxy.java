@@ -12,7 +12,7 @@ public class Proxy<T> {
 	private static final Map<Class<? extends Proxy>, Class> typeCache = new HashMap<>();
 
 	public Proxy(final T wrapped) {
-		this(wrapped, wrapped != null && !wrapped.getClass().getCanonicalName().contains("Impl"));
+		this(wrapped, wrapped == null || !wrapped.getClass().getCanonicalName().contains("Impl"));
 	}
 
 	public Proxy(final T wrapped, final boolean wrap) {
@@ -58,7 +58,9 @@ public class Proxy<T> {
 		if (wrapped != null)
 			return System.identityHashCode(wrapped.get());
 		if (obj != null)
-			return obj.hashCode();
+			if(!obj.getClass().getCanonicalName().contains("Impl"))
+			return System.identityHashCode(obj);
+			else return obj.hashCode();
 
 		return 0;
 	}

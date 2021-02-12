@@ -1,7 +1,10 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.*;
 import org.powerbot.script.Nillable;
+import org.powerbot.bot.rt4.client.internal.IModel;
+import org.powerbot.bot.rt4.client.internal.INode;
 
 import java.awt.*;
 
@@ -95,5 +98,24 @@ public class Player extends Actor implements Nillable<Player> {
 	@Override
 	public Player nil() {
 		return NIL;
+  }
+  
+	public long getModelCacheId() {
+		final PlayerComposite composite = player != null ? player.getComposite() : null;
+		if (composite == null) {
+			return -1;
+		}
+
+		return composite.getUid();
+	}
+
+	@Override
+	public Cache getModelCache() {
+		final Client client = ctx.client();
+		if (client == null || player == null) {
+			return null;
+		}
+
+		return client.getPlayerModelCache();
 	}
 }

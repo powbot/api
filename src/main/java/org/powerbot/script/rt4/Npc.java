@@ -5,6 +5,7 @@ import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
 import org.powerbot.bot.rt4.client.NpcConfig;
 import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.bot.rt4.client.internal.IModel;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IVarbit;
@@ -157,5 +158,19 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 	@Override
 	public Npc nil() {
 		return NIL;
+  }
+  
+	public long getModelCacheId() {
+		return id();
+	}
+
+	@Override
+	public Cache getModelCache() {
+		final Client client = ctx.client();
+		if (client == null) {
+			return null;
+		}
+
+		return client.getNpcModelCache();
 	}
 }
