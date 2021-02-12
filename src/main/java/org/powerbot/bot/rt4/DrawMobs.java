@@ -24,6 +24,9 @@ public class DrawMobs extends ClientAccessor implements PaintListener {
 			if (location.x == -1 || location.y == -1) {
 				continue;
 			}
+			if (npc.tile().distanceTo(local) <= 2) {
+				npc.drawModel(render);
+			}
 			final Polygon hull = npc.hull();
 			if (hull != null) {
 				render.drawPolygon(hull);

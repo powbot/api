@@ -1,8 +1,12 @@
 package org.powerbot.script;
 
+import org.powerbot.bot.rt4.HashTable;
+import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.internal.IModel;
+import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.INpc;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
+import org.powerbot.script.rt4.CacheModelConfig;
 import org.powerbot.script.rt4.Model;
 
 import java.awt.*;
@@ -49,21 +53,49 @@ public interface Modelable {
 	 */
 	boolean isAnimated();
 
+	default long getModelCacheId() {
+		return -1L;
+	}
+
+	default Cache getModelCache() {
+		return null;
+	}
 	/**
 	 * Load the model from the cache
 	 * @return model
 	 */
 	default Model model() {
-		Model model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
-		if (model == null && renderable() instanceof IModel) {
+		if (renderable() instanceof IModel) {
 			final IModel renderableModel = (IModel) renderable();
-			ctx().modelCache.onRender(renderable(), renderableModel.getVerticesX().clone(), renderableModel.getVerticesY().clone(),
+			return new Model(ctx(), renderableModel.getVerticesX().clone(), renderableModel.getVerticesY().clone(),
 				renderableModel.getVerticesZ().clone(), renderableModel.getIndicesX().clone(), renderableModel.getIndicesY().clone(),
 				renderableModel.getIndicesZ().clone(), modelOrientation());
-
-			model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
 		}
-		return model;
+
+		final Cache cache = getModelCache();
+		final long modelCacheId = getModelCacheId();
+		if (cache != null && modelCacheId > 0) {
+			final org.powerbot.bot.rt4.HashTable<INode> table = new HashTable<>(cache.get().getTable());
+			final INode modelNode = table.lookup(modelCacheId);
+			if (modelNode instanceof IModel) {
+				return new Model(ctx(), ((IModel) modelNode).getVerticesX().clone(),
+					((IModel) modelNode).getVerticesY().clone(), ((IModel) modelNode).getVerticesZ().clone(),
+					((IModel) modelNode).getIndicesX().clone(), ((IModel) modelNode).getIndicesY().clone(),
+					((IModel) modelNode).getIndicesZ().clone(), modelOrientation());
+			}
+		}
+
+		int[] modelIds = modelIds();
+		if (modelIds != null) {
+			CacheModelConfig cacheModel = ctx().bot().getCacheWorker().modelConfigLoader().byIds(modelIds);
+			if (cacheModel != null && cacheModel.valid()) {
+				return new Model(ctx(), cacheModel.verticesX, cacheModel.verticesY, cacheModel.verticesZ,
+					cacheModel.indicesX, cacheModel.indicesY, cacheModel.indicesZ, modelOrientation()
+				);
+			}
+		}
+
+		return null;
 	}
 
 	default Polygon hull() {

@@ -1,6 +1,9 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IModel;
+import org.powerbot.bot.rt4.client.internal.INode;
 
 import java.awt.*;
 
@@ -88,5 +91,25 @@ public class Player extends Actor {
 	@Override
 	public int[] modelIds() {
 		return null;
+	}
+
+	@Override
+	public long getModelCacheId() {
+		final PlayerComposite composite = player != null ? player.getComposite() : null;
+		if (composite == null) {
+			return -1;
+		}
+
+		return composite.getUid();
+	}
+
+	@Override
+	public Cache getModelCache() {
+		final Client client = ctx.client();
+		if (client == null || player == null) {
+			return null;
+		}
+
+		return client.getPlayerModelCache();
 	}
 }

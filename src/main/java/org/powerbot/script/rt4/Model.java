@@ -32,6 +32,13 @@ public class Model {
 
 	public Model(final int[] verticesX, final int[] verticesY, final int[] verticesZ,
 				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final int orientation) {
+		this(org.powerbot.script.ClientContext.ctx(), verticesX, verticesY, verticesZ,
+			indicesX, indicesY, indicesZ, orientation);
+	}
+
+	public Model(final ClientContext ctx, final int[] verticesX, final int[] verticesY, final int[] verticesZ,
+				 final int[] indicesX, final int[] indicesY, final int[] indicesZ, final int orientation) {
+		this.ctx = ctx;
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;
 		this.verticesZ = verticesZ;
@@ -199,7 +206,7 @@ public class Model {
 		final int yTotal = points.stream().mapToInt(p -> p.y).sum();
 		final Point central = new Point(xTotal / points.size(), yTotal / points.size());
 
-		return points.stream().filter(p -> ctx.game.inViewport(p, isResizable)).sorted((a, b) -> {
+		List<Point> orderedPoints = points.stream().filter(p -> ctx.game.inViewport(p, isResizable)).sorted((a, b) -> {
 			double distA = Math.sqrt(((central.x - a.x) * (central.x - a.x)) + ((central.y - a.y) * (central.y - a.y)));
 			double distB = Math.sqrt(((central.x - b.x) * (central.x - b.x)) + ((central.y - b.y) * (central.y - b.y)));
 
@@ -209,7 +216,13 @@ public class Model {
 				return 0;
 			}
 			return 1;
-		}).collect(Collectors.toList()).get(0);
+		}).collect(Collectors.toList());
+
+		if (orderedPoints.size() > 0) {
+			return orderedPoints.get(0);
+		}
+
+		return new Point(-1, -1);
 	}
 
 	public void mirrorModel() {
