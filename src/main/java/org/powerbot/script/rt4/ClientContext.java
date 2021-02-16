@@ -39,7 +39,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 	public final ActionEmitter actionEmitter;
 	public static final ModelCache modelCache = new ModelCache();
 	public static final InventoryWatcher inventoryWatcher = new InventoryWatcher();
-
+	public static final ScriptStateWatcher scriptStateWatcher = new ScriptStateWatcher();
 
 	private ClientContext(final Bot<ClientContext> bot) {
 		super(bot);
@@ -109,5 +109,9 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 	 */
 	public static ClientContext newContext(final Bot<ClientContext> bot) {
 		return new ClientContext(bot);
+	}
+
+	public boolean isScriptRunning() {
+		return scriptStateWatcher.getState() == ScriptState.Running;
 	}
 }
