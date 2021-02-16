@@ -322,7 +322,7 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 
 	@Override
 	public Item nil() {
-		return new Item(ctx, null, -1, -1, -1);
+		return Item.NIL;
 	}
 
 	/**

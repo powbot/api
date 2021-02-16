@@ -103,7 +103,7 @@ public class Components extends AbstractQuery<Components, Component, ClientConte
 
 	@Override
 	public Component nil() {
-		return ctx.widgets.component(0, 0);
+		return Component.NIL;
 	}
 
 	/**

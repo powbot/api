@@ -13,8 +13,9 @@ import java.util.concurrent.Callable;
 /**
  * GroundItem
  */
-public class GroundItem extends GenericItem implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable {
+public class GroundItem extends GenericItem implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable, Nillable<GroundItem> {
 	public static final Color TARGET_COLOR = new Color(255, 255, 0, 75);
+	public static final GroundItem NIL = new GroundItem(ClientContext.ctx(), Tile.NIL, new ItemNode(null));
 	private final TileMatrix tile;
 	private final ItemNode node;
 
@@ -128,4 +129,8 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 		return ScreenPosition.of(ctx, this);
 	}
 
+	@Override
+	public GroundItem nil() {
+		return NIL;
+	}
 }

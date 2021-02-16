@@ -4,4 +4,6 @@ public interface IPlayerComposite {
 
 	int[] getAppearance();
 
+	long getUid();
+
 }

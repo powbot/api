@@ -41,9 +41,14 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 				if (!object.inViewport()) {
 					continue;
 				}
+
 				final Point p = object.tile().distanceTo(player) > 4 ? object.basePoint() : object.centerPoint();
 				if (p.x == -1) {
 					continue;
+				}
+
+				if (object.tile().distanceTo(player) <= 2) {
+					object.drawModel(render);
 				}
 				final Polygon hull = object.hull();
 				if (hull != null && object.tile().distanceTo(player) <= 4) {

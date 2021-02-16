@@ -8,4 +8,8 @@ import java.util.stream.Stream
 
 open class WorldStream(ctx: ClientContext, stream: Stream<World>) :
     SimpleStream<World, WorldStream>(ctx, stream),
-    IdentifiableOps<World, WorldStream>
+    IdentifiableOps<World, WorldStream> {
+    override fun nil(): World {
+        return World.NIL
+    }
+}

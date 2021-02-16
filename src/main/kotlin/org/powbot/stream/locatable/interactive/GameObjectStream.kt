@@ -10,4 +10,8 @@ import java.util.stream.*
 class GameObjectStream(ctx: ClientContext, stream: Stream<GameObject>) : InteractiveStream<GameObject, GameObjectStream>(ctx, stream),
     ActionableOps<GameObject, GameObjectStream>,
     LocatableOps<GameObject, GameObjectStream>,
-    NameableOps<GameObject, GameObjectStream>
+    NameableOps<GameObject, GameObjectStream> {
+    override fun nil(): GameObject {
+        return GameObject.NIL
+    }
+}

@@ -6,5 +6,5 @@ import org.powerbot.script.Interactive
 import org.powerbot.script.rt4.ClientContext
 import java.util.stream.Stream
 
-open class InteractiveStream<T: Interactive, S: SimpleStream<T, S>>(ctx: ClientContext, stream: Stream<T>) : SimpleStream<T, S>(ctx, stream),
+abstract class InteractiveStream<T: Interactive, S: SimpleStream<T, S>>(ctx: ClientContext, stream: Stream<T>) : SimpleStream<T, S>(ctx, stream),
     ViewableOps<T, S>

@@ -3,7 +3,9 @@ package org.powerbot.script.rt4;
 import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.Cache;
 import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.PlayerComposite;
 import org.powerbot.bot.rt4.client.Varbit;
+import org.powerbot.bot.rt4.client.internal.IModel;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IRenderable;
@@ -17,9 +19,10 @@ import java.util.concurrent.Callable;
 /**
  * GameObject
  */
-public class GameObject extends Interactive implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable, Modelable {
+public class GameObject extends Interactive implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable, Modelable, Nillable<GameObject> {
 	public static final Color TARGET_COLOR = new Color(0, 255, 0, 20);
 	private static final int[] lookup;
+	public static final GameObject NIL = new GameObject(org.powerbot.script.ClientContext.ctx(), null, Type.UNKNOWN);
 
 	static {
 		lookup = new int[32];
@@ -255,7 +258,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public boolean valid() {
-		return this != ctx.objects.nil()
+		return this != NIL
 			&& !(object == null || object.object.isNull())
 			&& ctx.objects.select(this, 0).contains(this);
 	}
@@ -379,6 +382,11 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		return object.object.getRenderable();
 	}
 
+	@Override
+	public GameObject nil() {
+		return NIL;
+	}
+
 	public enum Type {
 		INTERACTIVE, BOUNDARY, WALL_DECORATION, FLOOR_DECORATION, UNKNOWN
 	}
@@ -406,5 +414,30 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	@Override
 	public Callable<Point> calculateScreenPosition() {
 		return ScreenPosition.of(ctx, this);
+	}
+
+	@Override
+	public long getModelCacheId() {
+		// This id doesn't seem to be right?
+
+		int type = object.getMeta() & 0x3f;
+		int face = modelOrientation();
+		int id = id();
+		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id);
+		if (c == null || c.meshType == null) {
+			return ((long) id << 10) + face;
+		}
+
+		return face + (type << 3) + ((long) id << 10);
+	}
+
+	@Override
+	public Cache getModelCache() {
+		final Client client = ctx.client();
+		if (client == null) {
+			return null;
+		}
+
+		return client.getObjectModelCache();
 	}
 }

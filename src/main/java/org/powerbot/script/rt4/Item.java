@@ -8,7 +8,9 @@ import java.util.concurrent.Callable;
 /**
  * Item
  */
-public class Item extends GenericItem implements Identifiable, Nameable, Stackable, Actionable {
+public class Item extends GenericItem implements Identifiable, Nameable, Stackable, Actionable, Nillable<Item> {
+	public static final Item NIL = new Item(org.powerbot.script.ClientContext.ctx(), Component.NIL);
+
 	public static final int WIDTH = 31;
 	public static final int HEIGHT = 31;
 	final Component component;
@@ -171,5 +173,10 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 				return lastTarget;
 			}
 		};
+	}
+
+	@Override
+	public Item nil() {
+		return NIL;
 	}
 }
