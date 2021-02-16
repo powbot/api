@@ -112,6 +112,19 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 	}
 
 	public boolean isScriptRunning() {
-		return scriptStateWatcher.getState() == ScriptState.Running;
+		if (scriptStateWatcher.getState() != ScriptState.Running) {
+			return false;
+		}
+
+		final AbstractScript script = scriptStateWatcher.getScript();
+		return script != null && !script.getManifest().properties().contains("category=Plugin;");
+	}
+
+	public boolean isPluginRunning() {
+		if (scriptStateWatcher.getState() != ScriptState.Running) {
+			return false;
+		}
+		final AbstractScript script = scriptStateWatcher.getScript();
+		return script != null && script.getManifest().properties().contains("category=Plugin;");
 	}
 }
