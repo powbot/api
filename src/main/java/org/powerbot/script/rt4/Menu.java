@@ -159,7 +159,6 @@ public class Menu extends ClientAccessor {
 		}
 
 		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 60)) {
-			System.out.println("Item is not in menu!");
 			return false;
 		}
 
@@ -169,7 +168,6 @@ public class Menu extends ClientAccessor {
 		}
 
 		if (!client.isMenuOpen()) {
-			System.out.println("Menu is not open, right clicking");
 			if (!ctx.input.click(false)) {
 				return false;
 			}

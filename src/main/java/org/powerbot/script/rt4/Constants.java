@@ -66,6 +66,10 @@ public final class Constants {
 	public static final int BANK_TABS_HIDDEN = 0xc0000000;
 	public static final int BANK_STATE = 115;
 
+	public static final int BANK_COLLECTION_BOX_CLOSE_BUTTON_WIDGET = getInt("BANK_COLLECTION_BOX_CLOSE_BUTTON_WIDGET");
+	public static final int BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT = getInt("BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT");
+	public static final int BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT_CHILD = getInt("BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT_CHILD");
+
 	public static final int DEPOSITBOX_WIDGET = getInt("DEPOSITBOX_WIDGET");
 	public static final int DEPOSITBOX_CLOSE = getInt("DEPOSITBOX_CLOSE");
 	public static final int DEPOSITBOX_INVENTORY = getInt("DEPOSITBOX_INVENTORY");

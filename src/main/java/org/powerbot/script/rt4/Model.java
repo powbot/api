@@ -96,9 +96,32 @@ public class Model {
 				return null;
 			}
 
-			final Point x = ctx.game.worldToScreen(localX - vertX[indX[i]], localY - vertZ[indX[i]], -vertY[indX[i]], resizable);
-			final Point y = ctx.game.worldToScreen(localX - vertX[indY[i]], localY - vertZ[indY[i]], -vertY[indY[i]], resizable);
-			final Point z = ctx.game.worldToScreen(localX - vertX[indZ[i]], localY - vertZ[indZ[i]], -vertY[indZ[i]], resizable);
+			int xIdx = indX[i];
+			int yIdx = indY[i];
+			int zIdx = indZ[i];
+			if (xIdx >= vertX.length || xIdx >= vertY.length || xIdx >= vertZ.length ||
+				yIdx >= vertX.length || yIdx >= vertY.length || yIdx >= vertZ.length ||
+				zIdx >= vertX.length || zIdx >= vertY.length || zIdx >= vertZ.length) {
+				return null;
+			}
+			final Point x = ctx.game.worldToScreen(
+				localX - vertX[xIdx],
+				localY - vertZ[xIdx],
+				-vertY[xIdx],
+				resizable
+			);
+			final Point y = ctx.game.worldToScreen(
+				localX - vertX[yIdx],
+				localY - vertZ[yIdx],
+				-vertY[yIdx],
+				resizable
+			);
+			final Point z = ctx.game.worldToScreen(
+				localX - vertX[zIdx],
+				localY - vertZ[zIdx],
+				-vertY[zIdx],
+				resizable
+			);
 
 			if (ctx.game.inViewport(x, resizable) && ctx.game.inViewport(y, resizable) && ctx.game.inViewport(z, resizable)) {
 				polys.add(new Polygon(
