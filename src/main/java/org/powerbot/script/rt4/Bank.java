@@ -130,7 +130,10 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		}
 		final Component closeCollectionBox = collectionBoxCloseBtn();
 		if (closeCollectionBox.valid()) {
-			if (!closeCollectionBox.interact("Exit")) {
+			if (!closeCollectionBox.click(true)) {
+				return false;
+			}
+			if (!Condition.wait(() -> !closeCollectionBox.valid())) {
 				return false;
 			}
 		}
