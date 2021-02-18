@@ -79,4 +79,21 @@ public class BoundaryObject extends BasicObject<IBoundaryObject> {
 
 		return -1;
 	}
+
+	@Override
+	public int[] modelOrientations() {
+		if (!isNull()) {
+			return new int[]{get().getOrientation1(), get().getOrientation2()};
+		}
+
+		return new int[]{-1, -1};
+	}
+
+	@Override
+	public IRenderable[] getRenderables() {
+		if (!isNull()) {
+			return new IRenderable[]{get().getRenderable1(), get().getRenderable2()};
+		}
+		return null;
+	}
 }

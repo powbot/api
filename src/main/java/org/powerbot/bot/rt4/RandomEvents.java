@@ -4,6 +4,8 @@ import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.*;
 
+import java.awt.*;
+
 public class RandomEvents extends Daemon<ClientContext> {
 
 	public RandomEvents(ClientContext ctx) {
@@ -56,6 +58,26 @@ public class RandomEvents extends Daemon<ClientContext> {
 						return !npc.valid();
 					}
 				}, 300, 12);
+			} else {
+				Player local = ctx.players.local();
+				Point randomTile = ctx.game.tileToMap(local.tile().derive(Random.nextInt(1, 5), Random.nextInt(1, 5)));
+				if (randomTile.x > 0) {
+					if (ctx.input.click(randomTile, true)) {
+						Condition.wait(new Condition.Check() {
+							@Override
+							public boolean poll() {
+								return local.inMotion();
+							}
+						}, 300, 3);
+						Condition.wait(new Condition.Check() {
+							@Override
+							public boolean poll() {
+								return !local.inMotion();
+							}
+						}, 300, 6);
+						return false;
+					}
+				}
 			}
 		}
 		return false;

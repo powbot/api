@@ -8,7 +8,7 @@ import org.powerbot.script.rt4.ClientContext
 import org.powerbot.script.rt4.Model
 import java.util.concurrent.ConcurrentHashMap
 
-data class TimedModelWrapper(var model: Model?, var animated: Boolean, var lastRequestTime: Long)
+data class TimedModelWrapper(var model: Model?, var lastRequestTime: Long)
 
 class ModelCache() : ModelRenderListener {
 
@@ -31,7 +31,7 @@ class ModelCache() : ModelRenderListener {
         }
     }
 
-    fun getModel(ctx: ClientContext, renderable: IRenderable?, animated: Boolean): Model? {
+    fun getModel(ctx: ClientContext, renderable: IRenderable?): Model? {
         if (renderable == null) {
             return null
         }
@@ -42,8 +42,7 @@ class ModelCache() : ModelRenderListener {
 
             wrapper?.model
         } else {
-
-            val wrapper = TimedModelWrapper(null, animated, System.currentTimeMillis())
+            val wrapper = TimedModelWrapper(null, System.currentTimeMillis())
 
             cache.put(renderable, wrapper)
 
@@ -65,7 +64,7 @@ class ModelCache() : ModelRenderListener {
         }
 
         val wrapper = cache[renderable]
-        if (wrapper != null && (wrapper.model == null || wrapper.animated)) {
+        if (wrapper != null && (wrapper.model == null)) {
             wrapper.model = if (wrapper.model != null)
                 wrapper.model!!.update(verticesX, verticesY, verticesZ, indicesX, indicesY, indicesZ, orientation)
             else
