@@ -74,16 +74,7 @@ public interface Modelable {
 			}
 
 			if (!ctx().bot().disableModelAnimations()) {
-				Model model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
-				if (model == null && renderable() instanceof IModel) {
-					final IModel renderableModel = (IModel) renderable();
-					ctx().modelCache.onRender(renderable(), renderableModel.getVerticesX().clone(), renderableModel.getVerticesY().clone(),
-						renderableModel.getVerticesZ().clone(), renderableModel.getIndicesX().clone(), renderableModel.getIndicesY().clone(),
-						renderableModel.getIndicesZ().clone(), modelOrientation());
-
-					return ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
-				}
-				return null;
+				return ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
 			}
 
 			final Cache cache = getModelCache();
