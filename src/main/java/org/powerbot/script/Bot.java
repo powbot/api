@@ -56,4 +56,6 @@ public abstract class Bot<C extends ClientContext<? extends Client>> {
 
 	public abstract Optional<IMobileClient> getMobileClient();
 
+	public abstract boolean disableModelAnimations();
+
 }
