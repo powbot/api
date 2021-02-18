@@ -160,14 +160,11 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 	@Override
 	public Callable<Point> calculateScreenPosition() {
 		return new Callable<>() {
-			private Point lastBasePoint;
 			private Point lastTarget;
 
 			@Override
 			public Point call() {
-				final Point currentBasePoint = basePoint();
-				if (lastBasePoint == null || currentBasePoint.distance(lastBasePoint) > 3) {
-					lastBasePoint = currentBasePoint;
+				if (lastTarget == null) {
 					lastTarget = nextPoint();
 				}
 				return lastTarget;
