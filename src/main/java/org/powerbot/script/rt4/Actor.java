@@ -467,11 +467,25 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		return actor != null ? actor.getZ() : 0;
 	}
 
-	@Override
+	@Deprecated
 	public IRenderable renderable() {
 		final org.powerbot.bot.rt4.client.Actor actor = getActor();
 
 		return actor != null ? (IRenderable) actor.get() : null;
+	}
+
+	@Override
+	public IRenderable[] renderables() {
+		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+
+		return actor != null ? new IRenderable[]{(IRenderable) actor.get()} : null;
+	}
+
+	@Override
+	public int[] modelOrientations() {
+		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+
+		return new int[]{actor != null ? (actor.getOrientation()) & 0x3FFF : 0};
 	}
 
 	@Override
@@ -482,11 +496,13 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Whether or not the actor is animating (animation() != -1)
+	 *
+	 * @return boolean
 	 */
-	@Override
+	@Deprecated
 	public boolean isAnimated() {
-		return true;
+		return animation() != -1;
 	}
 
 	@Override

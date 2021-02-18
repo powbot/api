@@ -377,9 +377,19 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		return c != null ? c.meshId : null;
 	}
 
-	@Override
+	@Deprecated
 	public IRenderable renderable() {
 		return object.object.getRenderable();
+	}
+
+	@Override
+	public IRenderable[] renderables() {
+		return object.object.getRenderables();
+	}
+
+	@Override
+	public int[] modelOrientations() {
+		return object.object.modelOrientations();
 	}
 
 	@Override
@@ -395,16 +405,19 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Deprecated
 	public int modelOrientation() {
 		return (object.object.getOrientation());
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns false, don't use
+	 *
+	 * @return boolean
 	 */
-	@Override
+	@Deprecated
 	public boolean isAnimated() {
-		return true;
+		return false;
 	}
 
 	public int meta() {

@@ -25,7 +25,14 @@ public abstract class BasicObject<T> extends Proxy<T> {
 
 	public abstract int getY2();
 
+	@Deprecated
 	public abstract IRenderable getRenderable();
+
+	public IRenderable[] getRenderables() {
+		return null;
+	}
+
+	public abstract int[] modelOrientations();
 
 	public abstract int getOrientation();
 }

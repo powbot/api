@@ -81,4 +81,22 @@ public class FloorObject extends BasicObject<IFloorObject> {
 
 		return -1;
 	}
+
+
+	@Override
+	public int[] modelOrientations() {
+		if (!isNull()) {
+			return new int[]{0};
+		}
+
+		return new int[]{-1};
+	}
+
+	@Override
+	public IRenderable[] getRenderables() {
+		if (!isNull()) {
+			return new IRenderable[]{get().getRenderable()};
+		}
+		return null;
+	}
 }

@@ -33,7 +33,10 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 			final FontMetrics metrics = render.getFontMetrics();
 			final int textHeight = metrics.getHeight();
 
-			for (final GameObject object : ctx.objects.toStream().within(8).filter(o -> o.type() == type).collect(Collectors.toList())) {
+			for (final GameObject object : ctx.objects.toStream()
+				.within(8).filter(o -> o.type() == type)
+//				.name("Blast Furnace")
+				.collect(Collectors.toList())) {
 				final Tile t = object.tile();
 				if (t == null) {
 					continue;
