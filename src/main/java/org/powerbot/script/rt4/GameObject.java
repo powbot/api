@@ -331,7 +331,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public int hashCode() {
-		return object != null ? object.getMeta() : 0;
+		return object != null ? object.hashCode() : 0;
 	}
 
 	@Override

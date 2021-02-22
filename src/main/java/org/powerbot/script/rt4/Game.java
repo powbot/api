@@ -320,7 +320,7 @@ public class Game extends ClientAccessor {
 	 */
 	public boolean pointInViewport(final int x, final int y, final boolean resizable) {
 		if (ctx.client().isMobile()) {
-			return true;
+			return x >= 0 && y >= 0 && x <= ctx.client().getClientWidth() && y <= ctx.client().getClientHeight();
 		} else if (resizable) {
 			final Dimension d = dimensions();
 			return x >= 0 && y >= 0 && (x > 520 || y <= d.height - 170) &&
