@@ -213,5 +213,5 @@ public final class Constants {
 		335 << 16 | 15,
 	};
 	//Textures of "X" close button
-	public static final int[] CLOSE_BUTTON_TEXTURES = {831, 535, 537, 539};
+	public static final int[] CLOSE_BUTTON_TEXTURES = {831, 535, 537, 539, 541};
 }
