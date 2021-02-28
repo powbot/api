@@ -121,7 +121,7 @@ public interface Modelable {
 					}
 				}
 			} catch (Exception e) {
-				if (System.getenv("DEBUG_MDOELS").equals("true")) {
+				if (System.getenv("DEBUG_MODELS").equals("true")) {
 					e.printStackTrace();
 				}
 				//Sentry.captureException(e);

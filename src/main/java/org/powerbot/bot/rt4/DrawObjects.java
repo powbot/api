@@ -35,7 +35,6 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 
 			for (final GameObject object : ctx.objects.toStream()
 				.within(8).filter(o -> o.type() == type)
-//				.name("Blast Furnace")
 				.collect(Collectors.toList())) {
 				final Tile t = object.tile();
 				if (t == null) {
