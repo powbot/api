@@ -31,7 +31,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 	}
 
-	private final BasicObject<IGameObject> object;
+	private final BasicObject object;
 	private final Type type;
 	private final BoundingModel defaultBounds = new BoundingModel(ctx, -32, 32, -64, 0, -32, 32) {
 		@Override
