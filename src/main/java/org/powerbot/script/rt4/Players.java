@@ -2,7 +2,8 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.locatable.interactive.PlayerStream;
 import org.powbot.stream.Streamable;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IPlayer;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,19 +22,19 @@ public class Players extends PlayerQuery<Player> implements Streamable<PlayerStr
 	@Override
 	public List<Player> get() {
 		final List<Player> r = new CopyOnWriteArrayList<>();
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return r;
 		}
 		final int[] indices = client.getPlayerIndices();
-		final org.powerbot.bot.rt4.client.Player[] players = client.getPlayers();
+		final IPlayer[] players = client.getPlayers();
 		if (indices == null || players == null) {
 			return r;
 		}
 		for (int index = 0; index < Math.min(client.getPlayerCount(), indices.length); index++) {
 			final int k = indices[index];
-			final org.powerbot.bot.rt4.client.Player p = players[k];
-			if (!p.isNull()) {
+			final IPlayer p = players[k];
+			if (p != null) {
 				r.add(new Player(ctx, p));
 			}
 		}
@@ -42,7 +43,7 @@ public class Players extends PlayerQuery<Player> implements Streamable<PlayerStr
 
 	public Player local() {
 		final Player r = new Player(ctx, null);
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return r;
 		}

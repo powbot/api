@@ -10,8 +10,32 @@ public interface IBasicObject {
 
 	int getY();
 
+	default int getX1() {
+		return -1;
+	}
+
+	default int getY1() {
+		return -1;
+	}
+
+	default int getX2() {
+		return -1;
+	}
+
+	default int getY2() {
+		return -1;
+	}
+
 	int getZ();
 
-	boolean isNull();
+	IRenderable[] getRenderables();
+
+	default int getOrientation() {
+		return 0;
+	}
+
+	default int[] modelOrientations() {
+		return null;
+	}
 
 }

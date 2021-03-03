@@ -2,8 +2,10 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.locatable.interactive.GameObjectStream;
 import org.powbot.stream.Streamable;
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.Tile;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IBasicObject;
+import org.powerbot.bot.rt4.client.internal.IGameObject;
+import org.powerbot.bot.rt4.client.internal.ITile;
 import org.powerbot.script.Locatable;
 
 import java.util.ArrayList;
@@ -42,16 +44,16 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 	public List<GameObject> get(final Locatable l, int radius) {
 		radius = Math.min(radius, 110);
 		final List<GameObject> r = new ArrayList<>();
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return r;
 		}
-		final Tile[][][] tiles = client.getLandscape().getTiles();
+		final ITile[][][] tiles = client.getLandscape().getTiles();
 		final int floor = client.getFloor();
 		if (floor < 0 || floor >= tiles.length) {
 			return r;
 		}
-		final Tile[][] rows = tiles[floor];
+		final ITile[][] rows = tiles[floor];
 		final HashSet<GameObject> set = new HashSet<>();
 		int start_x = 0, end_x = Integer.MAX_VALUE, start_y = 0, end_y = Integer.MAX_VALUE;
 		if (radius >= 0) {
@@ -65,22 +67,22 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 			}
 		}
 		for (int x = Math.max(0, start_x); x <= Math.min(end_x, rows.length - 1); x++) {
-			final Tile[] col = rows[x];
+			final ITile[] col = rows[x];
 			for (int y = Math.max(0, start_y); y <= Math.min(end_y, col.length - 1); y++) {
-				final Tile tile = col[y];
-				if (tile.isNull()) {
+				final ITile tile = col[y];
+				if (tile == null) {
 					continue;
 				}
 
-				for (final org.powerbot.bot.rt4.client.BasicObject obj :
-					new org.powerbot.bot.rt4.client.BasicObject[]{tile.getBoundaryObject(), tile.getFloorObject(), tile.getWallObject()}) {
-					if (!obj.isNull()) {
-						set.add(new GameObject(ctx, new BasicObject(obj), getType(obj)));
+				for (final IBasicObject obj :
+					new IBasicObject[]{tile.getBoundaryObject(), tile.getFloorObject(), tile.getWallObject()}) {
+					if (obj != null) {
+						set.add(new GameObject(ctx, new BasicObject<>(obj), getType(obj)));
 					}
 				}
-				for (final org.powerbot.bot.rt4.client.GameObject gameObject : tile.getGameObjects()) {
-					if (!gameObject.isNull()) {
-						set.add(new GameObject(ctx, new BasicObject(gameObject), getType(gameObject)));
+				for (final IGameObject gameObject : tile.getGameObjects()) {
+					if (gameObject != null) {
+						set.add(new GameObject(ctx, new BasicObject<>(gameObject), getType(gameObject)));
 					}
 				}
 			}
@@ -88,7 +90,7 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 		return new ArrayList<>(set);
 	}
 
-	private GameObject.Type getType(org.powerbot.bot.rt4.client.BasicObject o) {
+	private GameObject.Type getType(IBasicObject o) {
 		final int t = o.getMeta() & 0x3f;
 		if (t == 0 || t == 1 || t == 9) {
 			return GameObject.Type.BOUNDARY;

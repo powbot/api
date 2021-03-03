@@ -1,13 +1,18 @@
 package org.powerbot.bot.rt4.client.extended;
 
-import org.powerbot.bot.rt4.client.Projectile;
 import org.powerbot.bot.rt4.client.internal.IActor;
 import org.powerbot.bot.rt4.client.internal.IProjectile;
+import org.powerbot.script.Client;
 import org.powerbot.script.rt4.GroundItem;
 
 import java.awt.*;
 
-public interface IMobileClient {
+public interface IMobileClient extends Client {
+
+	@Override
+	default boolean isMobile() {
+		return false;
+	}
 
 	int getTileHeight(int x, int y, int z);
 

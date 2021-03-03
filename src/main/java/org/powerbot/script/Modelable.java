@@ -1,11 +1,7 @@
 package org.powerbot.script;
 
 import org.powerbot.bot.rt4.HashTable;
-import org.powerbot.bot.rt4.client.Cache;
-import org.powerbot.bot.rt4.client.internal.IModel;
-import org.powerbot.bot.rt4.client.internal.INode;
-import org.powerbot.bot.rt4.client.internal.INpc;
-import org.powerbot.bot.rt4.client.internal.IRenderable;
+import org.powerbot.bot.rt4.client.internal.*;
 import org.powerbot.script.rt4.CacheModelConfig;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Model;
@@ -33,13 +29,6 @@ public interface Modelable {
 	 */
 	int localY();
 
-	/**
-	 * The orientation of the entity (which way it's facing)
-	 *
-	 * @return model orientation
-	 */
-	int modelOrientation();
-
 
 	/**
 	 * The orientations of the entity
@@ -64,7 +53,7 @@ public interface Modelable {
 		return -1L;
 	}
 
-	default Cache getModelCache() {
+	default ICache getModelCache() {
 		return null;
 	}
 
@@ -77,7 +66,8 @@ public interface Modelable {
 		IRenderable[] renderables = renderables();
 		for (int i = 0; i < renderables.length; i++) {
 			IRenderable renderable = renderables[i];
-			int orientation = modelOrientations()[i];
+			int[] orientations = modelOrientations();
+			int orientation = orientations != null && orientations.length > i ? orientations[i] : 0;
 
 			try {
 				if (renderable == null) {
@@ -97,10 +87,10 @@ public interface Modelable {
 						return model;
 					}
 				} else {
-					final Cache cache = getModelCache();
+					final ICache cache = getModelCache();
 					final long modelCacheId = getModelCacheId();
 					if (cache != null && modelCacheId > 0) {
-						final HashTable<INode> table = new HashTable<>(cache.get().getTable());
+						final HashTable<INode> table = new HashTable<>(cache.getTable());
 						final INode modelNode = table.lookup(modelCacheId);
 						if (modelNode instanceof IModel) {
 							return new Model(ctx(), ((IModel) modelNode).getVerticesX().clone(),

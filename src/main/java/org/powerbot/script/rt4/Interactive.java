@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.input.MouseMovement;
 import org.powerbot.script.*;
+import org.powerbot.script.action.Emittable;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -94,6 +95,11 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final String action) {
+		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
+			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
+			return true;
+		}
+
 		return click(Menu.filter(action));
 	}
 
@@ -102,6 +108,11 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final String action, final String option) {
+		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
+			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
+			return true;
+		}
+
 		return click(Menu.filter(action, option));
 	}
 
@@ -118,6 +129,11 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final String action) {
+		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
+			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
+			return true;
+		}
+
 		return interact(true, action);
 	}
 
@@ -126,6 +142,11 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final String action, final String option) {
+		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
+			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
+			return true;
+		}
+
 		return interact(true, action, option);
 	}
 
@@ -141,6 +162,11 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final boolean auto, final String action) {
+		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
+			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
+			return true;
+		}
+
 		return interact(auto, Menu.filter(action));
 	}
 
@@ -149,6 +175,11 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final boolean auto, final String action, final String option) {
+		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
+			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
+			return true;
+		}
+
 		return interact(auto, Menu.filter(action, option));
 	}
 

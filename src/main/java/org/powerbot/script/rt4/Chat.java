@@ -91,7 +91,7 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 
 	private Component getContinue() {
 		for (final int[] a : Constants.CHAT_CONTINUES) {
-			final Component c = ctx.components.select(false, a[0]).textContains("Click here to continue").poll();
+			final Component c = ctx.components.select(a.length > 2, a[0]).textContains("Click here to continue").poll();
 			if (!c.valid()) {
 				continue;
 			}

@@ -3,7 +3,7 @@ package org.powerbot.script.rt4;
 import org.powbot.input.MouseMovement;
 import org.powbot.walking.FailureReason;
 import org.powbot.walking.WebWalkingResult;
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Locatable;
 import org.powerbot.script.Random;
@@ -54,7 +54,7 @@ public class Movement extends ClientAccessor {
 	 * @return The destination of the player.
 	 */
 	public Tile destination() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return Tile.NIL;
 		}
@@ -157,7 +157,7 @@ public class Movement extends ClientAccessor {
 	 * @return The energy of the player, which is 0-100.
 	 */
 	public int energyLevel() {
-		final Client c = ctx.client();
+		final IClient c = ctx.client();
 		return c != null ? c.getRunPercentage() : -1;
 	}
 

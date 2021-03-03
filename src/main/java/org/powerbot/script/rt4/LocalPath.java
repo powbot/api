@@ -1,7 +1,9 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.ICollisionMap;
 import org.powerbot.script.Tile;
 import org.powerbot.script.*;
 
@@ -27,13 +29,13 @@ public class LocalPath extends Path {
 	}
 
 	static Graph getGraph(final ClientContext ctx) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return null;
 		}
 		final int floor = client.getFloor();
-		final CollisionMap[] maps = client.getCollisionMaps();
-		final CollisionMap map;
+		final ICollisionMap[] maps = client.getCollisionMaps();
+		final ICollisionMap map;
 		if (maps == null || floor < 0 || floor >= maps.length || (map = maps[floor]) == null) {
 			return null;
 		}

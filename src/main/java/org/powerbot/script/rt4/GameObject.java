@@ -1,16 +1,12 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
-import org.powerbot.bot.rt4.client.Cache;
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.PlayerComposite;
-import org.powerbot.bot.rt4.client.Varbit;
-import org.powerbot.bot.rt4.client.internal.IModel;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.*;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
-import org.powerbot.bot.rt4.client.internal.INode;
-import org.powerbot.bot.rt4.client.internal.IRenderable;
-import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.*;
+import org.powerbot.script.action.Emittable;
+import org.powerbot.script.action.ObjectAction;
 import org.powerbot.util.ScreenPosition;
 
 import java.awt.*;
@@ -19,7 +15,9 @@ import java.util.concurrent.Callable;
 /**
  * GameObject
  */
-public class GameObject extends Interactive implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable, Modelable, Nillable<GameObject> {
+public class GameObject extends Interactive implements Nameable, InteractiveEntity, Identifiable, Validatable,
+	Actionable, Modelable, Nillable<GameObject>, Emittable<ObjectAction> {
+
 	public static final Color TARGET_COLOR = new Color(0, 255, 0, 20);
 	private static final int[] lookup;
 	public static final GameObject NIL = new GameObject(org.powerbot.script.ClientContext.ctx(), null, Type.UNKNOWN);
@@ -33,7 +31,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 	}
 
-	private final BasicObject object;
+	private final BasicObject<IGameObject> object;
 	private final Type type;
 	private final BoundingModel defaultBounds = new BoundingModel(ctx, -32, 32, -64, 0, -32, 32) {
 		@Override
@@ -70,7 +68,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	}
 
 	public int mainId() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return -1;
 		}
@@ -79,7 +77,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public int id() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return -1;
 		}
@@ -95,13 +93,13 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 		if (c.stageOperationId != -1) {
 			if (ctx.client().isMobile()) {
-				index = ((IMobileClient) ctx.client().get()).getObjectConfigIndex(c.stageOperationId);
+				index = ((IMobileClient) ctx.client()).getObjectConfigIndex(c.stageOperationId);
 			} else {
-				final Cache cache = client.getVarbitCache();
-				final HashTable<INode> table = new HashTable<>(cache.get().getTable());
+				final ICache cache = client.getVarbitCache();
+				final HashTable<INode> table = new HashTable<>(cache.getTable());
 				final INode varbitNode = table.lookup(c.stageOperationId);
 				if (varbitNode instanceof IVarbit) {
-					final Varbit varBit = new Varbit((IVarbit) varbitNode);
+					final IVarbit varBit = (IVarbit) varbitNode;
 					final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
 					index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
 				} else {
@@ -125,6 +123,11 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public String name() {
+		final String raw = rawName();
+		return raw != null ? StringUtils.stripHtml(raw) : "";
+	}
+
+	public String rawName() {
 		if (object == null) {
 			return "";
 		}
@@ -134,11 +137,11 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 			c2 = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
 		if (c2 != null) {
 			if (c1 != null && c2.name.equals("null")) {
-				return StringUtils.stripHtml(c1.name);
+				return c1.name;
 			}
-			return StringUtils.stripHtml(c2.name);
+			return c2.name;
 		} else if (c1 != null) {
-			return StringUtils.stripHtml(c1.name);
+			return c1.name;
 		}
 		return "";
 	}
@@ -259,13 +262,13 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	@Override
 	public boolean valid() {
 		return this != NIL
-			&& !(object == null || object.object.isNull())
+			&& !(object == null || object.object == null)
 			&& ctx.objects.select(this, 0).contains(this);
 	}
 
 	@Override
 	public Tile tile() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		final int r = relative();
 		final int rx = r >> 16, rz = r & 0xffff;
 		if (client != null && rx != 0 && rz != 0) {
@@ -377,11 +380,6 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		return c != null ? c.meshId : null;
 	}
 
-	@Deprecated
-	public IRenderable renderable() {
-		return object.object.getRenderable();
-	}
-
 	@Override
 	public IRenderable[] renderables() {
 		return object.object.getRenderables();
@@ -397,17 +395,18 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		return NIL;
 	}
 
-	public enum Type {
-		INTERACTIVE, BOUNDARY, WALL_DECORATION, FLOOR_DECORATION, UNKNOWN
+	@Override
+	public ObjectAction createAction(String action) {
+		return createAction(action, true);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	@Deprecated
-	public int modelOrientation() {
-		return (object.object.getOrientation());
+	public ObjectAction createAction(String action, boolean async) {
+		return new ObjectAction().setGameObject(this).setInteraction(action).setAsync(async);
+	}
+
+	public enum Type {
+		INTERACTIVE, BOUNDARY, WALL_DECORATION, FLOOR_DECORATION, UNKNOWN
 	}
 
 	/**
@@ -432,9 +431,10 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	@Override
 	public long getModelCacheId() {
 		// This id doesn't seem to be right?
+		int[] orientations = modelOrientations();
 
 		int type = object.getMeta() & 0x3f;
-		int face = modelOrientation();
+		int face =  orientations != null ? orientations[0] : 0;
 		int id = id();
 		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id);
 		if (c == null || c.meshType == null) {
@@ -445,8 +445,8 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	}
 
 	@Override
-	public Cache getModelCache() {
-		final Client client = ctx.client();
+	public ICache getModelCache() {
+		final IClient client = ctx.client();
 		if (client == null) {
 			return null;
 		}

@@ -70,6 +70,9 @@ public final class Constants {
 	public static final int BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT = getInt("BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT");
 	public static final int BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT_CHILD = getInt("BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT_CHILD");
 
+	public static final int DEATH_CHAT_WIDGET_ID = getInt("DEATH_CHAT_WIDGET_ID");
+	public static final int DEATH_CHAT_WIDGET_COMPONENT_ID = getInt("DEATH_CHAT_WIDGET_COMPONENT_ID");
+
 	public static final int DEPOSITBOX_WIDGET = getInt("DEPOSITBOX_WIDGET");
 	public static final int DEPOSITBOX_CLOSE = getInt("DEPOSITBOX_CLOSE");
 	public static final int DEPOSITBOX_INVENTORY = getInt("DEPOSITBOX_INVENTORY");
@@ -181,6 +184,10 @@ public final class Constants {
 		{229, 1},  //acknowledge
 		{233, 3},  //skill level-up
 		{11, 3},   //at tutorials island
+		{11, 4},   //at death
+		{193, 0, 2},   //at death
+		{193, 3},   //at death
+		{633, 0, 2},   //at death
 	};
 	public static final int[] CHAT_OPTIONS = {
 		1, 2, 3, 4, 5

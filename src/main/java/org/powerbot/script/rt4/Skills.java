@@ -1,6 +1,6 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
 
 /**
  * Skills
@@ -81,7 +81,7 @@ public class Skills extends ClientAccessor {
 	 * @return the experience at the specified index
 	 */
 	public int[] realLevels() {
-		final Client c = ctx.client();
+		final IClient c = ctx.client();
 		final int[] arr = c != null ? c.getSkillLevels2() : new int[0];
 		return arr != null ? arr : new int[0];
 	}
@@ -93,7 +93,7 @@ public class Skills extends ClientAccessor {
 	 * @return the experience at the specified index
 	 */
 	public int[] levels() {
-		final Client c = ctx.client();
+		final IClient c = ctx.client();
 		final int[] arr = c != null ? c.getSkillLevels1() : new int[0];
 		return arr != null ? arr : new int[0];
 	}
@@ -105,7 +105,7 @@ public class Skills extends ClientAccessor {
 	 * @return the experience at the specified index
 	 */
 	public int[] experiences() {
-		final Client c = ctx.client();
+		final IClient c = ctx.client();
 		final int[] arr = c != null ? c.getSkillExps() : new int[0];
 		return arr != null ? arr : new int[0];
 	}

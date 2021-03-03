@@ -4,8 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.powbot.stream.locatable.interactive.GroundItemStream;
 import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.*;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
+import org.powerbot.bot.rt4.client.internal.IItemNode;
+import org.powerbot.bot.rt4.client.internal.INodeDeque;
 import org.powerbot.script.Tile;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class GroundItems extends BasicQuery<GroundItem> implements Streamable<Gr
 	}
 
 	public BasicQuery<GroundItem> select(final int radius) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return select(get(radius, client != null ? client.getFloor() : -1));
 	}
 
@@ -32,7 +34,7 @@ public class GroundItems extends BasicQuery<GroundItem> implements Streamable<Gr
 	 */
 	@Override
 	public List<GroundItem> get() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return get(104, client != null ? client.getFloor() : -1);
 	}
 
@@ -46,7 +48,7 @@ public class GroundItems extends BasicQuery<GroundItem> implements Streamable<Gr
 
 	private List<GroundItem> getMobileGroundItems(int radius, int floor) {
 		final Tile currentPosition = ctx.players.local().tile();
-		return ((IMobileClient) ctx.client().get()).getAllGroundItems().stream()
+		return ((IMobileClient) ctx.client()).getAllGroundItems().stream()
 			.filter(it -> currentPosition.distanceTo(it) < radius && it.tile().floor() == floor)
 			.collect(Collectors.toList());
 	}
@@ -57,12 +59,12 @@ public class GroundItems extends BasicQuery<GroundItem> implements Streamable<Gr
 			radius = 110;
 		}
 		final List<GroundItem> r = new CopyOnWriteArrayList<>();
-		final Client client = ctx.client();
-		final NodeDeque[][][] dequeArray;
+		final IClient client = ctx.client();
+		final INodeDeque[][][] dequeArray;
 		if (client == null || (dequeArray = client.getGroundItems()) == null) {
 			return r;
 		}
-		final NodeDeque[][] rows;
+		final INodeDeque[][] rows;
 		if (floor > -1 && floor < dequeArray.length) {
 			rows = dequeArray[floor];
 		} else {
@@ -75,12 +77,12 @@ public class GroundItems extends BasicQuery<GroundItem> implements Streamable<Gr
 		final Tile tile = new Tile(client.getOffsetX(), client.getOffsetY(), floor);
 		final Tile ct = ctx.players.local().tile().derive(-tile.x(), -tile.y());
 		for (int x = Math.max(0, ct.x() - radius); x < Math.min(rows.length, ct.x() + radius + 1); x++) {
-			final NodeDeque[] row = rows[x];
+			final INodeDeque[] row = rows[x];
 			if (row == null) {
 				continue;
 			}
 			for (int y = Math.max(0, ct.y() - radius); y < Math.min(row.length, ct.y() + radius + 1); y++) {
-				for (final ItemNode n : NodeQueue.get(row[y], ItemNode.class)) {
+				for (final IItemNode n : NodeQueue.get(row[y], IItemNode.class)) {
 					list.add(new GroundItem(ctx, tile.derive(x, y), n));
 				}
 			}

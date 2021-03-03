@@ -1,6 +1,6 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Tile;
@@ -207,7 +207,7 @@ public class Game extends ClientAccessor {
 	 * @see Constants
 	 */
 	public int clientState() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client != null ? client.getClientState() : -1;
 	}
 
@@ -215,7 +215,7 @@ public class Game extends ClientAccessor {
 	 * @return The client's login state
 	 */
 	public int loginState() {
-		final Client c = ctx.client();
+		final IClient c = ctx.client();
 		return c != null ? c.getLoginState() : -1;
 	}
 
@@ -225,7 +225,7 @@ public class Game extends ClientAccessor {
 	 * @return the current floor the player is at, or -1 if the client has yet to be instantiated.
 	 */
 	public int floor() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client != null ? client.getFloor() : -1;
 	}
 
@@ -235,7 +235,7 @@ public class Game extends ClientAccessor {
 	 * @return the displayed {@link Crosshair}
 	 */
 	public Crosshair crosshair() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		final int type = client != null ? client.getCrosshairIndex() : -1;
 		if (type < 0 || type > 2) {
 			return Crosshair.NONE;
@@ -249,7 +249,7 @@ public class Game extends ClientAccessor {
 	 * @return {@link Tile} of where the offset is.
 	 */
 	public Tile mapOffset() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return Tile.NIL;
 		}
@@ -347,7 +347,7 @@ public class Game extends ClientAccessor {
 	 * @return The point on screen of where the tile would be.
 	 */
 	public Point tileToMap(final Tile tile) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return new Point(-1, -1);
 		}
@@ -372,7 +372,7 @@ public class Game extends ClientAccessor {
 	 * @return The tile height
 	 */
 	public int tileHeight(final int relativeX, final int relativeZ) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return 0;
 		}
@@ -410,7 +410,7 @@ public class Game extends ClientAccessor {
 	 * @return The 2-dimensional point on screen.
 	 */
 	public Point worldToScreen(final int relativeX, final int relativeZ, final int h) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return new Point(-1, -1);
 		}
@@ -421,7 +421,7 @@ public class Game extends ClientAccessor {
 	}
 
 	public Point worldToScreen(final int relativeX, final int relativeZ, final int h, final boolean resizable) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return new Point(-1, -1);
 		}
@@ -456,7 +456,7 @@ public class Game extends ClientAccessor {
 	 * @return The 2-dimensional point on screen.
 	 */
 	public Point worldToScreen(final int relativeX, final int relativeY, final int relativeZ, final int h, final boolean resizable) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		final Point r = new Point(-1, -1);
 		if (client == null) {
 			return r;

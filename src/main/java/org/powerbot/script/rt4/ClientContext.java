@@ -2,8 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.inventory.InventoryWatcher;
 import org.powerbot.bot.model.ModelCache;
-import org.powerbot.bot.rt4.*;
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.script.*;
 import org.powerbot.script.action.ActionEmitter;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * ClientContext
  * A utility class with references to all major points of the API.
  */
-public class ClientContext extends org.powerbot.script.ClientContext<Client> {
+public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 	public final Bank bank;
 	public final Camera camera;
 	public final Chat chat;

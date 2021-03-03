@@ -1,22 +1,19 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
-import org.powerbot.bot.rt4.client.Cache;
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.NpcConfig;
-import org.powerbot.bot.rt4.client.Varbit;
-import org.powerbot.bot.rt4.client.internal.IModel;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.*;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
-import org.powerbot.bot.rt4.client.internal.INode;
-import org.powerbot.bot.rt4.client.internal.IVarbit;
 import org.powerbot.script.*;
+import org.powerbot.script.action.Emittable;
+import org.powerbot.script.action.NpcAction;
 
 import java.awt.*;
 
 /**
  * Npc
  */
-public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc> {
+public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc>, Emittable<NpcAction> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 255, 15);
 	private static final int[] lookup;
 	public static final Npc NIL = new Npc(org.powerbot.script.ClientContext.ctx(), null);
@@ -30,24 +27,33 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 		}
 	}
 
-	private final org.powerbot.bot.rt4.client.Npc npc;
+	private final INpc npc;
 	private final int hash;
 
-	Npc(final ClientContext ctx, final org.powerbot.bot.rt4.client.Npc npc) {
+	Npc(final ClientContext ctx, final INpc npc) {
 		super(ctx);
 		this.npc = npc;
 		hash = System.identityHashCode(npc);
 	}
 
 	@Override
-	protected org.powerbot.bot.rt4.client.Actor getActor() {
+	protected IActor getActor() {
 		return npc;
 	}
 
 	@Override
 	public String name() {
+		final String raw = rawName();
+		return raw != null ? StringUtils.stripHtml(raw) : "";
+	}
+
+	public String rawName() {
+		if (npc != null && npc.getConfig() != null && npc.getConfig().getName() != null) {
+			return npc.getConfig().getName();
+		}
+
 		final CacheNpcConfig c = CacheNpcConfig.load(ctx.bot().getCacheWorker(), id());
-		return c != null ? StringUtils.stripHtml(c.name) : "";
+		return c != null ? c.name : "";
 	}
 
 	@Override
@@ -58,17 +64,12 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 
 	@Override
 	public int id() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return -1;
 		}
-		final NpcConfig c;
-		if (npc == null) {
-			c = new NpcConfig(null);
-		} else {
-			c = npc.getConfig();
-		}
-		if (c.isNull()) {
+		final INpcConfig c = npc != null ? npc.getConfig() : null;
+		if (c == null) {
 			return -1;
 		}
 
@@ -76,13 +77,13 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 		int index = -1;
 		if (varbit != -1) {
 			if (ctx.client().isMobile()) {
-				index = ((IMobileClient) ctx.client().get()).getNpcConfigIndex(varbit);
+				index = ((IMobileClient) ctx.client()).getNpcConfigIndex(varbit);
 			} else {
-				final Cache cache = client.getVarbitCache();
-				final HashTable<INode> table = new HashTable<>(cache.get().getTable());
+				final ICache cache = client.getVarbitCache();
+				final HashTable<INode> table = new HashTable<>(cache.getTable());
 				final INode varbitNode = table.lookup(varbit);
 				if (varbitNode instanceof IVarbit) {
-					final Varbit varBit = new Varbit((IVarbit) varbitNode);
+					final IVarbit varBit = (IVarbit) varbitNode;
 					final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
 					index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
 				}
@@ -114,12 +115,12 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 
 	@Override
 	public boolean valid() {
-		final Client client = ctx.client();
-		if (client == null || npc == null || npc.isNull()) {
+		final IClient client = ctx.client();
+		if (client == null || npc == null) {
 			return false;
 		}
-		final org.powerbot.bot.rt4.client.Npc[] arr = client.getNpcs();
-		for (final org.powerbot.bot.rt4.client.Npc a : arr) {
+		final INpc[] arr = client.getNpcs();
+		for (final INpc a : arr) {
 			if (npc.equals(a)) {
 				return true;
 			}
@@ -165,12 +166,22 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 	}
 
 	@Override
-	public Cache getModelCache() {
-		final Client client = ctx.client();
+	public ICache getModelCache() {
+		final IClient client = ctx.client();
 		if (client == null) {
 			return null;
 		}
 
 		return client.getNpcModelCache();
+	}
+
+	@Override
+	public NpcAction createAction(String action) {
+		return createAction(action, true);
+	}
+
+	@Override
+	public NpcAction createAction(String action, boolean async) {
+		return new NpcAction().setNpc(this).setInteraction(action).setAsync(async);
 	}
 }

@@ -1,17 +1,20 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.INpc;
+import org.powerbot.bot.rt4.client.internal.IPlayer;
+import org.powerbot.bot.rt4.client.internal.IProjectile;
 import org.powerbot.script.*;
 
 /**
  * Projectile
  */
 public class Projectile extends ClientAccessor implements Locatable, Identifiable, Validatable, Nillable<Projectile> {
-	private final org.powerbot.bot.rt4.client.Projectile projectile;
+	private final IProjectile projectile;
 
-	public static final Projectile NIL = new Projectile(org.powerbot.script.ClientContext.ctx(), new org.powerbot.bot.rt4.client.Projectile(null));
+	public static final Projectile NIL = new Projectile(org.powerbot.script.ClientContext.ctx(), null);
 
-	public Projectile(final ClientContext ctx, final org.powerbot.bot.rt4.client.Projectile projectile) {
+	public Projectile(final ClientContext ctx, final IProjectile projectile) {
 		super(ctx);
 		this.projectile = projectile;
 	}
@@ -23,7 +26,7 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 
 	@Override
 	public boolean valid() {
-		return !projectile.isNull() && ctx.projectiles.toStream().contains(this);
+		return projectile != null && ctx.projectiles.toStream().contains(this);
 	}
 
 	@Override
@@ -104,19 +107,19 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 		int index = projectile.getTargetIndex();
 
 		final Actor nil = ctx.npcs.nil();
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return nil;
 		}
 		if (index > 0) {
-			final org.powerbot.bot.rt4.client.Npc[] npcs = client.getNpcs();
+			final INpc[] npcs = client.getNpcs();
 			return index < npcs.length ? new Npc(ctx, npcs[index - 1]) : nil;
 		} else if(index < 0){
 			index = -index;
 			if (index == client.getPlayerIndex()) {
 				return new Player(ctx, client.getPlayer());
 			}
-			final org.powerbot.bot.rt4.client.Player[] players = client.getPlayers();
+			final IPlayer[] players = client.getPlayers();
 			return index < players.length ? new Player(ctx, players[index - 1]) : nil;
 		} else {
 			return nil;

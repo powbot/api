@@ -1,6 +1,6 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.script.*;
 
 import java.awt.Component;
@@ -43,7 +43,7 @@ public class Menu extends ClientAccessor {
 	 * @return A rectangle representing the dimensions of the menu.
 	 */
 	public Rectangle bounds() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null || !opened()) {
 			return new Rectangle(-1, -1, -1, -1);
 		}
@@ -56,7 +56,7 @@ public class Menu extends ClientAccessor {
 	 * @return {@code true} if the mennu is opened, {@code false} otherwise.
 	 */
 	public boolean opened() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client != null && client.isMenuOpen();
 	}
 
@@ -148,7 +148,7 @@ public class Menu extends ClientAccessor {
 	 * @return {@code true} if the mouse has successfully clicked within the bounds of the {@link MenuCommand}
 	 */
 	private boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return false;
 		}
@@ -198,7 +198,7 @@ public class Menu extends ClientAccessor {
 	 * @return {@code true} if the menu was closed, {@code false} otherwise.
 	 */
 	public boolean close() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return false;
 		}

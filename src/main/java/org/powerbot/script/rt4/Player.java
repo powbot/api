@@ -1,10 +1,9 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.HashTable;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.*;
 import org.powerbot.script.Nillable;
-import org.powerbot.bot.rt4.client.internal.IModel;
-import org.powerbot.bot.rt4.client.internal.INode;
 
 import java.awt.*;
 
@@ -14,21 +13,21 @@ import java.awt.*;
 public class Player extends Actor implements Nillable<Player> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 0, 15);
 	public static final Player NIL = new Player(org.powerbot.script.ClientContext.ctx(), null);
-	private final org.powerbot.bot.rt4.client.Player player;
+	private final IPlayer player;
 
-	Player(final ClientContext ctx, final org.powerbot.bot.rt4.client.Player player) {
+	Player(final ClientContext ctx, final IPlayer player) {
 		super(ctx);
 		this.player = player;
 	}
 
 	@Override
-	protected org.powerbot.bot.rt4.client.Actor getActor() {
+	protected IActor getActor() {
 		return player;
 	}
 
 	@Override
 	public String name() {
-		final String str = player != null ? player.getName() : "";
+		final String str = player != null && player.getName() != null ? player.getName().getValue() : "";
 		return str != null ? str : "";
 	}
 
@@ -42,7 +41,7 @@ public class Player extends Actor implements Nillable<Player> {
 	}
 
 	public int[] appearance() {
-		final PlayerComposite composite = player != null ? player.getComposite() : null;
+		final IPlayerComposite composite = player != null ? player.getComposite() : null;
 		int[] arr = composite != null ? composite.getAppearance() : new int[0];
 		if (arr == null) {
 			arr = new int[0];
@@ -69,12 +68,12 @@ public class Player extends Actor implements Nillable<Player> {
 
 	@Override
 	public boolean valid() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null || player == null) {
 			return false;
 		}
-		final org.powerbot.bot.rt4.client.Player[] arr = client.getPlayers();
-		for (final org.powerbot.bot.rt4.client.Player a : arr) {
+		final IPlayer[] arr = client.getPlayers();
+		for (final IPlayer a : arr) {
 			if (player.equals(a)) {
 				return true;
 			}
@@ -101,7 +100,7 @@ public class Player extends Actor implements Nillable<Player> {
   }
   
 	public long getModelCacheId() {
-		final PlayerComposite composite = player != null ? player.getComposite() : null;
+		final IPlayerComposite composite = player != null ? player.getComposite() : null;
 		if (composite == null) {
 			return -1;
 		}
@@ -110,8 +109,8 @@ public class Player extends Actor implements Nillable<Player> {
 	}
 
 	@Override
-	public Cache getModelCache() {
-		final Client client = ctx.client();
+	public ICache getModelCache() {
+		final IClient client = ctx.client();
 		if (client == null || player == null) {
 			return null;
 		}

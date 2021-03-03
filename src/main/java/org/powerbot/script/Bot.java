@@ -58,4 +58,6 @@ public abstract class Bot<C extends ClientContext<? extends Client>> {
 
 	public abstract boolean disableModelAnimations();
 
+	public abstract boolean useActionEmitter();
+
 }

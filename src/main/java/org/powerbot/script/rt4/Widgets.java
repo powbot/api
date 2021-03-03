@@ -2,7 +2,8 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.Streamable;
 import org.powbot.stream.widget.WidgetStream;
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Random;
 
@@ -49,8 +50,8 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 	@Override
 	public List<Widget> get() {
 		final List<Widget> widgets = new ArrayList<>();
-		final Client client = ctx.client();
-		final org.powerbot.bot.rt4.client.Widget[][] a = client != null ? client.getWidgets() : null;
+		final IClient client = ctx.client();
+		final IWidget[][] a = client != null ? client.getWidgets() : null;
 		final int len = a != null ? a.length : 0;
 		if (len <= 0) {
 			return new ArrayList<>(0);

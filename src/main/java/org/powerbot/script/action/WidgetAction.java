@@ -1,6 +1,6 @@
 package org.powerbot.script.action;
 
-public class WidgetAction extends AbstractAction {
+public class WidgetAction extends AbstractAction<WidgetAction> {
 	private int id;
 	private int slot;
 
