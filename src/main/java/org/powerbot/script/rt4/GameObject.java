@@ -397,7 +397,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public ObjectAction createAction(String action) {
-		return createAction(action, true);
+		return createAction(action, false);
 	}
 
 	@Override

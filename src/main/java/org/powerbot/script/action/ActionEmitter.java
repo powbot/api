@@ -13,7 +13,5 @@ public interface ActionEmitter {
 
 	void processQueue();
 
-	Queue<AbstractAction> queue();
-
 	void setClientContext(ClientContext clientContext);
 }

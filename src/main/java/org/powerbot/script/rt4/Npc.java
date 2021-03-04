@@ -177,7 +177,7 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 
 	@Override
 	public NpcAction createAction(String action) {
-		return createAction(action, true);
+		return createAction(action, false);
 	}
 
 	@Override

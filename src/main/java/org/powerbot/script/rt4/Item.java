@@ -182,7 +182,7 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 
 	@Override
 	public ItemAction createAction(String action) {
-		return createAction(action, true);
+		return createAction(action, false);
 	}
 
 	@Override

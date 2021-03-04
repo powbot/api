@@ -66,13 +66,4 @@ public abstract class AbstractAction<T> {
 		this.async = async;
 		return (T) this;
 	}
-
-	public Future<Boolean> getOnComplete() {
-		return onComplete;
-	}
-
-	public T setOnComplete(Future<Boolean> onComplete) {
-		this.onComplete = onComplete;
-		return (T) this;
-	}
 }
