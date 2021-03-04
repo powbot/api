@@ -3,10 +3,7 @@ package org.powerbot.script.rt4;
 import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
-import org.powerbot.script.action.Emittable;
-import org.powerbot.script.action.WidgetAction;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**

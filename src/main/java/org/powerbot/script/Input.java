@@ -187,6 +187,8 @@ public abstract class Input {
 
 	protected abstract boolean setLocation(final Point p);
 
+	public abstract void setMouseLocation(Point p);
+
 	/**
 	 * Simulates the mouse clicking the specified button at the specified
 	 * location.

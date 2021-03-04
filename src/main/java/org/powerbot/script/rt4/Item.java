@@ -1,6 +1,8 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.script.*;
+import org.powerbot.script.action.Emittable;
+import org.powerbot.script.action.ItemAction;
 
 import java.awt.*;
 import java.util.concurrent.Callable;
@@ -8,7 +10,8 @@ import java.util.concurrent.Callable;
 /**
  * Item
  */
-public class Item extends GenericItem implements Identifiable, Nameable, Stackable, Actionable, Nillable<Item> {
+public class Item extends GenericItem implements Identifiable, Nameable, Stackable, Actionable, Nillable<Item>,
+	Emittable<ItemAction> {
 	public static final Item NIL = new Item(org.powerbot.script.ClientContext.ctx(), Component.NIL);
 
 	public static final int WIDTH = 31;
@@ -175,5 +178,25 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 	@Override
 	public Item nil() {
 		return NIL;
+	}
+
+	@Override
+	public ItemAction createAction(String action) {
+		return createAction(action, true);
+	}
+
+	@Override
+	public ItemAction createAction(String action, boolean async) {
+		Point p = nextPoint();
+
+		return new ItemAction().
+			setItemId(id).
+			setSlot(inventoryIndex).
+			setWidgetId(component.id()).
+			setInteraction(action).
+			setAsync(async).
+			setEntityName(name()).
+			setMouseX(p.x).
+			setMouseY(p.y);
 	}
 }

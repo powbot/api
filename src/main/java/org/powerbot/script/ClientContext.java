@@ -1,3 +1,4 @@
+
 package org.powerbot.script;
 
 import org.powerbot.bot.*;

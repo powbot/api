@@ -21,7 +21,7 @@ public class NodeQueue {
 		}
 		e = e.getNext();
 
-		for (; e != null && type.isAssignableFrom(s.getClass()) && !e.equals(s); e = e.getNext()) {
+		for (; e != null && type.isAssignableFrom(e.getClass()) && !e.equals(s); e = e.getNext()) {
 			E obj = (E) e;
 			if (obj != null) {
 				list.add(obj);
