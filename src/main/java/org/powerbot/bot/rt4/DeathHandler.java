@@ -46,8 +46,6 @@ public class DeathHandler extends Daemon<ClientContext> {
 		Component component = getChatComponent();
 		if (component.valid()) {
 			for (Component child : component.components()) {
-				System.out.println(child.text());
-
 				if (child.text().startsWith("<str>") || child.text() == null || child.text().equals("") || child.text().contains("Select an Option")) {
 					continue;
 				}
