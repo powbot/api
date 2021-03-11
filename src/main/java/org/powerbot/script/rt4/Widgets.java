@@ -3,6 +3,7 @@ package org.powerbot.script.rt4;
 import org.powbot.stream.Streamable;
 import org.powbot.stream.widget.WidgetStream;
 import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.INode;
 import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Random;
@@ -295,6 +296,11 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 		return Widget.NIL;
 	}
 
+	@Override
+	public boolean isNil() {
+		return false;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -302,4 +308,176 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 	public WidgetStream toStream() {
 		return new WidgetStream(ctx, get().stream());
 	}
+
+	public static final IWidget NIL = new IWidget() {
+		@Override
+		public String[] getActions() {
+			return new String[0];
+		}
+
+		@Override
+		public int getAngleX() {
+			return 0;
+		}
+
+		@Override
+		public int getAngleY() {
+			return 0;
+		}
+
+		@Override
+		public int getAngleZ() {
+			return 0;
+		}
+
+		@Override
+		public int getBorderThickness() {
+			return 0;
+		}
+
+		@Override
+		public int getBoundsIndex() {
+			return 0;
+		}
+
+		@Override
+		public IWidget[] getChildren() {
+			return new IWidget[0];
+		}
+
+		@Override
+		public int getContentType() {
+			return 0;
+		}
+
+		@Override
+		public int getHeight() {
+			return 0;
+		}
+
+		@Override
+		public int getId() {
+			return -1;
+		}
+
+		@Override
+		public int getItemId() {
+			return 0;
+		}
+
+		@Override
+		public int[] getItemIds() {
+			return new int[0];
+		}
+
+		@Override
+		public int getItemStackSize() {
+			return 0;
+		}
+
+		@Override
+		public int[] getItemStackSizes() {
+			return new int[0];
+		}
+
+		@Override
+		public int getModelId() {
+			return 0;
+		}
+
+		@Override
+		public int getModelType() {
+			return 0;
+		}
+
+		@Override
+		public int getModelZoom() {
+			return 0;
+		}
+
+		@Override
+		public int getParentId() {
+			return 0;
+		}
+
+		@Override
+		public int getScrollHeight() {
+			return 0;
+		}
+
+		@Override
+		public int getScrollWidth() {
+			return 0;
+		}
+
+		@Override
+		public int getScrollX() {
+			return 0;
+		}
+
+		@Override
+		public int getScrollY() {
+			return 0;
+		}
+
+		@Override
+		public String getText() {
+			return null;
+		}
+
+		@Override
+		public int getTextColor() {
+			return 0;
+		}
+
+		@Override
+		public int getTextureId() {
+			return 0;
+		}
+
+		@Override
+		public String getTooltip() {
+			return null;
+		}
+
+		@Override
+		public int getType() {
+			return 0;
+		}
+
+		@Override
+		public int getWidth() {
+			return 0;
+		}
+
+		@Override
+		public int getX() {
+			return 0;
+		}
+
+		@Override
+		public int getY() {
+			return 0;
+		}
+
+		@Override
+		public boolean isHidden() {
+			return false;
+		}
+
+		@Override
+		public INode getNext() {
+			return null;
+		}
+
+		@Override
+		public long getNodeId() {
+			return 0;
+		}
+
+		@Override
+		public boolean isNil() {
+			return true;
+		}
+	};
 }

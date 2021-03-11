@@ -13,20 +13,20 @@ import java.util.IdentityHashMap
 
 
 
-abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientContext, override var stream: Stream<T>) :
-    WrappedStream<T, S> {
+abstract class SimpleStream<T, I, S : SimpleStream<T, I, S>>(override val ctx: ClientContext, override var stream: Stream<I>, val wrap: (I) -> T) :
+    WrappedStream<T, I, S> {
 
     /**
      * {@inheritDoc}
      */
-    override fun iterator(): MutableIterator<T> {
+    override fun iterator(): MutableIterator<I> {
         return stream.iterator()
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun spliterator(): Spliterator<T> {
+    override fun spliterator(): Spliterator<I> {
         return stream.spliterator()
     }
 
@@ -67,14 +67,14 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
     /**
      * {@inheritDoc}
      */
-    override fun onClose(closeHandler: Runnable): Stream<T> {
+    override fun onClose(closeHandler: Runnable): Stream<I> {
         return stream.onClose(closeHandler)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun filter(predicate: Predicate<in T>): S {
+    override fun filter(predicate: Predicate<in I>): S {
         this.stream = stream.filter(predicate)
 
         return this as S
@@ -83,56 +83,56 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
     /**
      * {@inheritDoc}
      */
-    override fun <R : Any?> map(mapper: Function<in T, out R>): Stream<R> {
+    override fun <R : Any?> map(mapper: Function<in I, out R>): Stream<R> {
         return stream.map(mapper)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun mapToInt(mapper: ToIntFunction<in T>): IntStream {
+    override fun mapToInt(mapper: ToIntFunction<in I>): IntStream {
         return stream.mapToInt(mapper)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun mapToLong(mapper: ToLongFunction<in T>): LongStream {
+    override fun mapToLong(mapper: ToLongFunction<in I>): LongStream {
         return stream.mapToLong(mapper)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun mapToDouble(mapper: ToDoubleFunction<in T>): DoubleStream {
+    override fun mapToDouble(mapper: ToDoubleFunction<in I>): DoubleStream {
         return stream.mapToDouble(mapper)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun <R : Any?> flatMap(mapper: Function<in T, out Stream<out R>>): Stream<R> {
+    override fun <R : Any?> flatMap(mapper: Function<in I, out Stream<out R>>): Stream<R> {
         return stream.flatMap(mapper)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun flatMapToInt(mapper: Function<in T, out IntStream>): IntStream {
+    override fun flatMapToInt(mapper: Function<in I, out IntStream>): IntStream {
         return stream.flatMapToInt(mapper)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun flatMapToLong(mapper: Function<in T, out LongStream>): LongStream {
+    override fun flatMapToLong(mapper: Function<in I, out LongStream>): LongStream {
         return stream.flatMapToLong(mapper)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun flatMapToDouble(mapper: Function<in T, out DoubleStream>): DoubleStream {
+    override fun flatMapToDouble(mapper: Function<in I, out DoubleStream>): DoubleStream {
         return stream.flatMapToDouble(mapper)
     }
 
@@ -157,7 +157,7 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
     /**
      * {@inheritDoc}
      */
-    override fun sorted(comparator: Comparator<in T>): S {
+    override fun sorted(comparator: Comparator<in I>): S {
         this.stream = stream.sorted(comparator)
 
         return this as S
@@ -166,7 +166,7 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
     /**
      * {@inheritDoc}
      */
-    override fun peek(action: Consumer<in T>): S {
+    override fun peek(action: Consumer<in I>): S {
         this.stream = stream.peek(action)
 
         return this as S
@@ -193,14 +193,14 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
     /**
      * {@inheritDoc}
      */
-    override fun forEach(action: Consumer<in T>) {
+    override fun forEach(action: Consumer<in I>) {
         this.stream.forEach(action)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun forEachOrdered(action: Consumer<in T>) {
+    override fun forEachOrdered(action: Consumer<in I>) {
         this.stream.forEachOrdered(action)
     }
 
@@ -221,21 +221,21 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
     /**
      * {@inheritDoc}
      */
-    override fun reduce(identity: T, accumulator: BinaryOperator<T>): T {
+    override fun reduce(identity: I, accumulator: BinaryOperator<I>): I {
         return stream.reduce(identity, accumulator)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun reduce(accumulator: BinaryOperator<T>): Optional<T> {
+    override fun reduce(accumulator: BinaryOperator<I>): Optional<I> {
         return stream.reduce(accumulator)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun <U : Any?> reduce(identity: U, accumulator: BiFunction<U, in T, U>?, combiner: BinaryOperator<U>): U {
+    override fun <U : Any?> reduce(identity: U, accumulator: BiFunction<U, in I, U>?, combiner: BinaryOperator<U>): U {
         return stream.reduce(identity, accumulator, combiner)
     }
 
@@ -244,7 +244,7 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
      */
     override fun <R : Any?> collect(
         supplier: Supplier<R>,
-        accumulator: BiConsumer<R, in T>,
+        accumulator: BiConsumer<R, in I>,
         combiner: BiConsumer<R, R>
     ): R {
         return stream.collect(supplier, accumulator, combiner)
@@ -253,56 +253,56 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
     /**
      * {@inheritDoc}
      */
-    override fun <R : Any?, A : Any?> collect(collector: Collector<in T, A, R>): R {
+    override fun <R : Any?, A : Any?> collect(collector: Collector<in I, A, R>): R {
         return stream.collect(collector)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun min(comparator: Comparator<in T>): Optional<T> {
+    override fun min(comparator: Comparator<in I>): Optional<I> {
         return stream.min(comparator)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun max(comparator: Comparator<in T>): Optional<T> {
+    override fun max(comparator: Comparator<in I>): Optional<I> {
         return stream.max(comparator)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun anyMatch(predicate: Predicate<in T>): Boolean {
+    override fun anyMatch(predicate: Predicate<in I>): Boolean {
         return stream.anyMatch(predicate)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun allMatch(predicate: Predicate<in T>): Boolean {
+    override fun allMatch(predicate: Predicate<in I>): Boolean {
         return stream.allMatch(predicate)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun noneMatch(predicate: Predicate<in T>): Boolean {
+    override fun noneMatch(predicate: Predicate<in I>): Boolean {
         return stream.noneMatch(predicate)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun findFirst(): Optional<T> {
+    override fun findFirst(): Optional<I> {
         return stream.findFirst()
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun findAny(): Optional<T> {
+    override fun findAny(): Optional<I> {
         return stream.findAny()
     }
 
@@ -333,7 +333,7 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
      * @return the entity or a nil object of the entity
      */
     fun first(): T {
-        return findFirst().orElse(nil())
+        return findFirst().map { wrap(it) }.orElse(nil())
     }
 
     /**
@@ -342,7 +342,7 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
      * @return the entity or a nil object of the entity
      */
     fun any(): T {
-        return findAny().orElse(nil())
+        return findAny().map { wrap(it) }.orElse(nil())
     }
 
     /**
@@ -350,7 +350,7 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
      *
      * @return boolean
      */
-    fun contains(t: Collection<T>): Boolean {
+    fun contains(t: Collection<I>): Boolean {
         return t.toList().any { _t -> this.stream.anyMatch { it == _t } }
     }
 
@@ -381,11 +381,19 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
         return this.stream.count() > 0
     }
 
-    private fun <T> shuffler(): Comparator<T> {
-        val uniqueIds: MutableMap<T, UUID> = IdentityHashMap()
+    fun list(): List<I> {
+        return this.stream.collect(Collectors.toList())
+    }
+
+    fun wrappedList(): List<T> {
+        return this.stream.map { wrap(it) }.collect(Collectors.toList())
+    }
+
+    private fun <I> shuffler(): Comparator<I> {
+        val uniqueIds: MutableMap<I, UUID> = IdentityHashMap()
         return Comparator.comparing { e ->
             uniqueIds.computeIfAbsent(e,
-                { k: T -> UUID.randomUUID() })
+                { k: I -> UUID.randomUUID() })
         }
     }
 

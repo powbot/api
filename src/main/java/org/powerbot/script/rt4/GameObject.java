@@ -1,9 +1,7 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.internal.*;
-import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.*;
 import org.powerbot.script.action.Emittable;
 import org.powerbot.script.action.ObjectAction;
@@ -19,7 +17,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	Actionable, Modelable, Nillable<GameObject>, Emittable<ObjectAction> {
 
 	public static final Color TARGET_COLOR = new Color(0, 255, 0, 20);
-	private static final int[] lookup;
+	public static final int[] lookup;
 	public static final GameObject NIL = new GameObject(org.powerbot.script.ClientContext.ctx(), null, Type.UNKNOWN);
 
 	static {
@@ -31,7 +29,21 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 	}
 
-	private final BasicObject object;
+	public static Type getType(IBasicObject obj) {
+		if (obj instanceof IBoundaryObject) {
+			return Type.BOUNDARY;
+		} else if (obj instanceof IFloorObject) {
+			return Type.FLOOR_DECORATION;
+		} else if (obj instanceof IGameObject) {
+			return Type.INTERACTIVE;
+		} else if (obj instanceof IWallObject) {
+			return Type.WALL_DECORATION;
+		}
+
+		return Type.UNKNOWN;
+	}
+
+	private final IBasicObject object;
 	private final Type type;
 	private final BoundingModel defaultBounds = new BoundingModel(ctx, -32, 32, -64, 0, -32, 32) {
 		@Override
@@ -45,11 +57,12 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		}
 	};
 
-	GameObject(final ClientContext ctx, final BasicObject object, final Type type) {
+	public GameObject(final ClientContext ctx, final IBasicObject object, final Type type) {
 		super(ctx);
 		this.object = object;
 		this.type = type;
 		boundingModel.set(defaultBounds);
+		setInteractive(object);
 	}
 
 	@Override
@@ -68,170 +81,45 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	}
 
 	public int mainId() {
-		final IClient client = ctx.client();
-		if (client == null) {
-			return -1;
-		}
-		return object != null ? (object.getUid() >> 14) & 0xffff : -1;
+		return object != null ? object.mainId() : -1;
 	}
 
 	@Override
 	public int id() {
-		final IClient client = ctx.client();
-		if (client == null) {
-			return -1;
-		}
-		if (object == null) {
-			return -1;
-		}
-		final int id = (object.getUid() >> 14) & 0xffff;
-		int index = -1;
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id);
-		if (c == null) {
-			return id;
-		}
-
-		if (c.stageOperationId != -1) {
-			if (ctx.client().isMobile()) {
-				index = ((IMobileClient) ctx.client()).getObjectConfigIndex(c.stageOperationId);
-			} else {
-				final ICache cache = client.getVarbitCache();
-				final HashTable<INode> table = new HashTable<>(cache.getTable());
-				final INode varbitNode = table.lookup(c.stageOperationId);
-				if (varbitNode instanceof IVarbit) {
-					final IVarbit varBit = (IVarbit) varbitNode;
-					final int mask = lookup[varBit.getEndBit() - varBit.getStartBit()];
-					index = ctx.varpbits.varpbit(varBit.getIndex()) >> varBit.getStartBit() & mask;
-				} else {
-					final CacheVarbitConfig cachedVarbit = CacheVarbitConfig.load(ctx.bot().getCacheWorker(), c.stageOperationId);
-					final int mask = lookup[cachedVarbit.endBit - cachedVarbit.startBit];
-					index = ctx.varpbits.varpbit(cachedVarbit.configId) >> cachedVarbit.startBit & mask;
-				}
-			}
-		} else if (c.stageIndex >= 0) {
-			index = ctx.varpbits.varpbit(c.stageIndex);
-		}
-
-		if (index >= 0) {
-			final int[] configs = c.materialPointers;
-			if (configs != null && index < configs.length && configs[index] != -1) {
-				return configs[index];
-			}
-		}
-		return id;
+		return object != null ? object.id() : -1;
 	}
 
 	@Override
 	public String name() {
-		final String raw = rawName();
-		return raw != null ? StringUtils.stripHtml(raw) : "";
-	}
-
-	public String rawName() {
-		if (object == null) {
-			return "";
-		}
-		final int id = (object.getUid() >> 14) & 0xffff;
-		final CacheObjectConfig
-			c1 = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id),
-			c2 = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c2 != null) {
-			if (c1 != null && c2.name.equals("null")) {
-				return c1.name;
-			}
-			return c2.name;
-		} else if (c1 != null) {
-			return c1.name;
-		}
-		return "";
-	}
-
-	/**
-	 * @deprecated Use originalColors() instead
-	 */
-	@Deprecated
-	public int[] colors1() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null && c.originalColors != null) {
-			final int[] s = new int[c.originalColors.length];
-			for (int i = 0; i < s.length; i++) {
-				s[i] = c.originalColors[i];
-			}
-			return s;
-		}
-		return new int[0];
-	}
-
-	/**
-	 * @deprecated Use modifiedColors() instead
-	 */
-	@Deprecated
-	public int[] colors2() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null && c.modifiedColors != null) {
-			final int[] s = new int[c.modifiedColors.length];
-			for (int i = 0; i < s.length; i++) {
-				s[i] = c.modifiedColors[i];
-			}
-			return s;
-		}
-		return new int[0];
+		return object != null ? object.name() : "";
 	}
 
 	public short[] originalColors() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null && c.originalColors != null) {
-			return c.originalColors;
-		}
-		return new short[0];
+		return object != null ? object.originalColors() : new short[0];
 	}
 
 	public short[] modifiedColors() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null && c.modifiedColors != null) {
-			return c.modifiedColors;
-		}
-		return new short[0];
+		return object != null ? object.modifiedColors() : new short[0];
 	}
 
 	public int width() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null) {
-			return c.xSize;
-		}
-		return -1;
+		return object != null ? object.width() : -1;
 	}
 
 	public int height() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null) {
-			return c.ySize;
-		}
-		return -1;
+		return object != null ? object.height() : -1;
 	}
 
 	public int[] meshIds() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null) {
-			int[] meshIds = c.meshId;
-			if (meshIds == null) {
-				meshIds = new int[0];
-			}
-			return meshIds;
-		}
-		return new int[0];
+		return object != null ? object.meshIds() : new int[0];
 	}
 
 	public String[] actions() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		if (c != null) {
-			return c.actions;
-		}
-		return new String[0];
+		return object != null ? object.actions() : new String[0];
 	}
 
 	public int orientation() {
-		return object != null ? object.getMeta() >> 6 : 0;
+		return object != null ? object.orientation() : -1;
 	}
 
 	public Type type() {
@@ -243,43 +131,24 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	}
 
 	public int relative() {
-		final int x, z;
-		if (object != null) {
-			if (object.isComplex()) {
-				x = object.getX();
-				z = object.getZ();
-			} else {
-				final int uid = object.getUid();
-				x = (uid & 0x7f) << 7;
-				z = ((uid >> 7) & 0x7f) << 7;
-			}
-		} else {
-			x = z = 0;
-		}
-		return (x << 16) | z;
+		return object != null ? object.relative() : -1;
 	}
 
 	@Override
 	public boolean valid() {
 		return this != NIL
-			&& !(object == null || object.object == null)
+			&& object != null
 			&& ctx.objects.select(this, 0).contains(this);
 	}
 
 	@Override
 	public Tile tile() {
-		final IClient client = ctx.client();
-		final int r = relative();
-		final int rx = r >> 16, rz = r & 0xffff;
-		if (client != null && rx != 0 && rz != 0) {
-			return new Tile(client.getOffsetX() + (rx >> 7), client.getOffsetY() + (rz >> 7), client.getFloor());
-		}
-		return Tile.NIL;
+		return object != null ? object.tile() : Tile.NIL;
 	}
 
 	@Override
 	public Point basePoint() {
-		return ctx.game.worldToScreen(localX(), localY(), 0);
+		return object != null ? object.basePoint() : NIL_POINT;
 	}
 
 	@Override
@@ -290,11 +159,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 			return model.centerPoint();
 		}
 
-		final Point center = modelCenterPoint();
-		if (center != null && center.x > -1) {
-			return center;
-		}
-		return basePoint();
+		return object != null ? object.centerPoint() : NIL_POINT;
 	}
 
 	@Override
@@ -305,15 +170,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 			return bModel.nextPoint();
 		}
 
-		final Model model = model();
-		if (model != null) {
-			final Point next = model.nextPoint(localX(), localY());
-			if (!next.equals(NIL_POINT)) {
-				return next;
-			}
-		}
-
-		return basePoint();
+		return object != null ? object.nextPoint() : NIL_POINT;
 	}
 
 	@Override
@@ -323,11 +180,8 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 		if (model2 != null && !model2.equals(defaultBounds)) {
 			return model2.contains(point);
 		}
-		final Model model = model();
-		if (model == null || model.nextPoint(localX(), localY()).equals(NIL_POINT)) {
-			return model2 != null && model2.contains(point);
-		}
-		return model.contains(point, localX(), localY());
+
+		return object != null && object.contains(point);
 	}
 
 	@Override
@@ -350,12 +204,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int localX() {
-		if (object.getX() != -1) {
-			return object.getX();
-		}
-
-		final int r = relative();
-		return r >> 16;
+		return object != null ? object.localX() : -1;
 	}
 
 	/**
@@ -363,12 +212,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int localY() {
-		if (object.getZ() != -1) {
-			return object.getZ();
-		}
-
-		final int r = relative();
-		return r & 0xffff;
+		return object != null ? object.localY() : -1;
 	}
 
 	/**
@@ -376,18 +220,17 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int[] modelIds() {
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id());
-		return c != null ? c.meshId : null;
+		return object != null ? object.modelIds() : new int[0];
 	}
 
 	@Override
 	public IRenderable[] renderables() {
-		return object.object.getRenderables();
+		return object.getRenderables();
 	}
 
 	@Override
 	public int[] modelOrientations() {
-		return object.object.modelOrientations();
+		return object.modelOrientations();
 	}
 
 	@Override
@@ -431,26 +274,11 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	@Override
 	public long getModelCacheId() {
 		// This id doesn't seem to be right?
-		int[] orientations = modelOrientations();
-
-		int type = object.getMeta() & 0x3f;
-		int face =  orientations != null ? orientations[0] : 0;
-		int id = id();
-		final CacheObjectConfig c = CacheObjectConfig.load(ctx.bot().getCacheWorker(), id);
-		if (c == null || c.meshType == null) {
-			return ((long) id << 10) + face;
-		}
-
-		return face + (type << 3) + ((long) id << 10);
+		return object != null ? object.getModelCacheId() : -1;
 	}
 
 	@Override
 	public ICache getModelCache() {
-		final IClient client = ctx.client();
-		if (client == null) {
-			return null;
-		}
-
-		return client.getObjectModelCache();
+		return object != null ? object.getModelCache() : null;
 	}
 }

@@ -6,19 +6,19 @@ import java.util.function.*
 import java.util.function.Function
 import java.util.stream.*
 
-interface WrappedStream<T, S : SimpleStream<T, S>> : Stream<T> {
+interface WrappedStream<T, I, S : SimpleStream<T, I, S>> : Stream<I> {
     val ctx: ClientContext
-    var stream: Stream<T>
+    var stream: Stream<I>
 
     /**
      * {@inheritDoc}
      */
-    override fun iterator(): MutableIterator<T>
+    override fun iterator(): MutableIterator<I>
 
     /**
      * {@inheritDoc}
      */
-    override fun spliterator(): Spliterator<T>
+    override fun spliterator(): Spliterator<I>
 
     /**
      * {@inheritDoc}
@@ -43,52 +43,52 @@ interface WrappedStream<T, S : SimpleStream<T, S>> : Stream<T> {
     /**
      * {@inheritDoc}
      */
-    override fun onClose(closeHandler: Runnable): Stream<T>
+    override fun onClose(closeHandler: Runnable): Stream<I>
 
     /**
      * {@inheritDoc}
      */
-    override fun filter(predicate: Predicate<in T>): S
+    override fun filter(predicate: Predicate<in I>): S
 
     /**
      * {@inheritDoc}
      */
-    override fun <R : Any?> map(mapper: Function<in T, out R>): Stream<R>
+    override fun <R : Any?> map(mapper: Function<in I, out R>): Stream<R>
 
     /**
      * {@inheritDoc}
      */
-    override fun mapToInt(mapper: ToIntFunction<in T>): IntStream
+    override fun mapToInt(mapper: ToIntFunction<in I>): IntStream
 
     /**
      * {@inheritDoc}
      */
-    override fun mapToLong(mapper: ToLongFunction<in T>): LongStream
+    override fun mapToLong(mapper: ToLongFunction<in I>): LongStream
 
     /**
      * {@inheritDoc}
      */
-    override fun mapToDouble(mapper: ToDoubleFunction<in T>): DoubleStream
+    override fun mapToDouble(mapper: ToDoubleFunction<in I>): DoubleStream
 
     /**
      * {@inheritDoc}
      */
-    override fun <R : Any?> flatMap(mapper: Function<in T, out Stream<out R>>): Stream<R>
+    override fun <R : Any?> flatMap(mapper: Function<in I, out Stream<out R>>): Stream<R>
 
     /**
      * {@inheritDoc}
      */
-    override fun flatMapToInt(mapper: Function<in T, out IntStream>): IntStream
+    override fun flatMapToInt(mapper: Function<in I, out IntStream>): IntStream
 
     /**
      * {@inheritDoc}
      */
-    override fun flatMapToLong(mapper: Function<in T, out LongStream>): LongStream
+    override fun flatMapToLong(mapper: Function<in I, out LongStream>): LongStream
 
     /**
      * {@inheritDoc}
      */
-    override fun flatMapToDouble(mapper: Function<in T, out DoubleStream>): DoubleStream
+    override fun flatMapToDouble(mapper: Function<in I, out DoubleStream>): DoubleStream
 
     /**
      * {@inheritDoc}
@@ -103,12 +103,12 @@ interface WrappedStream<T, S : SimpleStream<T, S>> : Stream<T> {
     /**
      * {@inheritDoc}
      */
-    override fun sorted(comparator: Comparator<in T>): S
+    override fun sorted(comparator: Comparator<in I>): S
 
     /**
      * {@inheritDoc}
      */
-    override fun peek(action: Consumer<in T>): S
+    override fun peek(action: Consumer<in I>): S
 
     /**
      * {@inheritDoc}
@@ -123,12 +123,12 @@ interface WrappedStream<T, S : SimpleStream<T, S>> : Stream<T> {
     /**
      * {@inheritDoc}
      */
-    override fun forEach(action: Consumer<in T>)
+    override fun forEach(action: Consumer<in I>)
 
     /**
      * {@inheritDoc}
      */
-    override fun forEachOrdered(action: Consumer<in T>)
+    override fun forEachOrdered(action: Consumer<in I>)
 
     /**
      * {@inheritDoc}
@@ -143,66 +143,66 @@ interface WrappedStream<T, S : SimpleStream<T, S>> : Stream<T> {
     /**
      * {@inheritDoc}
      */
-    override fun reduce(identity: T, accumulator: BinaryOperator<T>): T
+    override fun reduce(identity: I, accumulator: BinaryOperator<I>): I
 
     /**
      * {@inheritDoc}
      */
-    override fun reduce(accumulator: BinaryOperator<T>): Optional<T>
+    override fun reduce(accumulator: BinaryOperator<I>): Optional<I>
 
     /**
      * {@inheritDoc}
      */
-    override fun <U : Any?> reduce(identity: U, accumulator: BiFunction<U, in T, U>?, combiner: BinaryOperator<U>): U
+    override fun <U : Any?> reduce(identity: U, accumulator: BiFunction<U, in I, U>?, combiner: BinaryOperator<U>): U
 
     /**
      * {@inheritDoc}
      */
     override fun <R : Any?> collect(
         supplier: Supplier<R>,
-        accumulator: BiConsumer<R, in T>,
+        accumulator: BiConsumer<R, in I>,
         combiner: BiConsumer<R, R>
     ): R
 
     /**
      * {@inheritDoc}
      */
-    override fun <R : Any?, A : Any?> collect(collector: Collector<in T, A, R>): R
+    override fun <R : Any?, A : Any?> collect(collector: Collector<in I, A, R>): R
 
     /**
      * {@inheritDoc}
      */
-    override fun min(comparator: Comparator<in T>): Optional<T>
+    override fun min(comparator: Comparator<in I>): Optional<I>
 
     /**
      * {@inheritDoc}
      */
-    override fun max(comparator: Comparator<in T>): Optional<T>
+    override fun max(comparator: Comparator<in I>): Optional<I>
 
     /**
      * {@inheritDoc}
      */
-    override fun anyMatch(predicate: Predicate<in T>): Boolean
+    override fun anyMatch(predicate: Predicate<in I>): Boolean
 
     /**
      * {@inheritDoc}
      */
-    override fun allMatch(predicate: Predicate<in T>): Boolean
+    override fun allMatch(predicate: Predicate<in I>): Boolean
 
     /**
      * {@inheritDoc}
      */
-    override fun noneMatch(predicate: Predicate<in T>): Boolean
+    override fun noneMatch(predicate: Predicate<in I>): Boolean
 
     /**
      * {@inheritDoc}
      */
-    override fun findFirst(): Optional<T>
+    override fun findFirst(): Optional<I>
 
     /**
      * {@inheritDoc}
      */
-    override fun findAny(): Optional<T>
+    override fun findAny(): Optional<I>
 
     /**
      * {@inheritDoc}

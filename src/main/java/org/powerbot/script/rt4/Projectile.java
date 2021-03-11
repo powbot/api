@@ -21,7 +21,7 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 
 	@Override
 	public int id() {
-		return projectile.getId();
+		return projectile.id();
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 		if (!valid()) {
 			return Tile.NIL;
 		}
-		return new Tile(getX(), getY(), ctx.client().getFloor());
+		return projectile != null ? projectile.tile() : Tile.NIL;
 	}
 
 	public boolean isStarted() {
@@ -76,54 +76,27 @@ public class Projectile extends ClientAccessor implements Locatable, Identifiabl
 	}
 
 	public int getX() {
-		int x = (int) projectile.getX();
-		x = (x >> 7) + ctx.game.mapOffset().x();
-		return x;
+		return projectile != null ? projectile.getWorldX() : -1;
 	}
 
 	public int getY() {
-		int y = (int) projectile.getY();
-		y = (y >> 7) + ctx.game.mapOffset().y();
-		return y;
+		return projectile != null ? projectile.getWorldY() : -1;
 	}
 
 	public int getStartX() {
-		int x = projectile.getStartX();
-		x = (x >> 7) + ctx.game.mapOffset().x();
-		return x;
+		return projectile != null ? projectile.getWorldStartX() : -1;
 	}
 
 	public int getStartY() {
-		int y = projectile.getStartY();
-		y = (y >> 7) + ctx.game.mapOffset().y();
-		return y;
+		return projectile != null ? projectile.getWorldStartY() : -1;
 	}
 
 	public int getStartZ() {
-		return projectile.getPlane();
+		return projectile != null ? projectile.getWorldStartZ() : -1;
 	}
 
 	public Actor getTarget() {
-		int index = projectile.getTargetIndex();
-
-		final Actor nil = ctx.npcs.nil();
-		final IClient client = ctx.client();
-		if (client == null) {
-			return nil;
-		}
-		if (index > 0) {
-			final INpc[] npcs = client.getNpcs();
-			return index < npcs.length ? new Npc(ctx, npcs[index - 1]) : nil;
-		} else if(index < 0){
-			index = -index;
-			if (index == client.getPlayerIndex()) {
-				return new Player(ctx, client.getPlayer());
-			}
-			final IPlayer[] players = client.getPlayers();
-			return index < players.length ? new Player(ctx, players[index - 1]) : nil;
-		} else {
-			return nil;
-		}
+		return projectile != null ? projectile.getTarget() : ctx.npcs.nil();
 	}
 
 	@Override

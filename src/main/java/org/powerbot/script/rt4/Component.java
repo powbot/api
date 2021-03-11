@@ -17,25 +17,29 @@ import java.util.concurrent.Callable;
  * Component
  * An object representing a graphical component of the Runescape user interfcace.
  */
+@Deprecated
 public class Component extends Interactive implements Textable, Identifiable, Nillable<Component> {
 	public static final Component NIL = new Component(org.powerbot.script.ClientContext.ctx(), Widget.NIL, -1);
 
 	public static final Color TARGET_STROKE_COLOR = new Color(0, 255, 0, 150);
 	public static final Color TARGET_FILL_COLOR = new Color(0, 0, 0, 50);
 
+	private final IWidget internal;
 	private final Widget widget;
 	private final Component component;
 	private final int index;
 
-	Component(final ClientContext ctx, final Widget widget, final int index) {
-		this(ctx, widget, null, index);
+	public Component(final ClientContext ctx, final Widget widget, final int index) {
+		this(ctx, widget, null, index, null);
 	}
 
-	Component(final ClientContext ctx, final Widget widget, final Component component, final int index) {
+	public Component(final ClientContext ctx, final Widget widget, final Component parentComponent, final int index, final IWidget internal) {
 		super(ctx);
 		this.widget = widget;
-		this.component = component;
+		this.component = parentComponent;
 		this.index = index;
+		this.internal = internal;
+		setInteractive(getInternal());
 	}
 
 	@Override
@@ -50,6 +54,7 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 		return widget;
 	}
 
+	@Deprecated
 	public Component parent() {
 		if (component == null) {
 			return new Component(ctx, ctx.widgets.nil(), -1);
@@ -62,33 +67,12 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 	}
 
 	public Point screenPoint() {
-		final IClient client = ctx.client();
 		final IWidget widget = getInternal();
-		if (client == null || widget == null) {
+		if (widget == null) {
 			return new Point(-1, -1);
 		}
 
-		final int parentId = parentId();
-		int x = widget.getX(), y = widget.getY();
-		if (parentId != -1) {
-			final Component parent = ctx.widgets.component(parentId >> 16, parentId & 0xffff);
-			if (parent != null) {
-				final Point p = parent.screenPoint();
-				x += p.x - parent.scrollX();
-				y += p.y - parent.scrollY();
-			}
-		} else {
-			final int index = widget.getBoundsIndex();
-			final int[] boundsX = client.getWidgetBoundsX();
-			final int[] boundsY = client.getWidgetBoundsY();
-			if (index >= 0 && boundsX.length > index && boundsX[index] >= 0 && boundsY.length > index && boundsY[index] >= 0) {
-				return new Point(
-					boundsX[index] + (type() > 0 ? relativeX() : 0),
-					boundsY[index] + (type() > 0 ? relativeY() : 0)
-				);
-			}
-		}
-		return new Point(x, y);
+		return widget.screenPoint();
 	}
 
 	public int relativeX() {
@@ -132,54 +116,28 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 	}
 
 	public int parentId() {
-		final IClient client = ctx.client();
 		final IWidget w = getInternal();
-		if (client == null || w == null) {
+		if (w == null) {
 			return -1;
-		}
-		final int p = w.getParentId();
-		if (p != -1) {
-			return p;
 		}
 
-		if (client.isMobile()) {
-			return ((IMobileClient) client).getWidgetParentId(id());
-		} else {
-			final int uid = id() >>> 16;
-			HashTable<IWidgetNode> cache = new HashTable<>(ctx.client().getWidgetTable());
-			for (IWidgetNode node = cache.getHead(); node != null; node = cache.getNext()) {
-				if (uid == node.getUid()) {
-					return (int) node.getNodeId();
-				}
-			}
-			return -1;
-		}
+		return w.parentId();
 	}
 
+	@Deprecated
 	public synchronized Component component(final int index) {
-		if (index < 0) {
-			return new Component(ctx, widget, this, -1);
-		}
-
-		return new Component(ctx, widget, this, index);
+		final IWidget w = getInternal();
+		return w != null ? w.component(index) : Component.NIL;
 	}
 
 	public synchronized int componentCount() {
 		final IWidget w = getInternal();
-		final IWidget[] arr = w != null ? w.getChildren() : null;
-		return arr != null ? arr.length : 0;
+		return w != null ? w.componentCount() : -1;
 	}
 
 	public Component[] components() {
-		final int len = componentCount();
-		if (len <= 0) {
-			return new Component[0];
-		}
-		final Component[] comps = new Component[len];
-		for (int i = 0; i < len; i++) {
-			comps[i] = component(i);
-		}
-		return comps;
+		final IWidget w = getInternal();
+		return w != null ? w.components() : new Component[0];
 	}
 
 	public int contentType() {
@@ -204,14 +162,7 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 
 	public String[] actions() {
 		final IWidget w = getInternal();
-		final String[] arr_ = (w != null ? w.getActions() : new String[0]);
-		final String[] arr = arr_ != null ? arr_.clone() : new String[0];
-		for (int i = 0; i < (arr != null ? arr.length : 0); i++) {
-			if (arr[i] == null) {
-				arr[i] = "";
-			}
-		}
-		return arr != null ? arr : new String[0];
+		return w != null ? w.actions() : new String[0];
 	}
 
 	public int angleX() {
@@ -231,14 +182,12 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 
 	public String text() {
 		final IWidget w = getInternal();
-		final String str = w != null ? w.getText() : "";
-		return str != null ? str : "";
+		return w != null ? w.text() : "";
 	}
 
 	public String tooltip() {
 		final IWidget w = getInternal();
-		final String str = w != null ? w.getTooltip() : "";
-		return str != null ? str : "";
+		return w != null ?  w.tooltip() : "";
 	}
 
 	public int textColor() {
@@ -278,18 +227,12 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 
 	public int[] itemIds() {
 		final IWidget w = getInternal();
-		final int[] a = w != null ? w.getItemIds() : new int[0];
-		final int[] a2 = (a != null ? a : new int[0]).clone();
-		for (int i = 0; i < a2.length; i++) {
-			a2[i]--;
-		}
-		return a2;
+		return w != null ? w.itemIds() : new int[0];
 	}
 
 	public int[] itemStackSizes() {
 		final IWidget w = getInternal();
-		final int[] a = w != null ? w.getItemStackSizes() : new int[0];
-		return (a != null ? a : new int[0]).clone();
+		return w != null ? w.itemStackSizes() : new int[0];
 	}
 
 	public int itemId() {
@@ -304,55 +247,44 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 
 	@Override
 	public Point basePoint() {
-		return screenPoint();
+		final IWidget w = getInternal();
+		return w != null ? w.basePoint() : NIL_POINT;
 	}
 
 	@Override
 	public Point centerPoint() {
-		final Point p = screenPoint();
-		p.translate(width() / 2, height() / 2);
-		return p;
+		final IWidget w = getInternal();
+		return w != null ? w.centerPoint() : NIL_POINT;
 	}
 
 	@Override
 	public Point nextPoint() {
-		final Rectangle interact = new Rectangle(screenPoint(), new Dimension(width(), height()));
-		final int x = interact.x, y = interact.y;
-		final int w = interact.width, h = interact.height;
-		if (interact.x != -1 && interact.y != -1 && interact.width != -1 && interact.height != -1) {
-			interact.x += 1;
-			interact.y += 1;
-			interact.width -= 1;
-			interact.height -= 1;
-			return Calculations.nextPoint(interact, new Rectangle(x + w / 3, y + h / 3, w / 3, h / 3));
-		}
-		return new Point(-1, -1);
+		final IWidget w = getInternal();
+		return w != null ? w.nextPoint() : NIL_POINT;
 	}
 
 	@Override
 	public boolean contains(final Point point) {
-		final Point p = screenPoint();
-		final Rectangle r = new Rectangle(p.x, p.y, width(), height());
-		return r.contains(point);
+		final IWidget w = getInternal();
+		return w != null && w.contains(point);
 	}
 
 	@Override
 	public boolean valid() {
 		final IWidget internal = getInternal();
-		return internal != null && (component == null || component.visible()) &&
-			id() != -1 && internal.getBoundsIndex() != -1;
+		return internal != null && internal.valid();
 	}
 
 	public boolean visible() {
 		final IWidget internal = getInternal();
-		int id = 0;
-		if (internal != null && valid() && !internal.isHidden()) {
-			id = parentId();
-		}
-		return id == -1 || (id != 0 && ctx.widgets.widget(id >> 16).component(id & 0xffff).visible());
+		return internal != null && internal.visible();
 	}
 
 	private IWidget getInternal() {
+		if (internal != null) {
+			return internal;
+		}
+
 		final int wi = widget.id();
 		if (wi < 1 || index < 0) {
 			return null;
@@ -381,15 +313,15 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 
 	@Override
 	public Callable<Point> calculateScreenPosition() {
-		return new Callable<>() {
-			private Point lastTarget;
+		final IWidget internal = getInternal();
+		if (internal != null) {
+			return internal.calculateScreenPosition();
+		}
 
+		return new Callable<Point>() {
 			@Override
-			public Point call() {
-				if (lastTarget == null) {
-					lastTarget = nextPoint();
-				}
-				return lastTarget;
+			public Point call() throws Exception {
+				return NIL_POINT;
 			}
 		};
 	}
@@ -398,4 +330,5 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 	public Component nil() {
 		return NIL;
 	}
+
 }

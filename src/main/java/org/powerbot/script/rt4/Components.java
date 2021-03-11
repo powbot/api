@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.widget.ComponentStream;
 import org.powbot.stream.Streamable;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 import java.awt.*;
@@ -83,6 +84,31 @@ public class Components extends AbstractQuery<Components, Component, ClientConte
 		return get(true, ctx.widgets.select());
 	}
 
+	private List<IWidget> walkWidgets(final IWidget[] widgets) {
+		final List<IWidget> all = new ArrayList<>();
+		for (IWidget child : widgets) {
+			all.add(child);
+			if (child.getChildren() != null && child.getChildren().length > 0) {
+				all.addAll(walkWidgets(child.getChildren()));
+			}
+		}
+		return all;
+	}
+
+	private List<IWidget> getInternal() {
+		final List<IWidget> all = new ArrayList<>();
+		final IWidget[][] widgets = ctx.client().getWidgets();
+		for (IWidget[] group : widgets) {
+			if (group == null) {
+				continue;
+			}
+
+			all.addAll(walkWidgets(group));
+		}
+
+		return all;
+	}
+
 	private List<Component> get(final boolean children, final Iterable<Widget> widgets) {
 		final Queue<Component> base = new ArrayDeque<>();
 		final List<Component> components = new ArrayList<>();
@@ -104,6 +130,11 @@ public class Components extends AbstractQuery<Components, Component, ClientConte
 	@Override
 	public Component nil() {
 		return Component.NIL;
+	}
+
+	@Override
+	public boolean isNil() {
+		return false;
 	}
 
 	/**
@@ -430,6 +461,6 @@ public class Components extends AbstractQuery<Components, Component, ClientConte
 
 	@Override
 	public ComponentStream toStream() {
-		return new ComponentStream(ctx, get().stream());
+		return new ComponentStream(ctx, getInternal().stream());
 	}
 }

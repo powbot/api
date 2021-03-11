@@ -5,7 +5,7 @@ import org.powbot.stream.SimpleStream
 import org.powerbot.script.Actionable
 import java.util.regex.Pattern
 
-interface ActionableOps<T: Actionable, S: SimpleStream<T, S>>: WrappedStream<T, S> {
+interface ActionableOps<T, I: Actionable, S: SimpleStream<T, I, S>>: WrappedStream<T, I, S> {
 
     fun action(actions: Collection<String>): S {
         return action(*actions.toTypedArray())

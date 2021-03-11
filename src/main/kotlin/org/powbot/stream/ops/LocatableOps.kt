@@ -5,7 +5,7 @@ import org.powbot.stream.SimpleStream
 import org.powerbot.script.Area
 import org.powerbot.script.Locatable
 
-interface LocatableOps<T: Locatable, S: SimpleStream<T, S>>: WrappedStream<T, S> {
+interface LocatableOps<T, I: Locatable, S: SimpleStream<T, I, S>>: WrappedStream<T, I, S> {
 
     fun at(l: Locatable): S {
         return filter(Locatable.Matcher(l.tile()))

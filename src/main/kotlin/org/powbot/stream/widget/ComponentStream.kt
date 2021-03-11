@@ -3,6 +3,8 @@ package org.powbot.stream.widget
 import org.powbot.stream.locatable.interactive.InteractiveStream
 import org.powbot.stream.ops.IdentifiableOps
 import org.powbot.stream.ops.TextOps
+import org.powerbot.bot.rt4.client.internal.IWidget
+import org.powerbot.script.Client
 import org.powerbot.script.Filter
 import org.powerbot.script.rt4.ClientContext
 import org.powerbot.script.rt4.Component
@@ -10,10 +12,10 @@ import java.awt.Rectangle
 import java.util.regex.Pattern
 import java.util.stream.Stream
 
-open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
-    InteractiveStream<Component, ComponentStream>(ctx, stream),
-    TextOps<Component, ComponentStream>,
-    IdentifiableOps<Component, ComponentStream>{
+open class ComponentStream(ctx: ClientContext, stream: Stream<IWidget>) :
+    InteractiveStream<Component, IWidget, ComponentStream>(ctx, stream, { Component(ClientContext.ctx(), null, null, it.id, it) }),
+    TextOps<Component, IWidget, ComponentStream>,
+    IdentifiableOps<Component, IWidget, ComponentStream>{
 
     /**
      * Filters the current query's contents to only include components that are currently visible and in the viewport
@@ -21,7 +23,7 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     override fun viewable(): ComponentStream {
-        return super.viewable().filter(Filter { obj: Component -> obj.visible() })
+        return super.viewable().filter(Filter { obj: IWidget -> obj.visible() })
     }
 
     /**
@@ -30,7 +32,7 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return {@code this} for the purpose of chaining.
      */
     open fun parents(): ComponentStream {
-        return filter(Filter { c: Component -> c.componentCount() > 0 })
+        return filter(Filter { c: IWidget -> c.children != null && c.children.isNotEmpty() })
     }
 
     /**
@@ -40,8 +42,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun widget(index: Int): ComponentStream {
-        return filter(Filter { component: Component ->
-            component.widget().id() == index
+        return filter(Filter { component: IWidget ->
+            (component.parentId() shr 16) == index
         })
     }
 
@@ -54,8 +56,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      */
     open fun tooltipContains(vararg texts: String): ComponentStream {
         val textsLower = texts.map { it.toLowerCase() }
-        return filter(Filter { t: Component ->
-            val text1 = t.tooltip().toLowerCase().trim()
+        return filter(Filter { t: IWidget ->
+            val text1 = t.tooltip.toLowerCase().trim()
             textsLower.any { s -> text1.contains(s) }
         })
     }
@@ -69,8 +71,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      */
     open fun tooltip(vararg texts: String): ComponentStream {
         val textsLower = texts.map { it.toLowerCase() }
-        return filter(Filter { t: Component ->
-            val text1 = t.tooltip().toLowerCase().trim()
+        return filter(Filter { t: IWidget ->
+            val text1 = t.tooltip.toLowerCase().trim()
             textsLower.any { s -> text1.equals(s) }
         })
     }
@@ -82,9 +84,9 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun tooltip(pattern: Pattern): ComponentStream {
-        return filter(Filter { component: Component ->
+        return filter(Filter { component: IWidget ->
             pattern.matcher(
-                component.tooltip().trim()
+                component.tooltip.trim()
             ).find()
         })
     }
@@ -96,8 +98,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun contentType(vararg types: Int): ComponentStream {
-        return filter(Filter { component: Component ->
-            types.any { it == component.contentType() }
+        return filter(Filter { component: IWidget ->
+            types.any { it == component.contentType }
         })
     }
 
@@ -108,8 +110,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun modelId(vararg ids: Int): ComponentStream {
-        return filter(Filter { component: Component ->
-            ids.any {it == component.modelId() }
+        return filter(Filter { component: IWidget ->
+            ids.any {it == component.modelId }
         })
     }
 
@@ -120,8 +122,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun itemId(vararg ids: Int): ComponentStream {
-        return filter(Filter { component: Component ->
-            ids.any { it == component.itemId() }
+        return filter(Filter { component: IWidget ->
+            ids.any { it == component.itemId }
         })
     }
 
@@ -132,8 +134,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun texture(vararg textures: Int): ComponentStream {
-        return filter(Filter { component: Component ->
-            textures.any { it == component.textureId() }
+        return filter(Filter { component: IWidget ->
+            textures.any { it == component.textureId }
         })
     }
 
@@ -144,8 +146,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun bounds(vararg rectangles: Rectangle): ComponentStream {
-        return filter(Filter { component: Component ->
-            rectangles.any { it.width == component.width() && it.height == component.height() }
+        return filter(Filter { component: IWidget ->
+            rectangles.any { it.width == component.width && it.height == component.height }
         })
     }
 
@@ -156,8 +158,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun width(vararg widths: Int): ComponentStream {
-        return filter(Filter { c: Component ->
-            widths.any { it == c.width() }
+        return filter(Filter { c: IWidget ->
+            widths.any { it == c.width }
         })
     }
 
@@ -168,8 +170,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun height(vararg heights: Int): ComponentStream {
-        return filter(Filter { c: Component ->
-            heights.any { it == c.height() }
+        return filter(Filter { c: IWidget ->
+            heights.any { it == c.height }
         })
     }
 
@@ -180,8 +182,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun scrollWidth(vararg widths: Int): ComponentStream {
-        return filter(Filter { c: Component ->
-            widths.any { it == c.scrollWidth() }
+        return filter(Filter { c: IWidget ->
+            widths.any { it == c.scrollWidth }
         })
     }
 
@@ -192,8 +194,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
      * @return filtered query
      */
     open fun scrollHeight(vararg heights: Int): ComponentStream {
-        return filter(Filter { c: Component ->
-            heights.any { it == c.scrollHeight() }
+        return filter(Filter { c: IWidget ->
+            heights.any { it == c.scrollHeight }
         })
     }
 

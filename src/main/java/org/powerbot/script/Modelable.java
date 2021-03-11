@@ -41,7 +41,6 @@ public interface Modelable {
 	 * Model ids to load from the cache
 	 *
 	 * @return model ids
-	 * @deprecated - not required anymore
 	 */
 	int[] modelIds();
 

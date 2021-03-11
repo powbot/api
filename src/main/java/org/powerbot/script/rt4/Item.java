@@ -35,6 +35,8 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 		this.inventoryIndex = inventoryIndex;
 		this.id = id;
 		this.stack = stack;
+
+		setInteractive(this);
 	}
 
 	/**

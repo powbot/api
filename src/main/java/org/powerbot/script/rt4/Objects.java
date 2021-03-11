@@ -11,6 +11,7 @@ import org.powerbot.script.Locatable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Objects
@@ -26,7 +27,7 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 	}
 
 	public BasicQuery<GameObject> select(final Locatable l, final int radius) {
-		return select(get(l.tile(), radius));
+		return select(get(l.tile(), radius).stream().map(o -> new GameObject(ctx, o, getType(o))).collect(Collectors.toList()));
 	}
 
 	/**
@@ -38,12 +39,12 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 	}
 
 	public List<GameObject> get(final int radius) {
-		return get(ctx.players.local().tile(), radius);
+		return get(ctx.players.local().tile(), radius).stream().map(o -> new GameObject(ctx, o, getType(o))).collect(Collectors.toList());
 	}
 
-	public List<GameObject> get(final Locatable l, int radius) {
+	public List<IBasicObject> get(final Locatable l, int radius) {
 		radius = Math.min(radius, 110);
-		final List<GameObject> r = new ArrayList<>();
+		final List<IBasicObject> r = new ArrayList<>();
 		final IClient client = ctx.client();
 		if (client == null) {
 			return r;
@@ -54,7 +55,7 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 			return r;
 		}
 		final ITile[][] rows = tiles[floor];
-		final HashSet<GameObject> set = new HashSet<>();
+		final HashSet<IBasicObject> set = new HashSet<>();
 		int start_x = 0, end_x = Integer.MAX_VALUE, start_y = 0, end_y = Integer.MAX_VALUE;
 		if (radius >= 0) {
 			final org.powerbot.script.Tile mo = ctx.game.mapOffset(), lp = l.tile();
@@ -77,12 +78,12 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 				for (final IBasicObject obj :
 					new IBasicObject[]{tile.getBoundaryObject(), tile.getFloorObject(), tile.getWallObject()}) {
 					if (obj != null) {
-						set.add(new GameObject(ctx, new BasicObject<>(obj), getType(obj)));
+						set.add(obj);
 					}
 				}
 				for (final IGameObject gameObject : tile.getGameObjects()) {
 					if (gameObject != null) {
-						set.add(new GameObject(ctx, new BasicObject<>(gameObject), getType(gameObject)));
+						set.add(gameObject);
 					}
 				}
 			}
@@ -115,7 +116,7 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 	 */
 	@Override
 	public GameObjectStream toStream() {
-		return new GameObjectStream(ctx, get().stream());
+		return new GameObjectStream(ctx, get(ctx.players.local().tile(), Integer.MAX_VALUE).stream());
 	}
 
 

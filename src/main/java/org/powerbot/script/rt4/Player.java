@@ -15,7 +15,7 @@ public class Player extends Actor implements Nillable<Player> {
 	public static final Player NIL = new Player(org.powerbot.script.ClientContext.ctx(), null);
 	private final IPlayer player;
 
-	Player(final ClientContext ctx, final IPlayer player) {
+	public Player(final ClientContext ctx, final IPlayer player) {
 		super(ctx);
 		this.player = player;
 	}
@@ -27,8 +27,7 @@ public class Player extends Actor implements Nillable<Player> {
 
 	@Override
 	public String name() {
-		final String str = player != null && player.getName() != null ? player.getName().getValue() : "";
-		return str != null ? str : "";
+		return player != null ? player.name() : "";
 	}
 
 	@Override
@@ -91,7 +90,7 @@ public class Player extends Actor implements Nillable<Player> {
 	 */
 	@Override
 	public int[] modelIds() {
-		return null;
+		return player != null ? player.modelIds() : null;
 	}
 
 	@Override

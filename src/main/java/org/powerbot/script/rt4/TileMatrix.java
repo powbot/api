@@ -19,6 +19,8 @@ public final class TileMatrix extends Interactive implements InteractiveEntity {
 	public TileMatrix(final ClientContext ctx, final Tile tile) {
 		super(ctx);
 		this.tile = tile;
+
+		setInteractive(this);
 	}
 
 	@Override

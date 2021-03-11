@@ -1,5 +1,6 @@
 package org.powerbot.bot.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IBasicObject;
 import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientAccessor;
 import org.powerbot.script.rt4.ClientContext;
@@ -33,9 +34,8 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 			final FontMetrics metrics = render.getFontMetrics();
 			final int textHeight = metrics.getHeight();
 
-			for (final GameObject object : ctx.objects.toStream()
-				.within(8).filter(o -> o.type() == type)
-				.collect(Collectors.toList())) {
+			for (final IBasicObject object : ctx.objects.toStream()
+				.within(8).type(type).list()) {
 				final Tile t = object.tile();
 				if (t == null) {
 					continue;
@@ -63,7 +63,7 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 				final String s = Integer.toString(object.id());
 				final int ty = p.y - textHeight / 2;
 				final int tx = p.x - metrics.stringWidth(s) / 2;
-				render.setColor(C[object.type().ordinal()]);
+				render.setColor(C[GameObject.getType(object).ordinal()]);
 				final StringBuilder b = new StringBuilder(s);
 				final String n = object.name();
 				if (!n.isEmpty() && !n.equals("null")) {
@@ -74,7 +74,7 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 					b.append(" (").append(n).append('/').append(arr[0]).append(')');
 				}
 				b.append(" - ").append(object.orientation())
-					.append("/").append(object.meta());
+					.append("/").append(object.getMeta());
 				if (object.tile().distanceTo(player) < 3) {
 					b.append("/").append(object.tile().toString());
 				}

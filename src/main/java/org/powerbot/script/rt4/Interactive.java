@@ -18,10 +18,15 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class Interactive extends ClientAccessor implements org.powerbot.script.Interactive {
 	public static final Point NIL_POINT = new Point(-1, -1);
 	protected AtomicReference<BoundingModel> boundingModel;
+	private org.powerbot.script.Interactive interactive;
 
 	public Interactive(final ClientContext ctx) {
 		super(ctx);
 		boundingModel = new AtomicReference<>(null);
+	}
+
+	public void setInteractive(org.powerbot.script.Interactive interactive) {
+		this.interactive = interactive;
 	}
 
 	@Deprecated
@@ -61,8 +66,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean hover() {
-		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid);
-		return ctx.input.move(movement);
+		return interactive.hover();
 	}
 
 	/**
@@ -70,7 +74,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean click() {
-		return click(true);
+		return interactive.click();
 	}
 
 	/**
@@ -78,7 +82,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean click(final boolean left) {
-		return click(left ? MouseEvent.BUTTON1 : MouseEvent.BUTTON3);
+		return interactive.click(left);
 	}
 
 	/**
@@ -86,8 +90,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean click(final int button) {
-		final MouseMovement movement = new MouseMovement(calculateScreenPosition(), this::valid);
-		return ctx.input.move(movement) && ctx.input.click(button);
+		return interactive.click(button);
 	}
 
 	/**
@@ -95,12 +98,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final String action) {
-		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
-			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
-			return true;
-		}
-
-		return click(Menu.filter(action));
+		return interactive.click(action);
 	}
 
 	/**
@@ -108,12 +106,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final String action, final String option) {
-		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
-			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
-			return true;
-		}
-
-		return click(Menu.filter(action, option));
+		return interactive.click(action, option);
 	}
 
 	/**
@@ -121,7 +114,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean click(final Filter<? super MenuCommand> f) {
-		return interact(f);
+		return interactive.click(f);
 	}
 
 	/**
@@ -129,12 +122,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final String action) {
-		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
-			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
-			return true;
-		}
-
-		return interact(true, action);
+		return interactive.interact(action);
 	}
 
 	/**
@@ -142,19 +130,14 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final String action, final String option) {
-		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
-			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
-			return true;
-		}
-
-		return interact(true, action, option);
+		return interactive.interact(action, option);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final boolean interact(final Filter<? super MenuCommand> f) {
-		return interact(true, f);
+		return interactive.interact(f);
 	}
 
 	/**
@@ -162,12 +145,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final boolean auto, final String action) {
-		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
-			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
-			return true;
-		}
-
-		return interact(auto, Menu.filter(action));
+		return interactive.interact(auto, action);
 	}
 
 	/**
@@ -175,12 +153,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean interact(final boolean auto, final String action, final String option) {
-		if (ctx.bot().useActionEmitter() && this instanceof Emittable) {
-			ctx.bot().getActionEmitter().emit(((Emittable) this).createAction(action));
-			return true;
-		}
-
-		return interact(auto, Menu.filter(action, option));
+		return interactive.interact(auto, action, option);
 	}
 
 	/**
@@ -188,43 +161,10 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public final boolean interact(final boolean auto, final Filter<? super MenuCommand> f) {
-		if (!valid()) {
-			return false;
-		}
-
-		final Callable<Point> position = calculateScreenPosition();
-		final Callable<Boolean> valid = () -> {
-			if (Interactive.this instanceof Actor || Interactive.this instanceof GameObject) {
-				return valid() && inViewport();
-			} else {
-				return valid();
-			}
-		};
-
-		try {
-//			if (ctx.client().isMobile() && (Interactive.this instanceof Actor || Interactive.this instanceof GameObject)) {
-//				// We need to do this in order to load the menu
-//				final Point target = position.call();
-//				ctx.input.move(target);
-//				ctx.input.drag(new Point(target.x + 3, target.y + 3), false);
-//				Condition.sleep(Random.nextInt(10, 20));
-//			}
-
-			final MouseMovement movement = new MouseMovement(position, valid);
-			if (ctx.input.move(movement)) {
-				return ctx.menu.click(f);
-			}
-			return false;
-		} catch (Throwable t) {
-			t.printStackTrace();
-			return false;
-		} finally {
-			if (ctx.menu.opened()) {
-				ctx.menu.close();
-			}
-		}
+		return interactive.interact(auto, f);
 	}
 
+	@Override
 	public abstract Callable<Point> calculateScreenPosition();
 
 	/**
@@ -232,12 +172,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final Crosshair result) {
-		return click() && Condition.wait(new Condition.Check() {
-			@Override
-			public boolean poll() {
-				return ctx.game.crosshair() == result;
-			}
-		}, 10, 5);
+		return interactive.click(result);
 	}
 
 	/**
@@ -245,12 +180,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final String action, final Crosshair result) {
-		return click(action) && Condition.wait(new Condition.Check() {
-			@Override
-			public boolean poll() {
-				return ctx.game.crosshair() == result;
-			}
-		}, 10, 5);
+		return interactive.click(action, result);
 	}
 
 	/**
@@ -258,12 +188,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final String action, final String option, final Crosshair result) {
-		return click(action, option) && Condition.wait(new Condition.Check() {
-			@Override
-			public boolean poll() {
-				return ctx.game.crosshair() == result;
-			}
-		}, 10, 5);
+		return interactive.click(action, option, result);
 	}
 
 	/**
@@ -271,12 +196,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 	 */
 	@Override
 	public boolean click(final Filter<? super MenuCommand> c, final Crosshair result) {
-		return click(c) && Condition.wait(new Condition.Check() {
-			@Override
-			public boolean poll() {
-				return ctx.game.crosshair() == result;
-			}
-		}, 10, 5);
+		return interactive.click(c, result);
 	}
 
 	/**
@@ -391,6 +311,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 		render.drawRect(r.x, r.y, r.width, r.height);
 	}
 
+	@Override
 	public Polygon[] triangles() {
 		final BoundingModel m = boundingModel.get();
 		if (m != null) {

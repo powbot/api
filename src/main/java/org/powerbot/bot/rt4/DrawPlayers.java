@@ -1,5 +1,6 @@
 package org.powerbot.bot.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IPlayer;
 import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientAccessor;
 import org.powerbot.script.rt4.ClientContext;
@@ -19,7 +20,7 @@ public class DrawPlayers extends ClientAccessor implements PaintListener {
 		}
 		final Player me = ctx.players.local();;
 		final FontMetrics metrics = render.getFontMetrics();
-		for (final Player player : ctx.players.select()) {
+		for (final IPlayer player : ctx.players.toStream().list()) {
 			try {
 				if (!player.inViewport()) {
 					continue;
@@ -39,16 +40,16 @@ public class DrawPlayers extends ClientAccessor implements PaintListener {
 
 				render.setColor(Color.RED);
 				render.fillRect((int) location.getX() - 1, (int) location.getY() - 1, 2, 2);
-				String s = player.name() + " (" + player.combatLevel() + " [" + player.health() + "])";
+				String s = player.name() + " (" + player.getCombatLevel() + " [" + player.healthPercent() + "])";
 				render.setColor(player.inCombat() ? Color.RED : player.inMotion() ? Color.GREEN : Color.WHITE);
 				render.drawString(s, location.x - metrics.stringWidth(s) / 2, location.y - metrics.getHeight() / 2);
-				final String msg = player.overheadMessage();
+				final String msg = player.getOverheadMessage();
 				boolean raised = false;
-				if (player.animation() != -1) {
+				if (player.getAnimation() != -1) {
 					s = "";
 					s += "(";
-					if (player.animation() != -1) {
-						s += "A: " + player.animation() + " | ST: -1 | ";
+					if (player.getAnimation() != -1) {
+						s += "A: " + player.getAnimation() + " | ST: -1 | ";
 					}
 
 					s = s.substring(0, s.lastIndexOf(" | "));

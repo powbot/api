@@ -23,7 +23,7 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 	 * @param ctx   The {@link ClientContext}
 	 * @param index The Widget index
 	 */
-	Widget(final ClientContext ctx, final int index) {
+	public Widget(final ClientContext ctx, final int index) {
 		super(ctx);
 		this.index = index;
 	}
@@ -144,5 +144,4 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 	public Widget nil() {
 		return NIL;
 	}
-
 }

@@ -7,6 +7,7 @@ import org.powerbot.bot.rt4.client.internal.IPlayer;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Players
@@ -21,7 +22,11 @@ public class Players extends PlayerQuery<Player> implements Streamable<PlayerStr
 	 */
 	@Override
 	public List<Player> get() {
-		final List<Player> r = new CopyOnWriteArrayList<>();
+		return getInternal().stream().map(p -> new Player(ctx, p)).collect(Collectors.toList());
+	}
+
+	public List<IPlayer> getInternal() {
+		final List<IPlayer> r = new CopyOnWriteArrayList<>();
 		final IClient client = ctx.client();
 		if (client == null) {
 			return r;
@@ -35,7 +40,7 @@ public class Players extends PlayerQuery<Player> implements Streamable<PlayerStr
 			final int k = indices[index];
 			final IPlayer p = players[k];
 			if (p != null) {
-				r.add(new Player(ctx, p));
+				r.add(p);
 			}
 		}
 		return r;
@@ -55,7 +60,7 @@ public class Players extends PlayerQuery<Player> implements Streamable<PlayerStr
 	 */
 	@Override
 	public PlayerStream toStream() {
-		return new PlayerStream(ctx, get().stream());
+		return new PlayerStream(ctx, getInternal().stream());
 	}
 
 	@Override

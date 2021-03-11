@@ -10,6 +10,7 @@ import org.powerbot.bot.rt4.client.internal.IProjectile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Projectiles
@@ -27,7 +28,11 @@ public class Projectiles extends IdQuery<org.powerbot.script.rt4.Projectile> imp
 	 */
 	@Override
 	public List<org.powerbot.script.rt4.Projectile> get() {
-		final List<org.powerbot.script.rt4.Projectile> items = new ArrayList<>();
+		return getInternal().stream().map(p -> new Projectile(ctx, p)).collect(Collectors.toList());
+	}
+
+	public List<IProjectile> getInternal() {
+		final List<IProjectile> items = new ArrayList<>();
 
 		final IClient client = ctx.client();
 		if (client == null) {
@@ -35,14 +40,9 @@ public class Projectiles extends IdQuery<org.powerbot.script.rt4.Projectile> imp
 		}
 
 		if (client.isMobile()) {
-			for (final IProjectile projectile : ((IMobileClient) client).getAllProjectiles()) {
-				items.add(new org.powerbot.script.rt4.Projectile(ctx, projectile));
-			}
+			items.addAll(((IMobileClient) client).getAllProjectiles());
 		} else {
-			for (final IProjectile n : NodeQueue.get(client.getProjectiles(), IProjectile.class)) {
-				final org.powerbot.script.rt4.Projectile p = new org.powerbot.script.rt4.Projectile(ctx, n);
-				items.add(p);
-			}
+			items.addAll(NodeQueue.get(client.getProjectiles(), IProjectile.class));
 		}
 
 		return items;
@@ -61,6 +61,6 @@ public class Projectiles extends IdQuery<org.powerbot.script.rt4.Projectile> imp
 	 */
 	@Override
 	public ProjectileStream toStream() {
-		return new ProjectileStream(ctx, get().stream());
+		return new ProjectileStream(ctx, getInternal().stream());
 	}
 }

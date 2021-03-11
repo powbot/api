@@ -20,5 +20,6 @@ public interface Drawable {
 	 * @param render the graphics context to use for rendering
 	 * @param alpha  the alpha level, {@code 0 <= alpha <= 255}
 	 */
+	@Deprecated
 	void draw(Graphics render, int alpha);
 }

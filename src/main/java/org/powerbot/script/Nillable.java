@@ -13,4 +13,8 @@ public interface Nillable<E> {
 	 * @return "nothing"
 	 */
 	E nil();
+
+	default boolean isNil() {
+		return this == nil();
+	}
 }

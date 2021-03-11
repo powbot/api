@@ -7,8 +7,8 @@ import org.powerbot.script.rt4.World
 import java.util.stream.Stream
 
 open class WorldStream(ctx: ClientContext, stream: Stream<World>) :
-    SimpleStream<World, WorldStream>(ctx, stream),
-    IdentifiableOps<World, WorldStream> {
+    SimpleStream<World, World, WorldStream>(ctx, stream, { it }),
+    IdentifiableOps<World, World,WorldStream> {
     override fun nil(): World {
         return World.NIL
     }

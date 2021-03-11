@@ -32,6 +32,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	Actor(final ClientContext ctx) {
 		super(ctx);
 		boundingModel.set(defaultBounds);
+		setInteractive(getActor());
 	}
 
 	@Override
@@ -77,6 +78,17 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	}
 
 	/**
+	 * Whether or not the entity has a health bar displayed over their head. This can be
+	 * used to determine whether or not the entity is currently in combat.
+	 *
+	 * @return {@code true} if the health bar is visible, {@code false} otherwise.
+	 */
+	public boolean healthBarVisible() {
+		final IActor actor = getActor();
+
+		return actor != null && actor.healthBarVisible();
+	}
+	/**
 	 * The speed of the entity.
 	 *
 	 * @return The current speed.
@@ -93,7 +105,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 */
 	public int orientation() {
 		final IActor actor = getActor();
-		return actor != null ? actor.getOrientation() / 256 : -1;
+		return actor != null ? actor.orientation() : -1;
 	}
 
 	/**
@@ -103,8 +115,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 */
 	public String overheadMessage() {
 		final IActor actor = getActor();
-		final String str = actor != null ? actor.getOverheadMessage() : "";
-		return str != null ? str : "";
+		return actor != null ? actor.overheadMessage() : "";
 	}
 
 	/**
@@ -113,7 +124,9 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return {@code true} if in motion, {@code false} otherwise.
 	 */
 	public boolean inMotion() {
-		return speed() > 0;
+		final IActor actor = getActor();
+
+		return actor == null || actor.inMotion();
 	}
 
 	/**
@@ -124,27 +137,8 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 */
 	@Deprecated
 	public boolean inCombat() {
-		return healthBarVisible();
-	}
-
-	/**
-	 * Whether or not the entity has a health bar displayed over their head. This can be
-	 * used to determine whether or not the entity is currently in combat.
-	 *
-	 * @return {@code true} if the health bar is visible, {@code false} otherwise.
-	 */
-	public boolean healthBarVisible() {
-		final IClient client = ctx.client();
-		if (client == null) {
-			return false;
-		}
-
-		if (client.isMobile()) {
-			return ((IMobileClient) client).isHealthBarVisible((IActor) getActor());
-		} else {
-			final ICombatStatusData[] data = getBarData();
-			return data != null && data[1] != null && data[1].getCycleEnd() < client.getCycle();
-		}
+		final IActor actor = getActor();
+		return actor == null || actor.inCombat();
 	}
 
 	/**
@@ -153,27 +147,9 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return The percentage of the health bar (0-100).
 	 */
 	public int healthPercent() {
-		if (!valid()) {
-			return -1;
-		}
+		final IActor actor = getActor();
 
-		final IClient client = ctx.client();
-		if (client == null) {
-			return -1;
-		}
-
-		if (client.isMobile()) {
-			return ((IMobileClient) client).getHealthPercent((IActor) getActor());
-		} else {
-			final ICombatStatusData[] data = getBarData();
-			if (data == null || data[1] == null) {
-				return 100;
-			}
-			if (getBarComponent() == null) {
-				return 100;
-			}
-			return (int) Math.ceil(data[1].getHealthRatio() * 100d / getBarComponent().getWidth());
-		}
+		return actor != null ? actor.healthPercent() : -1;
 	}
 
 	/**
@@ -212,66 +188,32 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return The entity of which is being interacted with.
 	 */
 	public Actor interacting() {
-		final Actor nil = ctx.npcs.nil();
 		final IActor actor = getActor();
-		final int index = actor != null ? actor.getInteractingIndex() : -1;
-		if (index == -1) {
-			return nil;
-		}
-		final IClient client = ctx.client();
-		if (client == null) {
-			return nil;
-		}
-		if (index < 32768) {
-			final INpc[] npcs = client.getNpcs();
-			return index >= 0 && index < npcs.length ? new Npc(ctx, npcs[index]) : nil;
-		} else {
-			final int pos = index - 32768;
-			if (pos == client.getPlayerIndex()) {
-				return new Player(ctx, client.getPlayer());
-			}
-			final IPlayer[] players = client.getPlayers();
-			return pos < players.length ? new Player(ctx, players[pos]) : nil;
-		}
+		return actor != null ? actor.interacting() : ctx.npcs.nil();
 	}
 
 	public int relative() {
 		final IActor actor = getActor();
-		final int x, z;
-		if (actor != null) {
-			x = actor.getX();
-			z = actor.getZ();
-		} else {
-			x = z = 0;
-		}
-		return (x << 16) | z;
+		return actor != null ? actor.relative() : -1;
 	}
 
 	@Override
 	public Tile tile() {
-		final IClient client = ctx.client();
 		final IActor actor = getActor();
-		if (client != null && actor != null) {
-			return new Tile(client.getOffsetX() + (actor.getX() >> 7), client.getOffsetY() + (actor.getZ() >> 7), client.getFloor());
-		}
-		return Tile.NIL;
+
+		return actor != null ? actor.tile() : Tile.NIL;
 	}
 
+	@Override
 	public Point basePoint() {
 		final IActor actor = getActor();
 
-		if (actor != null) {
-			return ctx.game.worldToScreen(localX(), localY(), (actor.getHeight() / 2));
-		}
-		return NIL_POINT;
+		return actor != null ? actor.basePoint() : NIL_POINT;
 	}
 
 	public int getHeight() {
 		final IActor actor = getActor();
-		if (actor != null) {
-			return actor.getHeight();
-		}
-		return 0;
+		return actor != null ? actor.getHeight() : -1;
 	}
 
 	@Override
@@ -285,14 +227,8 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		if (bModel != null && !bModel.equals(defaultBounds)) {
 			return bModel.nextPoint();
 		}
-		final Model model = model();
-		if (model != null) {
-			final Point next = model.nextPoint(localX(), localY());
-			if (!next.equals(NIL_POINT)) {
-				return next;
-			}
-		}
-		return basePoint();
+
+		return actor.nextPoint();
 	}
 
 	@Override
@@ -310,12 +246,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			}
 		}
 
-		final Point center = modelCenterPoint();
-		if (center != null) {
-			return center;
-		}
-
-		return basePoint();
+		return actor.centerPoint();
 	}
 
 	@Override
@@ -330,11 +261,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			return bModel.contains(point);
 		}
 
-		final Model model = model();
-		if (model == null || model.nextPoint(localX(), localY()).equals(NIL_POINT)) {
-			return bModel != null && bModel.contains(point);
-		}
-		return model.contains(point, localX(), localY());
+		return actor.contains(point);
 	}
 
 	@Override
@@ -352,94 +279,6 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		return actor != null ? actor.hashCode() : 0;
 	}
 
-	private ICombatStatus[] getBarNodes() {
-		final IActor accessor = getActor();
-		if (accessor == null) {
-			return null;
-		}
-		final ILinkedList barList = accessor.getCombatStatusList();
-		if (barList == null) {
-			return null;
-		}
-		final INode tail = barList.getSentinel();
-		if (tail == null) {
-			return null;
-		}
-		final ICombatStatus health;
-		final ICombatStatus secondary;
-		final INode current;
-		current = tail.getNext();
-		if (current.getNext().getNodeId() != tail.getNodeId()) {
-			if (ICombatStatus.class.isAssignableFrom(current.getClass())) {
-				secondary = (ICombatStatus) current;
-			} else {
-				secondary = null;
-			}
-			if (ICombatStatus.class.isAssignableFrom(current.getNext().getClass())) {
-				health = (ICombatStatus) current.getNext();
-			} else {
-				health = null;
-			}
-		} else {
-			secondary = null;
-			if (ICombatStatus.class.isAssignableFrom(current.getClass())) {
-				health = (ICombatStatus) current;
-			} else {
-				health = null;
-			}
-		}
-		return new ICombatStatus[]{secondary, health};
-	}
-
-	private IBarComponent getBarComponent() {
-		final ICombatStatus[] nodes = getBarNodes();
-		final IClient client = ctx.client();
-		if (nodes == null || client == null) {
-			return null;
-		}
-		for (ICombatStatus node : nodes) {
-			if (node == null) {
-				continue;
-			}
-
-			return node.getBarComponent();
-		}
-		return null;
-	}
-
-	private ICombatStatusData[] getBarData() {
-		final ICombatStatus[] nodes = getBarNodes();
-		final IClient client = ctx.client();
-		if (nodes == null || client == null) {
-			return null;
-		}
-		final ICombatStatusData[] data = new ICombatStatusData[nodes.length];
-		for (int i = 0; i < nodes.length; i++) {
-			if (nodes[i] == null) {
-				data[i] = null;
-				continue;
-			}
-			final ICombatStatus status = nodes[i];
-
-			final ILinkedList statuses;
-			try {
-				statuses = status.getList();
-			} catch (final IllegalArgumentException ignored) {
-				continue;
-			}
-			if (statuses == null) {
-				data[i] = null;
-				continue;
-			}
-			final INode node = statuses.getSentinel().getNext();
-			if (!(node instanceof ICombatStatusData)) {
-				data[i] = null;
-				continue;
-			}
-			data[i] = (ICombatStatusData) node;
-		}
-		return data;
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -448,7 +287,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	public int localX() {
 		final IActor actor = getActor();
 
-		return actor != null ? getActor().getX() : 0;
+		return actor != null ? getActor().localX() : 0;
 	}
 
 	/**
@@ -458,21 +297,21 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	public int localY() {
 		final IActor actor = getActor();
 
-		return actor != null ? actor.getZ() : 0;
+		return actor != null ? actor.localY() : 0;
 	}
 
 	@Override
 	public IRenderable[] renderables() {
 		final IActor actor = getActor();
 
-		return actor != null ? new IRenderable[]{(IRenderable) actor} : null;
+		return actor != null ? actor.renderables() : new IRenderable[0];
 	}
 
 	@Override
 	public int[] modelOrientations() {
 		final IActor actor = getActor();
 
-		return new int[]{actor != null ? (actor.getOrientation()) & 0x3FFF : 0};
+		return actor != null ? actor.modelOrientations() : new int[0];
 	}
 
 	/**
@@ -487,6 +326,11 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 
 	@Override
 	public Callable<Point> calculateScreenPosition() {
-		return ScreenPosition.of(ctx, this);
+		final IActor actor = getActor();
+		if (actor != null) {
+			return actor.calculateScreenPosition();
+		}
+
+		return () -> NIL_POINT;
 	}
 }

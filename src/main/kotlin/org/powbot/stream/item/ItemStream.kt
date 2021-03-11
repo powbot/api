@@ -9,11 +9,11 @@ import org.powerbot.script.rt4.ClientContext
 import org.powerbot.script.rt4.Item
 import java.util.stream.*
 
-abstract class ItemStream<T : Item, S : SimpleStream<T, S>>(ctx: ClientContext, stream: Stream<T>) :
-    InteractiveStream<T, S>(ctx, stream),
-    ActionableOps<T, S>,
-    IdentifiableOps<T, S>,
-    NameableOps<T, S> {
+abstract class ItemStream<T, I : Item, S : SimpleStream<T, I, S>>(ctx: ClientContext, stream: Stream<I>, wrap: (I) -> T) :
+    InteractiveStream<T, I, S>(ctx, stream, wrap),
+    ActionableOps<T, I, S>,
+    IdentifiableOps<T, I, S>,
+    NameableOps<T, I, S> {
 
     /**
      * Count how many items are in the stream
