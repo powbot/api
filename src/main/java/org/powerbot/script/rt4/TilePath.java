@@ -16,6 +16,7 @@ public class TilePath extends Path {
 	protected Tile[] orig;
 	private boolean end;
 	private Tile last;
+	private int runMin = 20, runMax = 90;
 
 	public TilePath(final ClientContext ctx, final Tile[] tiles) {
 		super(ctx);
@@ -47,7 +48,7 @@ public class TilePath extends Path {
 		if (options != null) {
 			if (options.contains(TraversalOption.HANDLE_RUN) && !ctx.movement.running()) {
 				final int e = ctx.movement.energyLevel();
-				run_energy.compareAndSet(-1, Random.nextInt(20, 90));
+				run_energy.compareAndSet(-1, Random.nextInt(runMin, runMax));
 				if (e >= run_energy.get() && ctx.movement.running(true)) {
 					run_energy.set(-1);
 				}
@@ -205,5 +206,15 @@ public class TilePath extends Path {
 		final Tile[] a = new Tile[tiles.length];
 		System.arraycopy(tiles, 0, a, 0, tiles.length);
 		return a;
+	}
+
+	public TilePath setRunMin(int runMin) {
+		this.runMin = runMin;
+		return this;
+	}
+
+	public TilePath setRunMax(int runMax) {
+		this.runMax = runMax;
+		return this;
 	}
 }

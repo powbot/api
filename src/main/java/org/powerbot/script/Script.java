@@ -127,6 +127,8 @@ public interface Script extends EventListener {
 		 */
 		String properties() default "";
 
+		boolean mobileReady() default false;
+
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
