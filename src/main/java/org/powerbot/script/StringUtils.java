@@ -133,4 +133,9 @@ public class StringUtils {
 		}
 		return data;
 	}
+
+	public static int filterCoinsText(String text) {
+		text = text.split(" ")[0];
+		return Integer.parseInt(text.replaceAll(",", ""));
+	}
 }
