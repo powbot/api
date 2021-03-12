@@ -18,4 +18,8 @@ class GroundItemStream(ctx: ClientContext, stream: Stream<GroundItem>)
     override fun nil(): GroundItem {
         return GroundItem.NIL
     }
+
+    override fun nilWrapped(): GroundItem {
+        return GroundItem.NIL
+    }
 }

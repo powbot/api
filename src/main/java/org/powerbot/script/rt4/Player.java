@@ -10,6 +10,7 @@ import java.awt.*;
 /**
  * Player
  */
+@Deprecated
 public class Player extends Actor implements Nillable<Player> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 0, 15);
 	public static final Player NIL = new Player(org.powerbot.script.ClientContext.ctx(), null);
@@ -40,16 +41,7 @@ public class Player extends Actor implements Nillable<Player> {
 	}
 
 	public int[] appearance() {
-		final IPlayerComposite composite = player != null ? player.getComposite() : null;
-		int[] arr = composite != null ? composite.getAppearance() : new int[0];
-		if (arr == null) {
-			arr = new int[0];
-		}
-		arr = arr.clone();
-		for (int index = 0; index < arr.length; ++index) {
-			arr[index] = arr[index] < 512 ? -1 : arr[index] - 512;
-		}
-		return arr;
+		return player != null ? player.appearance() : new int[0];
 	}
 
 	@Override
@@ -58,26 +50,12 @@ public class Player extends Actor implements Nillable<Player> {
 			return -1;
 		}
 
-		if (player == ctx.client().getPlayer()) {
-			return ctx.combat.healthPercent();
-		}
-
-		return super.healthPercent();
+		return player != null ? player.healthPercent() : -1;
 	}
 
 	@Override
 	public boolean valid() {
-		final IClient client = ctx.client();
-		if (client == null || player == null) {
-			return false;
-		}
-		final IPlayer[] arr = client.getPlayers();
-		for (final IPlayer a : arr) {
-			if (player.equals(a)) {
-				return true;
-			}
-		}
-		return false;
+		return player != null && player.valid();
 	}
 
 	@Override
@@ -99,21 +77,11 @@ public class Player extends Actor implements Nillable<Player> {
   }
   
 	public long getModelCacheId() {
-		final IPlayerComposite composite = player != null ? player.getComposite() : null;
-		if (composite == null) {
-			return -1;
-		}
-
-		return composite.getUid();
+		return player != null ? player.getModelCacheId() : -1;
 	}
 
 	@Override
 	public ICache getModelCache() {
-		final IClient client = ctx.client();
-		if (client == null || player == null) {
-			return null;
-		}
-
-		return client.getPlayerModelCache();
+		return player != null ? player.getModelCache() : null;
 	}
 }

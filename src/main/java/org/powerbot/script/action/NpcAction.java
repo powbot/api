@@ -5,22 +5,24 @@ import org.powerbot.script.rt4.Npc;
 import java.awt.*;
 
 public class NpcAction extends AbstractAction<NpcAction> {
-	private Npc npc;
+	private int slot;
+	private int interactionIndex;
 
-	public Npc getNpc() {
-		return npc;
+	public int getInteractionIndex() {
+		return interactionIndex;
 	}
 
-	public NpcAction setNpc(Npc npc) {
-		this.npc = npc;
+	public NpcAction setInteractionIndex(int interactionIndex) {
+		this.interactionIndex = interactionIndex;
+		return this;
+	}
 
-		if (getMouseX() == 0) {
-			Point p = npc.nextPoint();
-			if (p.x > 0) {
-				setMouseX(p.x);
-				setMouseY(p.y);
-			}
-		}
+	public int getNpcIndex() {
+		return slot;
+	}
+
+	public NpcAction setNpcIndex(int slot) {
+		this.slot = slot;
 		return this;
 	}
 }

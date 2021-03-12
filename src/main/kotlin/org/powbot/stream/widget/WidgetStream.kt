@@ -12,4 +12,8 @@ open class WidgetStream(ctx: ClientContext, stream: Stream<Widget>) :
     override fun nil(): Widget {
         return Widget.NIL
     }
+
+    override fun nilWrapped(): Widget {
+        return Widget.NIL
+    }
 }

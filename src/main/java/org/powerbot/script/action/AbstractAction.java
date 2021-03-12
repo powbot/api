@@ -11,7 +11,6 @@ public abstract class AbstractAction<T> {
 	private int mouseY;
 	private IClient client;
 	private boolean async;
-	private Future<Boolean> onComplete;
 
 	public String getEntityName() {
 		return entityName;

@@ -9,7 +9,16 @@ import java.awt.*;
 public class ObjectAction extends AbstractAction<ObjectAction> {
 	private int id;
 	private Tile tile;
-	private GameObject gameObject;
+	private int interactionIndex;
+
+	public int getInteractionIndex() {
+		return interactionIndex;
+	}
+
+	public ObjectAction setInteractionIndex(int interactionIndex) {
+		this.interactionIndex = interactionIndex;
+		return this;
+	}
 
 	public int getId() {
 		return id;
@@ -18,29 +27,6 @@ public class ObjectAction extends AbstractAction<ObjectAction> {
 	public ObjectAction setId(int id) {
 		this.id = id;
 		return this;
-	}
-
-	public ObjectAction setGameObject(GameObject gameObject) {
-		this.gameObject = gameObject;
-
-		if (this.tile == null) {
-			this.tile = gameObject.tile();
-		}
-		if (this.id == 0) {
-			this.id = gameObject.mainId();
-		}
-		if (getMouseX() == 0) {
-			Point p = gameObject.nextPoint();
-			if (p.x > 0) {
-				setMouseX(p.x);
-				setMouseY(p.y);
-			}
-		}
-		return this;
-	}
-
-	public GameObject getGameObject() {
-		return gameObject;
 	}
 
 	public Tile getTile() {

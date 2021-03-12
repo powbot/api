@@ -4,12 +4,9 @@ import org.powbot.stream.ops.ActionableOps
 import org.powbot.stream.ops.LocatableOps
 import org.powbot.stream.ops.NameableOps
 import org.powerbot.bot.rt4.client.internal.IBasicObject
-import org.powerbot.script.Nameable
-import org.powerbot.script.rt4.BasicObject
 import org.powerbot.script.rt4.ClientContext
 import org.powerbot.script.rt4.GameObject
-import java.util.function.Predicate
-import java.util.regex.Pattern
+import org.powerbot.script.rt4.Objects
 import java.util.stream.*
 
 class GameObjectStream(ctx: ClientContext, stream: Stream<IBasicObject>)
@@ -17,7 +14,11 @@ class GameObjectStream(ctx: ClientContext, stream: Stream<IBasicObject>)
     ActionableOps<GameObject, IBasicObject, GameObjectStream>,
     LocatableOps<GameObject, IBasicObject, GameObjectStream>,
     NameableOps<GameObject, IBasicObject, GameObjectStream> {
-    override fun nil(): GameObject {
+    override fun nil(): IBasicObject {
+        return Objects.NIL
+    }
+
+    override fun nilWrapped(): GameObject {
         return GameObject.NIL
     }
 

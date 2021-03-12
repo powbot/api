@@ -8,6 +8,8 @@ import org.powerbot.script.Client
 import org.powerbot.script.Filter
 import org.powerbot.script.rt4.ClientContext
 import org.powerbot.script.rt4.Component
+import org.powerbot.script.rt4.Components
+import org.powerbot.script.rt4.Widgets
 import java.awt.Rectangle
 import java.util.regex.Pattern
 import java.util.stream.Stream
@@ -199,7 +201,11 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<IWidget>) :
         })
     }
 
-    override fun nil(): Component {
+    override fun nil(): IWidget {
+        return Widgets.NIL
+    }
+
+    override fun nilWrapped(): Component {
         return Component.NIL
     }
 }

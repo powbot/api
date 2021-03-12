@@ -3,10 +3,11 @@ package org.powerbot.bot.rt4.client.internal;
 import org.powerbot.bot.rt4.HashTable;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.*;
-import org.powerbot.script.rt4.CacheObjectConfig;
-import org.powerbot.script.rt4.CacheVarbitConfig;
-import org.powerbot.script.rt4.GameObject;
-import org.powerbot.script.rt4.Model;
+import org.powerbot.script.ClientContext;
+import org.powerbot.script.Interactive;
+import org.powerbot.script.action.Emittable;
+import org.powerbot.script.action.ObjectAction;
+import org.powerbot.script.rt4.*;
 import org.powerbot.util.ScreenPosition;
 
 import java.awt.*;
@@ -14,7 +15,8 @@ import java.util.concurrent.Callable;
 
 import static org.powerbot.script.rt4.Interactive.NIL_POINT;
 
-public interface IBasicObject extends Interactive, Actionable, Identifiable, Nameable, Modelable, InteractiveEntity {
+public interface IBasicObject extends Interactive, Actionable, Identifiable, Nameable, Modelable, InteractiveEntity,
+	Emittable<ObjectAction>, Nillable<IBasicObject> {
 
 	long getUid();
 
@@ -330,5 +332,40 @@ public interface IBasicObject extends Interactive, Actionable, Identifiable, Nam
 		return getMeta() >> 6;
 	}
 
+	@Override
+	default ObjectAction createAction(String action, boolean async) {
+		final Point p = nextPoint();
+		if (p == null || p.x == -1) {
+			return null;
+		}
+		final String[] actions = actions();
+		if (actions == null) {
+			return null;
+		}
+		int interactionIndex = -1;
+		for (int i = 0; i < actions.length; i++) {
+			if (actions[i].equalsIgnoreCase(action)) {
+				interactionIndex = i;
+				break;
+			}
+		}
+		if (interactionIndex == -1) {
+			return null;
+		}
 
+		return new ObjectAction()
+			.setTile(tile())
+			.setId(mainId())
+			.setMouseX(p.x)
+			.setMouseY(p.y)
+			.setEntityName(name())
+			.setInteractionIndex(interactionIndex)
+			.setInteraction(action)
+			.setAsync(async);
+	}
+
+	@Override
+	default IBasicObject nil() {
+		return Objects.NIL;
+	}
 }

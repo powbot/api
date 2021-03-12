@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 /**
  * GameObject
  */
+@Deprecated
 public class GameObject extends Interactive implements Nameable, InteractiveEntity, Identifiable, Validatable,
 	Actionable, Modelable, Nillable<GameObject>, Emittable<ObjectAction> {
 
@@ -239,13 +240,8 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	}
 
 	@Override
-	public ObjectAction createAction(String action) {
-		return createAction(action, false);
-	}
-
-	@Override
 	public ObjectAction createAction(String action, boolean async) {
-		return new ObjectAction().setGameObject(this).setInteraction(action).setAsync(async);
+		return object != null ? object.createAction(action, async) : null;
 	}
 
 	public enum Type {
@@ -268,7 +264,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public Callable<Point> calculateScreenPosition() {
-		return ScreenPosition.of(ctx, this);
+		return object != null ? object.calculateScreenPosition() : () -> NIL_POINT;
 	}
 
 	@Override

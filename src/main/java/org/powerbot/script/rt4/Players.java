@@ -2,10 +2,11 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.locatable.interactive.PlayerStream;
 import org.powbot.stream.Streamable;
-import org.powerbot.bot.rt4.client.internal.IClient;
-import org.powerbot.bot.rt4.client.internal.IPlayer;
+import org.powerbot.bot.rt4.client.internal.*;
 
+import java.awt.*;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -67,4 +68,91 @@ public class Players extends PlayerQuery<Player> implements Streamable<PlayerStr
 	public Player nil() {
 		return Player.NIL;
 	}
+
+	public static final IPlayer NIL = new IPlayer() {
+		@Override
+		public int getCombatLevel() {
+			return 0;
+		}
+
+		@Override
+		public IPlayerComposite getComposite() {
+			return null;
+		}
+
+		@Override
+		public IStringRecord getName() {
+			return null;
+		}
+
+		@Override
+		public int getTeam() {
+			return 0;
+		}
+
+		@Override
+		public int getAnimation() {
+			return 0;
+		}
+
+		@Override
+		public ILinkedList getCombatStatusList() {
+			return null;
+		}
+
+		@Override
+		public int getHeight() {
+			return 0;
+		}
+
+		@Override
+		public int getInteractingIndex() {
+			return 0;
+		}
+
+		@Override
+		public int getOrientation() {
+			return 0;
+		}
+
+		@Override
+		public String getOverheadMessage() {
+			return null;
+		}
+
+		@Override
+		public int getSpeed() {
+			return 0;
+		}
+
+		@Override
+		public int getX() {
+			return 0;
+		}
+
+		@Override
+		public int getZ() {
+			return 0;
+		}
+
+		@Override
+		public IModel getModel() {
+			return null;
+		}
+
+		@Override
+		public IEntry getNext() {
+			return null;
+		}
+
+		@Override
+		public long getNodeId() {
+			return 0;
+		}
+
+		@Override
+		public Callable<Point> calculateScreenPosition() {
+			return null;
+		}
+	};
 }

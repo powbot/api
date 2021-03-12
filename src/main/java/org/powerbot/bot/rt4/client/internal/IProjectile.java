@@ -1,14 +1,12 @@
 package org.powerbot.bot.rt4.client.internal;
 
-import org.powerbot.script.ClientContext;
-import org.powerbot.script.Identifiable;
-import org.powerbot.script.Locatable;
-import org.powerbot.script.Tile;
+import org.powerbot.script.*;
 import org.powerbot.script.rt4.Actor;
 import org.powerbot.script.rt4.Npc;
 import org.powerbot.script.rt4.Player;
+import org.powerbot.script.rt4.Projectiles;
 
-public interface IProjectile extends IRenderable, Identifiable, Locatable {
+public interface IProjectile extends IRenderable, Identifiable, Locatable, Nillable<IProjectile> {
 
 	int getCycleEnd();
 
@@ -97,5 +95,10 @@ public interface IProjectile extends IRenderable, Identifiable, Locatable {
 		} else {
 			return nil;
 		}
+	}
+
+	@Override
+	default IProjectile nil() {
+		return Projectiles.NIL;
 	}
 }

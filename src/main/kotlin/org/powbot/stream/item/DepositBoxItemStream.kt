@@ -8,4 +8,8 @@ class DepositBoxItemStream(ctx: ClientContext, stream: Stream<Item>) : ItemStrea
     override fun nil(): Item {
         return Item.NIL
     }
+
+    override fun nilWrapped(): Item {
+        return Item.NIL
+    }
 }

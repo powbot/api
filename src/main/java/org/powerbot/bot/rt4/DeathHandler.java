@@ -1,5 +1,8 @@
 package org.powerbot.bot.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IBasicObject;
+import org.powerbot.bot.rt4.client.internal.IGameObject;
+import org.powerbot.bot.rt4.client.internal.INpc;
 import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.*;
@@ -31,10 +34,10 @@ public class DeathHandler extends Daemon<ClientContext> {
 
 	@Override
 	public boolean check() {
-		return getDeath() != Npc.NIL;
+		return getDeath() != Npcs.NIL;
 	}
 
-	private Npc getDeath() {
+	private INpc getDeath() {
 		return ctx.npcs.toStream().within(10).name("Death").first();
 	}
 
@@ -59,8 +62,8 @@ public class DeathHandler extends Daemon<ClientContext> {
 	@Override
 	public boolean execute() {
 		if (canLeave) {
-			GameObject portal = ctx.objects.toStream().within(10).name("Portal").first();
-			if (portal == GameObject.NIL) {
+			IBasicObject portal = ctx.objects.toStream().within(10).name("Portal").first();
+			if (portal == Objects.NIL) {
 				logger.severe("Failed to find death portal");
 				return false;
 			}
@@ -70,7 +73,7 @@ public class DeathHandler extends Daemon<ClientContext> {
 				return false;
 			}
 
-			Condition.wait(() -> ctx.objects.toStream().within(10).name("Portal").first() == GameObject.NIL ||
+			Condition.wait(() -> ctx.objects.toStream().within(10).name("Portal").first() == Objects.NIL ||
 				ctx.chat.canContinue());
 			if (ctx.chat.canContinue()) {
 				canLeave = false;
@@ -94,7 +97,7 @@ public class DeathHandler extends Daemon<ClientContext> {
 			return false;
 		}
 
-		Npc death = getDeath();
+		INpc death = getDeath();
 		if (death.valid() && !ctx.players.local().interacting().equals(death)) {
 			if (!death.interact("Talk-to")) {
 				ctx.movement.moveTo(death, false, false);

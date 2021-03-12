@@ -11,4 +11,8 @@ class ChatOptionStream(ctx: ClientContext, stream: Stream<ChatOption>) : SimpleS
     override fun nil(): ChatOption {
         return ChatOption.NIL
     }
+
+    override fun nilWrapped(): ChatOption {
+        return ChatOption.NIL
+    }
 }

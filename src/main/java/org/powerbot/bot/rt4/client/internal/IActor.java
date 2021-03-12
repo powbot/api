@@ -98,26 +98,26 @@ public interface IActor extends IRenderable, Viewable, Interactive, Modelable,
 	 *
 	 * @return The entity of which is being interacted with.
 	 */
-	default Actor interacting() {
+	default IActor interacting() {
 		final Actor nil = ctx().npcs.nil();
 		final int index = getInteractingIndex();
 		if (index == -1) {
-			return nil;
+			return Npcs.NIL;
 		}
 		final IClient client = ctx().client();
 		if (client == null) {
-			return nil;
+			return Npcs.NIL;
 		}
 		if (index < 32768) {
 			final INpc[] npcs = client.getNpcs();
-			return index >= 0 && index < npcs.length ? new Npc(ctx(), npcs[index]) : nil;
+			return index >= 0 && index < npcs.length ? npcs[index] : Npcs.NIL;
 		} else {
 			final int pos = index - 32768;
 			if (pos == client.getPlayerIndex()) {
-				return new Player(ctx(), client.getPlayer());
+				return client.getPlayer();
 			}
 			final IPlayer[] players = client.getPlayers();
-			return pos < players.length ? new Player(ctx(), players[pos]) : nil;
+			return pos < players.length ? players[pos] : Players.NIL;
 		}
 	}
 

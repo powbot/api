@@ -8,4 +8,8 @@ class BankItemStream(ctx: ClientContext, stream: Stream<Item>) : ItemStream<Item
     override fun nil(): Item {
         return Item.NIL
     }
+
+    override fun nilWrapped(): Item {
+        return Item.NIL
+    }
 }

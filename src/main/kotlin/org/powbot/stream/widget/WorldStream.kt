@@ -12,4 +12,8 @@ open class WorldStream(ctx: ClientContext, stream: Stream<World>) :
     override fun nil(): World {
         return World.NIL
     }
+
+    override fun nilWrapped(): World {
+        return World.NIL
+    }
 }

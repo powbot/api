@@ -187,9 +187,9 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 *
 	 * @return The entity of which is being interacted with.
 	 */
-	public Actor interacting() {
+	public IActor interacting() {
 		final IActor actor = getActor();
-		return actor != null ? actor.interacting() : ctx.npcs.nil();
+		return actor != null ? actor.interacting() : Npcs.NIL;
 	}
 
 	public int relative() {

@@ -5,6 +5,8 @@ import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.ClientContext;
 import org.powerbot.script.Nillable;
 import org.powerbot.script.StringUtils;
+import org.powerbot.script.action.Emittable;
+import org.powerbot.script.action.NpcAction;
 import org.powerbot.script.rt4.CacheNpcConfig;
 import org.powerbot.script.rt4.CacheVarbitConfig;
 import org.powerbot.script.rt4.Npc;
@@ -13,7 +15,7 @@ import org.powerbot.script.rt4.Npcs;
 import java.awt.*;
 import java.util.concurrent.Callable;
 
-public interface INpc extends IActor, Nillable<INpc> {
+public interface INpc extends IActor, Nillable<INpc>, Emittable<NpcAction> {
 
 	INpcConfig getConfig();
 
@@ -109,5 +111,35 @@ public interface INpc extends IActor, Nillable<INpc> {
 	@Override
 	default INpc nil() {
 		return Npcs.NIL;
+	}
+
+	@Override
+	default NpcAction createAction(String action, boolean async) {
+		final Point p = nextPoint();
+		if (p == null || p.x == -1) {
+			return null;
+		}
+		final String[] actions = actions();
+		if (actions == null) {
+			return null;
+		}
+		int interactionIndex = -1;
+		for (int i = 0; i < actions.length; i++) {
+			if (actions[i].equalsIgnoreCase(action)) {
+				interactionIndex = i;
+				break;
+			}
+		}
+		if (interactionIndex == -1) {
+			return null;
+		}
+
+		return new NpcAction()
+			.setMouseX(p.x)
+			.setMouseY(p.y)
+			.setInteractionIndex(interactionIndex)
+			.setEntityName(name())
+			.setInteraction(action)
+			.setAsync(async);
 	}
 }

@@ -325,15 +325,41 @@ abstract class SimpleStream<T, I, S : SimpleStream<T, I, S>>(override val ctx: C
      *
      * @return nil
      */
-    abstract fun nil(): T
+    abstract fun nil(): I
+
+    /**
+     * nil value of the entity
+     *
+     * @return nil
+     */
+    abstract fun nilWrapped(): T
 
     /**
      * Get the first entity from the stream
      *
      * @return the entity or a nil object of the entity
      */
-    fun first(): T {
-        return findFirst().map { wrap(it) }.orElse(nil())
+    fun first(): I {
+        return findFirst().orElse(nil())
+    }
+
+    /**
+     * Get the first entity from the stream
+     *
+     * @return the entity or a nil object of the entity
+     */
+    fun firstWrapped(): T {
+        return findFirst().map { wrap(it) }.orElse(nilWrapped())
+    }
+
+
+    /**
+     * Get any entity from the stream
+     *
+     * @return the entity or a nil object of the entity
+     */
+    fun any(): I {
+        return findAny().orElse(nil())
     }
 
     /**
@@ -341,9 +367,10 @@ abstract class SimpleStream<T, I, S : SimpleStream<T, I, S>>(override val ctx: C
      *
      * @return the entity or a nil object of the entity
      */
-    fun any(): T {
-        return findAny().map { wrap(it) }.orElse(nil())
+    fun anyWrapped(): T {
+        return findAny().map { wrap(it) }.orElse(nilWrapped())
     }
+
 
     /**
      * Check if the stream contains any of the provided entities

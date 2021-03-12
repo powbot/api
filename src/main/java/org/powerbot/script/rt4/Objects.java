@@ -2,10 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.locatable.interactive.GameObjectStream;
 import org.powbot.stream.Streamable;
-import org.powerbot.bot.rt4.client.internal.IClient;
-import org.powerbot.bot.rt4.client.internal.IBasicObject;
-import org.powerbot.bot.rt4.client.internal.IGameObject;
-import org.powerbot.bot.rt4.client.internal.ITile;
+import org.powerbot.bot.rt4.client.internal.*;
 import org.powerbot.script.Locatable;
 
 import java.util.ArrayList;
@@ -119,5 +116,47 @@ public class Objects extends BasicQuery<GameObject> implements Streamable<GameOb
 		return new GameObjectStream(ctx, get(ctx.players.local().tile(), Integer.MAX_VALUE).stream());
 	}
 
+	public static final IBasicObject NIL = new IBasicObject() {
+		@Override
+		public long getUid() {
+			return -1;
+		}
+
+		@Override
+		public int getMeta() {
+			return 0;
+		}
+
+		@Override
+		public int getX() {
+			return 0;
+		}
+
+		@Override
+		public int getY() {
+			return 0;
+		}
+
+		@Override
+		public int getZ() {
+			return 0;
+		}
+
+		@Override
+		public IRenderable[] getRenderables() {
+			return new IRenderable[0];
+		}
+
+		@Override
+		public String[] actions() {
+			return new String[0];
+		}
+
+		@Override
+		public boolean valid() {
+			return false;
+		}
+
+	};
 
 }

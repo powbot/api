@@ -8,4 +8,8 @@ class EquipmentItemStream(ctx: ClientContext, stream: Stream<Item>) : ItemStream
     override fun nil(): Item {
         return Item.NIL
     }
+
+    override fun nilWrapped(): Item {
+        return Item.NIL
+    }
 }

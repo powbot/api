@@ -13,6 +13,7 @@ import java.awt.*;
 /**
  * Npc
  */
+@Deprecated
 public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc>, Emittable<NpcAction> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 255, 15);
 	public static final int[] lookup;
@@ -43,9 +44,7 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 
 	@Override
 	public String name() {
-		final IActor actor = getActor();
-
-		return actor != null ? actor.name() : "";
+		return npc != null ? npc.name() : "";
 	}
 
 	@Override
@@ -55,16 +54,12 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
 
 	@Override
 	public int id() {
-		final IActor actor = getActor();
-
-		return actor != null ? actor.id() : -1;
+		return npc != null ? npc.id() : -1;
 	}
 
 	@Override
 	public String[] actions() {
-		final IActor actor = getActor();
-
-		return actor != null ? actor.actions() : new String[0];
+		return npc != null ? npc.actions() : new String[0];
 	}
 
 	@Override
@@ -112,25 +107,16 @@ public class Npc extends Actor implements Identifiable, Actionable, Nillable<Npc
   }
   
 	public long getModelCacheId() {
-		final IActor actor = getActor();
-
-		return actor != null ? actor.getModelCacheId() : -1;
+		return npc != null ? npc.getModelCacheId() : -1;
 	}
 
 	@Override
 	public ICache getModelCache() {
-		final IActor actor = getActor();
-
-		return actor != null ? actor.getModelCache() : null;
-	}
-
-	@Override
-	public NpcAction createAction(String action) {
-		return createAction(action, false);
+		return npc != null ? npc.getModelCache() : null;
 	}
 
 	@Override
 	public NpcAction createAction(String action, boolean async) {
-		return new NpcAction().setNpc(this).setInteraction(action).setAsync(async);
+		return npc != null ? npc.createAction(action, async) : null;
 	}
 }
