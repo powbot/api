@@ -3,6 +3,7 @@ package org.powerbot.bot.rt4;
 import org.powerbot.bot.rt4.client.internal.IBasicObject;
 import org.powerbot.bot.rt4.client.internal.IGameObject;
 import org.powerbot.bot.rt4.client.internal.INpc;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.*;
@@ -41,14 +42,14 @@ public class DeathHandler extends Daemon<ClientContext> {
 		return ctx.npcs.toStream().within(10).name("Death").first();
 	}
 
-	private Component getChatComponent() {
+	private IWidget getChatComponent() {
 		return ctx.widgets.component(DEATH_CHAT_WIDGET_ID, DEATH_CHAT_WIDGET_COMPONENT_ID);
 	}
 
-	private Component getNextChatOptionComponent() {
-		Component component = getChatComponent();
+	private IWidget getNextChatOptionComponent() {
+		IWidget component = getChatComponent();
 		if (component.valid()) {
-			for (Component child : component.components()) {
+			for (IWidget child : component.components()) {
 				if (child.text().startsWith("<str>") || child.text() == null || child.text().equals("") || child.text().contains("Select an Option")) {
 					continue;
 				}
@@ -56,7 +57,7 @@ public class DeathHandler extends Daemon<ClientContext> {
 			}
 		}
 
-		return Component.NIL;
+		return Widgets.NIL;
 	}
 
 	@Override
@@ -86,8 +87,8 @@ public class DeathHandler extends Daemon<ClientContext> {
 			return false;
 		}
 
-		Component next = getNextChatOptionComponent();
-		if (next != Component.NIL) {
+		IWidget next = getNextChatOptionComponent();
+		if (!next.isNil()) {
 			if (next.text().contains("I think I'm done")) {
 				canLeave = true;
 			}

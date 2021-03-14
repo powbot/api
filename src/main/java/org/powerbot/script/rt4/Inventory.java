@@ -4,6 +4,7 @@ import org.powbot.stream.item.InventoryItemStream;
 import org.powbot.stream.item.ItemStream;
 import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 import java.awt.*;
@@ -24,9 +25,9 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 	@Override
 	public List<Item> get() {
 		final List<Item> items = new ArrayList<>(Constants.INVENTORY_SIZE);
-		final Component comp = component();
+		final IWidget comp = component();
 		if (comp.componentCount() > 0) {
-			for (final Component c : comp.components()) {
+			for (final IWidget c : comp.components()) {
 				final int id = c.itemId();
 				if (id <= -1 || id == 6512 || c.itemStackSize() <= 0) {
 					continue;
@@ -48,16 +49,16 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 
 	public Item[] items() {
 		final Item[] items = new Item[Constants.INVENTORY_SIZE];
-		final Component comp = component();
+		final IWidget comp = component();
 		if (comp.componentCount() > 0) {
-			final Component[] comps = comp.components();
+			final IWidget[] comps = comp.components();
 			final int len = comps.length;
 			for (int i = 0; i < Constants.INVENTORY_SIZE; i++) {
 				if (i >= len) {
 					items[i] = nil();
 					continue;
 				}
-				final Component c = comps[i];
+				final IWidget c = comps[i];
 				final int id = c.itemId();
 				if (id <= -1 || id == 6512 || c.itemStackSize() <= 0) {
 					items[i] = nil();
@@ -87,7 +88,7 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 	 * @return the item at the index. If the item index is greater than INVENTORY_SIZE, returns a nil item.
 	 */
 	public Item itemAt(final int index) {
-		final Component comp = component(), itemComponent;
+		final IWidget comp = component(), itemComponent;
 		if (index > -1 && index < Constants.INVENTORY_SIZE) {
 			final int[] ids, stackSizes;
 			if (comp.componentCount() > index && (itemComponent = comp.component(index)).id() > -1 && itemComponent.id() != 6512 && comp.itemStackSize() > -1) {
@@ -125,8 +126,8 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 		return itemAt(index);
 	}
 
-	public Component component() {
-		Component c;
+	public IWidget component() {
+		IWidget c;
 		if (!ctx.client().isMobile()) {
 			for (final int[] alt : Constants.INVENTORY_ALTERNATIVES) {
 				if ((c = ctx.widgets.widget(alt[0]).component(alt[1])).valid() && c.visible()) {

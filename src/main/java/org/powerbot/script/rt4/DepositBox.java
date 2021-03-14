@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.item.DepositBoxItemStream;
 import org.powbot.stream.Streamable;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBox
 			return items;
 		}
 
-		final Component[] a = ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_ITEMS).components();
-		for (final Component c : a) {
+		final IWidget[] a = ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_ITEMS).components();
+		for (final IWidget c : a) {
 			if (c.valid() && c.modelZoom() != EMPTY_SLOT_ZOOM) {
 				items.add(new Item(ctx, c));
 			}

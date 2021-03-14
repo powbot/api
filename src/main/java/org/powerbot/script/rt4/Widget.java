@@ -50,12 +50,18 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 	 * @return The component at the specified index, or <code>nil</code> if the
 	 * component does not exist.
 	 */
-	public synchronized Component component(final int index) {
-		if (index < 0) {
-			return new Component(ctx, this, -1);
+	public IWidget component(final int index) {
+		final IClient client = ctx.client();
+		if (index < 0 || client == null || client.getWidgets() == null || index >= client.getWidgets().length) {
+			return Widgets.NIL;
 		}
 
-		return new Component(ctx, this, index);
+		final IWidget[] children = client.getWidgets()[index];
+		if (children == null || children.length < index) {
+			return Widgets.NIL;
+		}
+
+		return children[index];
 	}
 
 	public int componentCount() {
@@ -73,12 +79,12 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 	 *
 	 * @return A {@link Component} array
 	 */
-	public Component[] components() {
+	public IWidget[] components() {
 		final int len = componentCount();
 		if (len <= 0) {
-			return new Component[0];
+			return new IWidget[0];
 		}
-		final Component[] comps = new Component[len];
+		final IWidget[] comps = new IWidget[len];
 		for (int i = 0; i < len; i++) {
 			comps[i] = component(i);
 		}
@@ -111,7 +117,11 @@ public class Widget extends ClientAccessor implements Identifiable, Validatable,
 
 			@Override
 			public Component next() {
-				return component(nextId++);
+				IWidget comp = component(nextId++);
+				if (comp != null) {
+					return new Component(ctx, Widget.this, null, nextId, comp);
+				}
+				return Component.NIL;
 			}
 
 			@Override

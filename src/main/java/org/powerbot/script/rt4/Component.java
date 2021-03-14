@@ -124,10 +124,9 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 		return w.parentId();
 	}
 
-	@Deprecated
-	public synchronized Component component(final int index) {
+	public IWidget component(final int index) {
 		final IWidget w = getInternal();
-		return w != null ? w.component(index) : Component.NIL;
+		return w != null ? w.component(index) : Widgets.NIL;
 	}
 
 	public synchronized int componentCount() {
@@ -135,9 +134,9 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 		return w != null ? w.componentCount() : -1;
 	}
 
-	public Component[] components() {
+	public IWidget[] components() {
 		final IWidget w = getInternal();
-		return w != null ? w.components() : new Component[0];
+		return w != null ? w.components() : new IWidget[0];
 	}
 
 	public int contentType() {
@@ -280,7 +279,7 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 		return internal != null && internal.visible();
 	}
 
-	private IWidget getInternal() {
+	public IWidget getInternal() {
 		if (internal != null) {
 			return internal;
 		}
@@ -318,12 +317,7 @@ public class Component extends Interactive implements Textable, Identifiable, Ni
 			return internal.calculateScreenPosition();
 		}
 
-		return new Callable<Point>() {
-			@Override
-			public Point call() throws Exception {
-				return NIL_POINT;
-			}
-		};
+		return () -> NIL_POINT;
 	}
 
 	@Override

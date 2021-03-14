@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Tile;
 
@@ -45,7 +46,7 @@ public class Game extends ClientAccessor {
 	 */
 	public boolean logout() {
 		if (ctx.game.tab(Tab.LOGOUT)) {
-			final Component logoutButton = ctx.widgets.component(LOGOUT_BUTTON_WIDGET, LOGOUT_BUTTON_COMPONENT);
+			final IWidget logoutButton = ctx.widgets.component(LOGOUT_BUTTON_WIDGET, LOGOUT_BUTTON_COMPONENT);
 			if (logoutButton.valid() && logoutButton.visible()) {
 				return logoutButton.click("Logout") && Condition.wait(() -> clientState() == GAME_LOGIN);
 			}
@@ -87,7 +88,7 @@ public class Game extends ClientAccessor {
 		if (hotkey && (keybind = Keybind.keybind(tab)) != Keybind.NONE && !(key = keybind.key(ctx)).equals("")) {
 			interacted = ctx.input.send(key);
 		} else {
-			final Component c = getByTexture(tab.textures);
+			final IWidget c = getByTexture(tab.textures);
 			interacted = c != null && ((ctx.client().isMobile() && c.click(true)) || c.click(command -> {
 				for (final String tip : tab.tips) {
 					if (command.action.equals(tip)) {
@@ -112,12 +113,12 @@ public class Game extends ClientAccessor {
 	 */
 	public Tab tab() {
 		for (final Tab tab : Tab.values()) {
-			final Component c = getByTexture(tab.textures);
+			final IWidget c = getByTexture(tab.textures);
 			if (c == null) {
 				continue;
 			}
 			try {
-				final Component c2 = ctx.widgets.widget(c.widget().id()).component(c.index() - openedTabIndexOffset(tab));
+				final IWidget c2 = ctx.widgets.widget(c.parentId()).component(c.index() - openedTabIndexOffset(tab));
 				if (c2.textureId() != -1) {
 					return tab;
 				}
@@ -148,7 +149,7 @@ public class Game extends ClientAccessor {
 		return 7;
 	}
 
-	private Component getByTexture(final int... textures) {
+	private IWidget getByTexture(final int... textures) {
 		Widget w = new Widget(ctx, 0);
 		if (ctx.client().isMobile()) {
 			w = ctx.widgets.widget(601);
@@ -158,7 +159,7 @@ public class Game extends ClientAccessor {
 			w = ctx.widgets.widget(548);
 		}
 
-		for (final Component c : w.components()) {
+		for (final IWidget c : w.components()) {
 			for (final int t : textures) {
 				if (c.textureId() == t) {
 					return c;
@@ -501,7 +502,7 @@ public class Game extends ClientAccessor {
 	 *
 	 * @return The component of the mini-map.
 	 */
-	public Component mapComponent() {
+	public IWidget mapComponent() {
 		Widget i = new Widget(ctx, 0);
 		if (ctx.client().isMobile()) {
 			i = ctx.widgets.widget(601);
@@ -511,12 +512,12 @@ public class Game extends ClientAccessor {
 			i = ctx.widgets.widget(548);
 		}
 
-		for (final Component c : i.components()) {
+		for (final IWidget c : i.components()) {
 			if (c.contentType() == 1338) {
 				return c;
 			}
 		}
-		return new Component(ctx, i, -1);
+		return  Widgets.NIL;
 	}
 
 	/**

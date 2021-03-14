@@ -1,5 +1,6 @@
 package org.powerbot.bot.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.*;
@@ -38,11 +39,11 @@ public class BankPin extends Daemon<ClientContext> {
 			final int preCount = count;
 			final Widget w = ctx.widgets.widget(Constants.BANKPIN_WIDGET);
 
-			for (final Component c : w.components()) {
+			for (final IWidget c : w.components()) {
 				if (c.textColor() != 0 || c.width() != 64 || c.height() != 64 || c.componentCount() != 2 || !c.visible()) {
 					continue;
 				}
-				final Component child = c.component(1);
+				final IWidget child = c.component(1);
 				if (!child.visible()) {
 					continue;
 				}

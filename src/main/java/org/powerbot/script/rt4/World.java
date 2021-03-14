@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 /**
@@ -199,7 +200,7 @@ public class World extends ClientAccessor
 		if (!list.valid()) {
 			return false;
 		}
-		for (final Component c : list.components()) {
+		for (final IWidget c : list.components()) {
 			if (c.index() % 6 != 2 || !c.text().equalsIgnoreCase("" + number)) {
 				continue;
 			}
@@ -217,8 +218,8 @@ public class World extends ClientAccessor
 		return false;
 	}
 
-	private Component component(final int widget, final int texture) {
-		for (final Component c : ctx.widgets.widget(widget).components()) {
+	private IWidget component(final int widget, final int texture) {
+		for (final IWidget c : ctx.widgets.widget(widget).components()) {
 			if (c.textureId() == texture) {
 				return c;
 			}
@@ -226,13 +227,13 @@ public class World extends ClientAccessor
 		return null;
 	}
 
-	private Component container() {
+	private IWidget container() {
 		final int height = ctx.worlds.list().height();
-		return ctx.components.select(false, Worlds.WORLD_WIDGET).scrollHeight(height).poll();
+		return ctx.components.toStream().widget(Worlds.WORLD_WIDGET).scrollHeight(height).first();
 	}
 
-	private Component bar() {
-		return ctx.components.select(false, Worlds.WORLD_WIDGET).select(c -> c.componentCount() == 6).poll();
+	private IWidget bar() {
+		return ctx.components.toStream().widget(Worlds.WORLD_WIDGET).filter(c -> c.componentCount() == 6).first();
 	}
 
 	@Override

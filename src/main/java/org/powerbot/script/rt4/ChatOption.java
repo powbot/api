@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 /**
@@ -7,11 +8,11 @@ import org.powerbot.script.*;
  */
 public class ChatOption extends ClientAccessor implements Textable, Validatable, Nillable<ChatOption> {
 	private final int index;
-	private final Component option;
+	private final IWidget option;
 
-	public static final ChatOption NIL = new ChatOption(org.powerbot.script.ClientContext.ctx(), -1, Component.NIL);
+	public static final ChatOption NIL = new ChatOption(org.powerbot.script.ClientContext.ctx(), -1, Widgets.NIL);
 
-	public ChatOption(final ClientContext ctx, final int index, final Component option) {
+	public ChatOption(final ClientContext ctx, final int index, final IWidget option) {
 		super(ctx);
 		this.index = index;
 		this.option = option;

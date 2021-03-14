@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.Streamable;
 import org.powbot.stream.item.BankItemStream;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.Random;
 import org.powerbot.script.*;
 
@@ -105,8 +106,8 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		return getBank().valid();
 	}
 
-	private Component collectionBoxCloseBtn() {
-		final Component component = ctx.widgets.component(
+	private IWidget collectionBoxCloseBtn() {
+		final IWidget component = ctx.widgets.component(
 			BANK_COLLECTION_BOX_CLOSE_BUTTON_WIDGET,
 			BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT,
 			BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT_CHILD
@@ -116,7 +117,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 			return component;
 		}
 
-		return Component.NIL;
+		return Widgets.NIL;
 	}
 	/**
 	 * Opens a random in-view bank.
@@ -128,7 +129,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		if (opened()) {
 			return true;
 		}
-		final Component closeCollectionBox = collectionBoxCloseBtn();
+		final IWidget closeCollectionBox = collectionBoxCloseBtn();
 		if (closeCollectionBox.valid()) {
 			if (!closeCollectionBox.click(true)) {
 				return false;
@@ -184,7 +185,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		if (!opened()) {
 			return items;
 		}
-		for (final Component c : ctx.widgets.widget(Constants.BANK_WIDGET).component(Constants.BANK_ITEMS).components()) {
+		for (final IWidget c : ctx.widgets.widget(Constants.BANK_WIDGET).component(Constants.BANK_ITEMS).components()) {
 			final int id = c.itemId(), stack = c.itemStackSize();
 			if (id >= 0 && stack > 0) {
 				items.add(new Item(ctx, c, id, stack));
@@ -214,7 +215,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		if (!opened()) {
 			return true;
 		}
-		final Component closeButton = ctx.widgets.component(BANK_WIDGET, BANK_MASTER, BANK_CLOSE);
+		final IWidget closeButton = ctx.widgets.component(BANK_WIDGET, BANK_MASTER, BANK_CLOSE);
 		return ((key && ctx.game.settings.escClosingEnabled() && ctx.input.send("{VK_ESCAPE}")) || closeButton.click())
 				&& Condition.wait(() -> !opened(), 30, 10);
 	}
@@ -684,7 +685,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 	 * @return {@code true} if the tab was successfully changed; otherwise {@code false}
 	 */
 	public boolean currentTab(final int index) {
-		final Component c = ctx.widgets.component(Constants.BANK_WIDGET, 21).component(index);
+		final IWidget c = ctx.widgets.component(Constants.BANK_WIDGET, 21).component(index);
 		return (currentTab() == index) || c.click() && Condition.wait(new Condition.Check() {
 			@Override
 			public boolean poll() {
@@ -700,7 +701,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 	 * @return the {@link Item} displayed in the tab; otherwise {@link #nil()}
 	 */
 	public Item tabItem(final int index) {
-		final Component c = ctx.widgets.component(Constants.BANK_WIDGET, 11).component(10 + index);
+		final IWidget c = ctx.widgets.component(Constants.BANK_WIDGET, 11).component(10 + index);
 		if (c != null && c.valid() && c.itemId() != -1) {
 			return new Item(ctx, c);
 		}

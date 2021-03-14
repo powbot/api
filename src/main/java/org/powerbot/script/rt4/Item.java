@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 import org.powerbot.script.action.Emittable;
 import org.powerbot.script.action.ItemAction;
@@ -12,24 +13,24 @@ import java.util.concurrent.Callable;
  */
 public class Item extends GenericItem implements Identifiable, Nameable, Stackable, Actionable, Nillable<Item>,
 	Emittable<ItemAction> {
-	public static final Item NIL = new Item(org.powerbot.script.ClientContext.ctx(), Component.NIL);
+	public static final Item NIL = new Item(org.powerbot.script.ClientContext.ctx(), Widgets.NIL);
 
 	public static final int WIDTH = 31;
 	public static final int HEIGHT = 31;
-	final Component component;
+	final IWidget component;
 	private final int inventoryIndex, id;
 	private int stack;
 	private int[] bounds;
 
-	public Item(final ClientContext ctx, final Component component) {
+	public Item(final ClientContext ctx, final IWidget component) {
 		this(ctx, component, component.itemId(), component.itemStackSize());
 	}
 
-	public Item(final ClientContext ctx, final Component component, final int id, final int stack) {
+	public Item(final ClientContext ctx, final IWidget component, final int id, final int stack) {
 		this(ctx, component, -1, id, stack);
 	}
 
-	public Item(final ClientContext ctx, final Component component, final int inventoryIndex, final int id, final int stack) {
+	public Item(final ClientContext ctx, final IWidget component, final int inventoryIndex, final int id, final int stack) {
 		super(ctx);
 		this.component = component;
 		this.inventoryIndex = inventoryIndex;
@@ -126,7 +127,7 @@ public class Item extends GenericItem implements Identifiable, Nameable, Stackab
 		return component.contains(point);
 	}
 
-	public Component component() {
+	public IWidget component() {
 		return component;
 	}
 

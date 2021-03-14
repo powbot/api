@@ -1,5 +1,6 @@
 package org.powerbot.bot.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.*;
@@ -10,7 +11,7 @@ public class CanContinue extends Daemon<ClientContext> {
 		super(ctx);
 	}
 
-	private Component getContinueWidget() {
+	private IWidget getContinueWidget() {
 		return ctx.widgets.component(193, 0, 2);
 	}
 

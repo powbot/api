@@ -37,11 +37,11 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 	 * @param componentIndex the index of the desired {@link Component} of the given {@link Widget}
 	 * @return the {@link Component} belonging to the {@link Widget} requested
 	 */
-	public Component component(final int index, final int componentIndex) {
+	public IWidget component(final int index, final int componentIndex) {
 		return widget(index).component(componentIndex);
 	}
 
-	public Component component(final int index, final int componentIndex, final int subComponentIndex) {
+	public IWidget component(final int index, final int componentIndex, final int subComponentIndex) {
 		return component(index, componentIndex).component(subComponentIndex);
 	}
 
@@ -82,10 +82,10 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 	 * @param component the viewport component
 	 * @param bar       the scrollbar
 	 * @return {@code true} if scrolled to view, otherwise {@code false}
-	 * @deprecated use {@link #scroll(Component, Component, Component, boolean) scroll(component, pane, bar, scroll)}
+	 * @deprecated use {@link #scroll(IWidget, IWidget, IWidget, boolean) scroll(component, pane, bar, scroll)}
 	 */
 	@Deprecated
-	public boolean scroll(final Component pane, final Component component, final Component bar) {
+	public boolean scroll(final IWidget pane, final IWidget component, final IWidget bar) {
 		return scroll(component, pane, bar, true);
 	}
 
@@ -98,7 +98,7 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 	 * @param mouseScroll whether to use mouse wheel to scroll or not
 	 * @return {@code true} if scrolled to view or is already in view, otherwise {@code false}
 	 */
-	public boolean scroll(final Component component, final Component pane, final Component bar, final boolean mouseScroll) {
+	public boolean scroll(final IWidget component, final IWidget pane, final IWidget bar, final boolean mouseScroll) {
 		if (component == null || !component.valid()) {
 			return false;
 		}
@@ -125,8 +125,8 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 		if (pos.y >= view.y && pos.y <= view.y + height - length) {
 			return true;
 		}
-		final Component thumbHolder = bar.component(0);
-		final Component thumb = bar.component(1);
+		final IWidget thumbHolder = bar.component(0);
+		final IWidget thumb = bar.component(1);
 		final int thumbSize = thumbHolder.height();
 		int y = (int) ((float) thumbSize / pane.scrollHeight() *
 			(component.relativeY() + Random.nextInt(-height / 2, height / 2 - length)));
@@ -144,7 +144,7 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 			Condition.sleep();
 		}
 		Point a;
-		Component c;
+		IWidget c;
 		int tY = thumb.screenPoint().y;
 		final long start = System.nanoTime();
 		long mark = System.nanoTime();
@@ -226,19 +226,19 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 	 * @param interfaceComponents Components of interface that is being closed
 	 * @return {@code true} if the interface is not opened or was successfully closed, {@code false} otherwise.
 	 **/
-	public boolean close(final Component[] interfaceComponents) {
+	public boolean close(final IWidget[] interfaceComponents) {
 		return close(findCloseButton(interfaceComponents), false);
 	}
 
 	/**
 	 * Finds the close button among the provided interface components, and closes it using either mouse or hotkey.
-	 * WARNING: It is recommended to use the overloaded method {@link #close(Component[]) close(interfaceComponents)}. In the future, when the antipatterns are implemented, the client will automatically decide whether or not to use hotkeys to close the interface.
+	 * WARNING: It is recommended to use the overloaded method {@link #close(IWidget[]) close(interfaceComponents)}. In the future, when the antipatterns are implemented, the client will automatically decide whether or not to use hotkeys to close the interface.
 	 *
 	 * @param interfaceComponents Components of interface that is being closed
 	 * @param hotkey              Whether or not use hotkey to close the interface
 	 * @return {@code true} if the interface is not opened or was successfully closed, {@code false} otherwise.
 	 **/
-	public boolean close(final Component[] interfaceComponents, final boolean hotkey) {
+	public boolean close(final IWidget[] interfaceComponents, final boolean hotkey) {
 		return close(findCloseButton(interfaceComponents), hotkey);
 	}
 
@@ -248,19 +248,19 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 	 * @param closeButton The button which closes the interface
 	 * @return {@code true} if the interface is not opened or was successfully closed, {@code false} otherwise.
 	 **/
-	public boolean close(final Component closeButton) {
+	public boolean close(final IWidget closeButton) {
 		return close(closeButton, false);
 	}
 
 	/**
 	 * Closes the parent interface of the closeButton component using either mouse or hotkey.
-	 * WARNING: It is recommended to use the overloaded method {@link #close(Component) close(closeButton)}. In the future, when the antipatterns are implemented, the client will automatically decide whether or not to use hotkeys to close the interface.
+	 * WARNING: It is recommended to use the overloaded method {@link #close(IWidget) close(closeButton)}. In the future, when the antipatterns are implemented, the client will automatically decide whether or not to use hotkeys to close the interface.
 	 *
 	 * @param closeButton The button which closes the interface
 	 * @param hotkey      Whether or not use hotkey to close the interface
 	 * @return {@code true} if the interface is not opened or was successfully closed, {@code false} otherwise.
 	 **/
-	public boolean close(final Component closeButton, final boolean hotkey) {
+	public boolean close(final IWidget closeButton, final boolean hotkey) {
 		if (closeButton == null || !closeButton.valid()) {
 			return true;
 		}
@@ -272,8 +272,8 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 		}, 50, 16);
 	}
 
-	private Component findCloseButton(final Component[] components) {
-		for (final Component c1 : components) {
+	private IWidget findCloseButton(final IWidget[] components) {
+		for (final IWidget c1 : components) {
 			if (c1.componentCount() == 0) {
 				final int t1 = c1.textureId();
 				for (final int texture : Constants.CLOSE_BUTTON_TEXTURES) {
@@ -282,7 +282,7 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 					}
 				}
 			} else {
-				final Component c2 = findCloseButton(c1.components());
+				final IWidget c2 = findCloseButton(c1.components());
 				if (c2 != null) {
 					return c2;
 				}

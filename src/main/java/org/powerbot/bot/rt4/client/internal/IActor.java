@@ -343,4 +343,8 @@ public interface IActor extends IRenderable, Viewable, Interactive, Modelable,
 		return str != null ? str : "";
 	}
 
+	default int animation() {
+		return getAnimation();
+	}
+
 }

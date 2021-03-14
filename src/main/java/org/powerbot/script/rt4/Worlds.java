@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.Streamable;
 import org.powbot.stream.widget.WorldStream;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class Worlds extends AbstractQuery<Worlds, World, ClientContext> implemen
 		if (!list.valid()) {
 			return cache;
 		}
-		final Component[] comps = list.components();
+		final IWidget[] comps = list.components();
 		for (int off = 0; off < comps.length - 6; off += 6) {
 			final World.Type type = World.Type.forType(comps[off + 1].textureId());
 			final World.Server server = World.Server.forType(comps[off + 3].textureId());

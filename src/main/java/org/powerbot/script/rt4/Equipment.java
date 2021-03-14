@@ -3,6 +3,7 @@ package org.powerbot.script.rt4;
 import org.powbot.stream.item.EquipmentItemStream;
 import org.powbot.stream.item.ItemStream;
 import org.powbot.stream.Streamable;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class Equipment extends ItemQuery<Item> implements Streamable<EquipmentIt
 		final int[] data = ctx.players.local().appearance();
 		for (final Slot slot : Slot.values()) {
 			final int index = slot.getIndex();
-			final Component c = ctx.widgets.widget(Constants.EQUIPMENT_WIDGET).component(slot.getComponentIndex()).component(1);
+			final IWidget c = ctx.widgets.widget(Constants.EQUIPMENT_WIDGET).component(slot.getComponentIndex()).component(1);
 			final boolean v = c.visible();
 			if (index < 0 || (index >= data.length || data[index] < 0) && !v) {
 				continue;
@@ -47,7 +48,7 @@ public class Equipment extends ItemQuery<Item> implements Streamable<EquipmentIt
 		if (index < 0) {
 			return nil();
 		}
-		final Component c = ctx.widgets.widget(Constants.EQUIPMENT_WIDGET).component(slot.getComponentIndex()).component(1);
+		final IWidget c = ctx.widgets.widget(Constants.EQUIPMENT_WIDGET).component(slot.getComponentIndex()).component(1);
 		final boolean v = c.visible();
 		if ((index >= data.length || data[index] < 0) && !v) {
 			return nil();

@@ -182,7 +182,7 @@ public interface IWidget extends INode, Interactive, Textable, Identifiable, Nil
 		final int parentId = parentId();
 		int x = getX(), y = getY();
 		if (parentId != -1) {
-			final Component parent = org.powerbot.script.rt4.ClientContext.ctx().widgets.component(parentId >> 16, parentId & 0xffff);
+			final IWidget parent = org.powerbot.script.rt4.ClientContext.ctx().widgets.component(parentId >> 16, parentId & 0xffff);
 			if (parent != null) {
 				final Point p = parent.screenPoint();
 				x += p.x - parent.scrollX();
@@ -200,6 +200,30 @@ public interface IWidget extends INode, Interactive, Textable, Identifiable, Nil
 			}
 		}
 		return new Point(x, y);
+	}
+
+	default int scrollX() {
+		return getScrollX();
+	}
+
+	default int scrollY() {
+		return getScrollY();
+	}
+
+	default int height() {
+		return getHeight();
+	}
+
+	default int width() {
+		return getWidth();
+	}
+
+	default int textureId() {
+		return getTextureId();
+	}
+
+	default int textColor() {
+		return getTextColor();
 	}
 
 	default Rectangle boundingRect() {
@@ -266,18 +290,17 @@ public interface IWidget extends INode, Interactive, Textable, Identifiable, Nil
 		return children[index];
 	}
 
-	@Deprecated
-	default Component component(final int index) {
+	default IWidget component(final int index) {
 		if (index < 0) {
-			return new Component(ClientContext.ctx(), Widget.NIL, Component.NIL, -1, null);
+			return Widgets.NIL;
 		}
 
 		final IWidget[] children = getChildren();
 		if (children == null || children.length < index) {
-			return new Component(ClientContext.ctx(), Widget.NIL, Component.NIL, -1, null);
+			return Widgets.NIL;
 		}
 
-		return new Component(ClientContext.ctx(), new Widget(ClientContext.ctx(), parentId()), Component.NIL, index, children[index]);
+		return children[index];
 	}
 
 	default int componentCount() {
@@ -286,12 +309,12 @@ public interface IWidget extends INode, Interactive, Textable, Identifiable, Nil
 	}
 
 	@Deprecated
-	default Component[] components() {
+	default IWidget[] components() {
 		final int len = componentCount();
 		if (len <= 0) {
-			return new Component[0];
+			return new IWidget[0];
 		}
-		final Component[] comps = new Component[len];
+		final IWidget[] comps = new IWidget[len];
 		for (int i = 0; i < len; i++) {
 			comps[i] = component(i);
 		}
@@ -311,5 +334,53 @@ public interface IWidget extends INode, Interactive, Textable, Identifiable, Nil
 		}
 
 		return configs[index];
+	}
+
+	default int scrollHeight() {
+		return getScrollHeight();
+	}
+
+	default int scrollWidth() {
+		return getScrollWidth();
+	}
+
+	default int relativeX() {
+		return getX();
+	}
+
+	default int relativeY() {
+		return getY();
+	}
+
+	default int index() {
+		return getId() >> 16;
+	}
+
+	default int borderThickness() {
+		return getBorderThickness();
+	}
+
+	default int contentType() {
+		return getContentType();
+	}
+
+	default int modelZoom() {
+		return getModelZoom();
+	}
+
+	default Widget widget() {
+		return new Widget(ClientContext.ctx(), parentId());
+	}
+
+	default int type() {
+		return getType();
+	}
+
+	default int modelId() {
+		return getModelId();
+	}
+
+	default int modelType() {
+		return getModelType();
 	}
 }

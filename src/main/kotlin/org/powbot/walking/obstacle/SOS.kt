@@ -1,6 +1,7 @@
 package org.powbot.walking.obstacle
 
 import org.powbot.walking.obstacle.ObstacleHandlerUtils.isChatting
+import org.powerbot.bot.rt4.client.internal.IWidget
 import org.powerbot.script.ClientContext
 import org.powerbot.script.Condition
 import org.powerbot.script.Random
@@ -13,7 +14,7 @@ object SOS {
 
     fun handleSOSWarning(): Boolean {
         val ctx = ClientContext.ctx()
-        val warning: Component = ctx.widgets.widget(579).component(17)
+        val warning: IWidget = ctx.widgets.widget(579).component(17)
         return if (warning.valid()) {
             ctx.controller.script().log.info("SOS warning visible. handling it")
             warning.click()

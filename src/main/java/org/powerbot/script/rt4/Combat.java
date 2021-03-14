@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 /**
@@ -150,7 +151,7 @@ public class Combat extends ClientAccessor {
 		if (!ctx.game.tab(Game.Tab.ATTACK)) {
 			return false;
 		}
-		final Component c = style.comp == null ? (style.comp = ctx.widgets.component(Constants.COMBAT_OPTIONS_WIDGET, 4 + (style.ordinal() * 4))) : style.comp;
+		final IWidget c = style.comp == null ? (style.comp = ctx.widgets.component(Constants.COMBAT_OPTIONS_WIDGET, 4 + (style.ordinal() * 4))) : style.comp;
 		return c != null && c.visible() && c.click() && Condition.wait(new Condition.Check() {
 			@Override
 			public boolean poll() {
@@ -171,6 +172,6 @@ public class Combat extends ClientAccessor {
 		AGGRESSIVE,
 		CONTROLLED,
 		DEFENSIVE;
-		private Component comp = null;
+		private IWidget comp = null;
 	}
 }

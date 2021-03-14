@@ -12,6 +12,10 @@ public interface IPlayer extends IActor {
 
 	int getTeam();
 
+	default int combatLevel() {
+		return getCombatLevel();
+	}
+
 	@Override
 	default String[] actions() {
 		return new String[0];

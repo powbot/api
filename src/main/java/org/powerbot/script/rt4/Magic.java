@@ -1,5 +1,6 @@
 package org.powerbot.script.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.rt4.Game.*;
 
 /**
@@ -38,7 +39,7 @@ public class Magic extends ClientAccessor {
 		final Book book = book();
 
 		for (final MagicSpell spell : book.spells()) {
-			final Component c = component(spell);
+			final IWidget c = component(spell);
 			if (c.valid() && c.borderThickness() == 2) {
 				return spell;
 			}
@@ -92,7 +93,7 @@ public class Magic extends ClientAccessor {
 			return false;
 		}
 
-		final Component c = component(spell);
+		final IWidget c = component(spell);
 		return c.visible() && c.click(cmd -> cmd.action.equals("Cast") || cmd.action.equals("Reanimate") || cmd.action.equals("Resurrect"));
 	}
 
@@ -112,7 +113,7 @@ public class Magic extends ClientAccessor {
 			return false;
 		}
 
-		final Component c = component(spell);
+		final IWidget c = component(spell);
 		return c.visible() && c.click(cmd -> cmd.action.equals(action));
 	}
 
@@ -135,10 +136,10 @@ public class Magic extends ClientAccessor {
 	 * @param spell The spell to retrieve.
 	 * @return The component of the spell.
 	 */
-	public Component component(final MagicSpell spell) {
+	public IWidget component(final MagicSpell spell) {
 		final Widget bookWidget = ctx.widgets.widget(Book.widget());
 
-		for (final Component c : bookWidget.components()) {
+		for (final IWidget c : bookWidget.components()) {
 			final int texture = c.textureId();
 			final int spellOff = spell.texture();
 			final int spellOn = spellOff - (spellOff == 406 || spell.book() != Book.ARCEUUS ? 50 : 25);

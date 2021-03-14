@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.widget.ChatOptionStream;
 import org.powbot.stream.Streamable;
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 
 import java.util.ArrayList;
@@ -25,9 +26,9 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 	@Override
 	public List<ChatOption> get() {
 		final List<ChatOption> options = new ArrayList<>(5);
-		final Component parent = ctx.widgets.component(Constants.CHAT_WIDGET, 1);
+		final IWidget parent = ctx.widgets.component(Constants.CHAT_WIDGET, 1);
 		for (int i = 0; i < 5; i++) {
-			final Component component = parent.component(Constants.CHAT_OPTIONS[i]);
+			final IWidget component = parent.component(Constants.CHAT_OPTIONS[i]);
 			if (!component.valid() || component.textureId() != -1) {
 				continue;
 			}
@@ -60,9 +61,9 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 	}
 
 	@Deprecated
-	public List<Component> chatOptions() {
-		final List<Component> options = new ArrayList<>();
-		final Component component = ctx.widgets.component(Constants.CHAT_WIDGET, 0);
+	public List<IWidget> chatOptions() {
+		final List<IWidget> options = new ArrayList<>();
+		final IWidget component = ctx.widgets.component(Constants.CHAT_WIDGET, 0);
 		for (int i = 1; i < component.componentCount() - 2; i++) {
 			options.add(component.components()[i]);
 		}
@@ -130,7 +131,7 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 	}
 
 	public boolean sendInput(final String input) {
-		final Component textBox = inputBox();
+		final IWidget textBox = inputBox();
 		if (!pendingInput()) {
 			return false;
 		}
@@ -152,7 +153,7 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 		return text.equalsIgnoreCase(input) && textBox.visible() && ctx.input.sendln("");
 	}
 
-	private Component inputBox() {
+	private IWidget inputBox() {
 		return ctx.widgets.component(Constants.CHAT_INPUT, Constants.CHAT_INPUT_TEXT);
 	}
 

@@ -12,6 +12,9 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class Components extends AbstractQuery<Components, Component, ClientContext> implements Streamable<ComponentStream> {
+
+	public static final IWidget NIL = Widgets.NIL;
+
 	public Components(final ClientContext ctx) {
 		super(ctx);
 	}
@@ -75,7 +78,7 @@ public class Components extends AbstractQuery<Components, Component, ClientConte
 	 * @return {@code this} for the purpose of chaining.
 	 */
 	public Components select(final int widget, final int component) {
-		return select(Arrays.asList(ctx.widgets.component(widget, component).components()));
+		return select(Arrays.asList(wrap(null, ctx.widgets.component(widget, component).components())));
 	}
 
 
@@ -113,17 +116,26 @@ public class Components extends AbstractQuery<Components, Component, ClientConte
 		final Queue<Component> base = new ArrayDeque<>();
 		final List<Component> components = new ArrayList<>();
 		for (final Widget w : widgets) {
-			Collections.addAll(base, w.components());
+			Collections.addAll(base, wrap(w, w.components()));
 		}
 		while (!base.isEmpty()) {
 			final Component c = base.poll();
 			if (children && c.components().length > 0) {
-				Collections.addAll(base, c.components());
+				Collections.addAll(base, wrap(null, c.components()));
 			} else {
 				components.add(c);
 			}
 		}
 		return components;
+	}
+
+	private Component[] wrap(final Widget parent, final IWidget[] widgets) {
+		final Component[] wrapped = new Component[widgets.length];
+		for (int i = 0; i < widgets.length; i++) {
+			wrapped[i] = new Component(ctx, parent, null, widgets[i].id() >> 16, widgets[i]);
+		}
+
+		return wrapped;
 	}
 
 

@@ -1,5 +1,6 @@
 package org.powerbot.bot.rt4;
 
+import org.powerbot.bot.rt4.client.internal.IWidget;
 import org.powerbot.script.*;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Component;
@@ -35,7 +36,7 @@ public class WidgetCloser extends Daemon<ClientContext> {
 	public boolean check() {
 		return Arrays.stream(Constants.WIDGETCLOSER_TRADE_ITEMS)
 			.filter(it -> {
-				final Component c = ctx.widgets.component(it >> 16, it & 0xffff);
+				final IWidget c = ctx.widgets.component(it >> 16, it & 0xffff);
 				return c.valid() && c.visible();
 			}).count() > 0L;
 	}
@@ -56,7 +57,7 @@ public class WidgetCloser extends Daemon<ClientContext> {
 				continue;
 			}
 
-			final Component c = ctx.widgets.component(id >> 16, id & 0xffff);
+			final IWidget c = ctx.widgets.component(id >> 16, id & 0xffff);
 			final Point p = c.screenPoint();
 			if (c.visible() && c.click()) {
 				if (Condition.wait(new Condition.Check() {
