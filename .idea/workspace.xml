@@ -2,16 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7864c1ed-6c93-47c9-9e09-92332dd36114" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/CollectionBox.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/CollectionSlot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/GeSlot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/GrandExchange.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/GrandExchangeItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/powbot-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/powerbot/script/StringUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/StringUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/ClientContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/ClientContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/constants.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/constants.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/CollectionBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/CollectionBox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/CollectionSlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/CollectionSlot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/GeSlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/powerbot/script/rt4/GeSlot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/powbot/input/MouseMovement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/powbot/input/MouseMovement.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

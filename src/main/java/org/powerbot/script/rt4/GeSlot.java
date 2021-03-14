@@ -3,8 +3,6 @@ package org.powerbot.script.rt4;
 import org.powerbot.script.Condition;
 import org.powerbot.script.StringUtils;
 
-
-
 public class GeSlot {
 	private final Component component;
 

@@ -12,12 +12,12 @@ public class CollectionSlot {
 		component = Component.NIL;
 	}
 
-	CollectionSlot(GeSlot slot) {
+	public CollectionSlot(GeSlot slot) {
 		component = ClientContext.ctx().widgets.component(Constants.COLLECTION_BOX_WIDGET_ID,
 			slot.getComponent().index() - Constants.GRAND_EXCHANGE_FIRST_OFFER_SLOT + Constants.COLLECTION_BOX_FIRST_OFFER_SLOT);
 	}
 
-	CollectionSlot(Component component) {
+	public CollectionSlot(Component component) {
 		this.component = component;
 	}
 
@@ -76,7 +76,7 @@ public class CollectionSlot {
 		return component.component(15).textColor() == completedTextColor;
 	}
 
-	public GrandExchangeItem getGeItem() {
+	public GrandExchangeItem getGrandExchangeItem() {
 		if (getItemId() != -1) {
 			return new GrandExchangeItem(getItemName());
 		}
