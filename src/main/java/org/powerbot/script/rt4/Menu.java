@@ -148,7 +148,7 @@ public class Menu extends ClientAccessor {
 	 * @return {@code true} if the mouse has successfully clicked within the bounds of the {@link MenuCommand}
 	 */
 	private boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return false;
 		}

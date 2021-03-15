@@ -386,7 +386,7 @@ public class Game extends ClientAccessor {
 		}
 
 		if (client.isMobile()) {
-			return ((IMobileClient) client.get()).getTileHeight(floor, x, y);
+			return ((IMobileClient) client).getTileHeight(floor, x, y);
 		}
 
 		final byte[][][] meta = client.getLandscapeMeta();
