@@ -2,7 +2,8 @@ package org.powerbot.script.rt4;
 
 import org.powbot.stream.locatable.interactive.NpcStream;
 import org.powbot.stream.Streamable;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.INpc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +22,18 @@ public class Npcs extends BasicQuery<Npc> implements Streamable<NpcStream> {
 	@Override
 	public List<Npc> get() {
 		final List<Npc> r = new ArrayList<>();
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return r;
 		}
 		final int[] indices = client.getNpcIndices();
-		final org.powerbot.bot.rt4.client.Npc[] npcs = client.getNpcs();
+		final INpc[] npcs = client.getNpcs();
 		if (indices == null || npcs == null) {
 			return r;
 		}
 		for (int index = 0; index < Math.min(client.getNpcCount(), indices.length); ++index) {
-			final org.powerbot.bot.rt4.client.Npc n = npcs[indices[index]];
-			if (!n.isNull()) {
+			final INpc n = npcs[indices[index]];
+			if (n != null) {
 				r.add(new Npc(ctx, n));
 			}
 		}
@@ -49,6 +50,6 @@ public class Npcs extends BasicQuery<Npc> implements Streamable<NpcStream> {
 
 	@Override
 	public Npc nil() {
-		return new Npc(ctx, null);
+		return Npc.NIL;
 	}
 }

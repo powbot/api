@@ -2,8 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.inventory.InventoryWatcher;
 import org.powerbot.bot.model.ModelCache;
-import org.powerbot.bot.rt4.*;
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.script.*;
 import org.powerbot.script.action.ActionEmitter;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * ClientContext
  * A utility class with references to all major points of the API.
  */
-public class ClientContext extends org.powerbot.script.ClientContext<Client> {
+public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 	public final Bank bank;
 	public final Camera camera;
 	public final Chat chat;
@@ -39,7 +38,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 	public final ActionEmitter actionEmitter;
 	public static final ModelCache modelCache = new ModelCache();
 	public static final InventoryWatcher inventoryWatcher = new InventoryWatcher();
-
+	public static final ScriptStateWatcher scriptStateWatcher = new ScriptStateWatcher();
 
 	private ClientContext(final Bot<ClientContext> bot) {
 		super(bot);
@@ -109,5 +108,22 @@ public class ClientContext extends org.powerbot.script.ClientContext<Client> {
 	 */
 	public static ClientContext newContext(final Bot<ClientContext> bot) {
 		return new ClientContext(bot);
+	}
+
+	public boolean isScriptRunning() {
+		if (scriptStateWatcher.getState() != ScriptState.Running) {
+			return false;
+		}
+
+		final AbstractScript script = scriptStateWatcher.getScript();
+		return script != null && !script.getManifest().properties().contains("category=Plugin;");
+	}
+
+	public boolean isPluginRunning() {
+		if (scriptStateWatcher.getState() != ScriptState.Running) {
+			return false;
+		}
+		final AbstractScript script = scriptStateWatcher.getScript();
+		return script != null && script.getManifest().properties().contains("category=Plugin;");
 	}
 }

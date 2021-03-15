@@ -105,6 +105,19 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		return getBank().valid();
 	}
 
+	private Component collectionBoxCloseBtn() {
+		final Component component = ctx.widgets.component(
+			BANK_COLLECTION_BOX_CLOSE_BUTTON_WIDGET,
+			BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT,
+			BANK_COLLECTION_BOX_CLOSE_BUTTON_COMPONENT_CHILD
+		);
+
+		if (component.valid()) {
+			return component;
+		}
+
+		return Component.NIL;
+	}
 	/**
 	 * Opens a random in-view bank.
 	 * Do not continue execution within the current poll after this method so BankPin may activate.
@@ -114,6 +127,15 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 	public boolean open() {
 		if (opened()) {
 			return true;
+		}
+		final Component closeCollectionBox = collectionBoxCloseBtn();
+		if (closeCollectionBox.valid()) {
+			if (!closeCollectionBox.click(true)) {
+				return false;
+			}
+			if (!Condition.wait(() -> !closeCollectionBox.valid())) {
+				return false;
+			}
 		}
 
 		final Interactive interactive = getBank();
@@ -173,7 +195,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 
 	@Override
 	public Item nil() {
-		return new Item(ctx, null, -1, -1, -1);
+		return Item.NIL;
 	}
 
 	/**

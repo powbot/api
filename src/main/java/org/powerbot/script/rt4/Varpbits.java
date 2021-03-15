@@ -1,6 +1,7 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IClient;
 
 /**
  * Varpbits
@@ -20,7 +21,7 @@ public class Varpbits extends ClientAccessor {
 	 */
 	public int[] array() {
 		final int[] c = new int[0];
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return c;
 		}

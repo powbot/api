@@ -1,6 +1,7 @@
 package org.powerbot.bot.rt4;
 
 import org.powerbot.script.*;
+import org.powerbot.script.action.ObjectAction;
 import org.powerbot.script.rt4.ClientAccessor;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.*;

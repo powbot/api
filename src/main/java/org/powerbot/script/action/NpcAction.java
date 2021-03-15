@@ -2,7 +2,9 @@ package org.powerbot.script.action;
 
 import org.powerbot.script.rt4.Npc;
 
-public class NpcAction extends AbstractAction {
+import java.awt.*;
+
+public class NpcAction extends AbstractAction<NpcAction> {
 	private Npc npc;
 
 	public Npc getNpc() {
@@ -11,6 +13,14 @@ public class NpcAction extends AbstractAction {
 
 	public NpcAction setNpc(Npc npc) {
 		this.npc = npc;
+
+		if (getMouseX() == 0) {
+			Point p = npc.nextPoint();
+			if (p.x > 0) {
+				setMouseX(p.x);
+				setMouseY(p.y);
+			}
+		}
 		return this;
 	}
 }

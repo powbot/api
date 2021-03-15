@@ -8,11 +8,11 @@ import java.util.Arrays;
 
 public class IteratorUtils {
 
-	public static <T> T newInstance(final Proxy obj, final Class<T> type) {
+	public static <T> T newInstance(final Object obj, final Class<T> type) {
 		try {
 			return (T) Arrays.stream(type.getDeclaredConstructors()).filter(c -> c.getParameterCount() == 1
 				&& INode.class.isAssignableFrom(c.getParameterTypes()[0])).findFirst().orElse(null)
-				.newInstance(obj != null ? obj.get() : null);
+				.newInstance(obj);
 		} catch (final IllegalAccessException | InstantiationException | InvocationTargetException e) {
 			e.printStackTrace();
 		}

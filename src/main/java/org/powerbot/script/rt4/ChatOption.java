@@ -5,9 +5,11 @@ import org.powerbot.script.*;
 /**
  * ChatOption
  */
-public class ChatOption extends ClientAccessor implements Textable, Validatable {
+public class ChatOption extends ClientAccessor implements Textable, Validatable, Nillable<ChatOption> {
 	private final int index;
 	private final Component option;
+
+	public static final ChatOption NIL = new ChatOption(org.powerbot.script.ClientContext.ctx(), -1, Component.NIL);
 
 	public ChatOption(final ClientContext ctx, final int index, final Component option) {
 		super(ctx);
@@ -38,5 +40,10 @@ public class ChatOption extends ClientAccessor implements Textable, Validatable 
 	@Override
 	public boolean valid() {
 		return index >= 0 && index < 5 && option != null && option.valid();
+	}
+
+	@Override
+	public ChatOption nil() {
+		return ChatOption.NIL;
 	}
 }

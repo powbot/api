@@ -1,6 +1,8 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.*;
+import org.powerbot.bot.rt4.client.internal.IBasicObject;
+import org.powerbot.bot.rt4.client.internal.IRenderable;
 
 import java.lang.reflect.Method;
 
@@ -10,10 +12,10 @@ import java.lang.reflect.Method;
  *
  * @see GameObject
  */
-public class BasicObject {
-	protected final org.powerbot.bot.rt4.client.BasicObject object;
+public class BasicObject<T extends IBasicObject> {
+	protected final T object;
 
-	public BasicObject(final org.powerbot.bot.rt4.client.BasicObject object) {
+	public BasicObject(final T object) {
 		this.object = object;
 	}
 
@@ -53,6 +55,10 @@ public class BasicObject {
 
 	public int getY2() {
 		return object.getY2();
+	}
+
+	public IRenderable[] renderables() {
+		return object.getRenderables();
 	}
 
 	@Override

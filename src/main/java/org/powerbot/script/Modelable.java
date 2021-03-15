@@ -1,8 +1,9 @@
 package org.powerbot.script;
 
-import org.powerbot.bot.rt4.client.internal.IModel;
-import org.powerbot.bot.rt4.client.internal.INpc;
-import org.powerbot.bot.rt4.client.internal.IRenderable;
+import org.powerbot.bot.rt4.HashTable;
+import org.powerbot.bot.rt4.client.internal.*;
+import org.powerbot.script.rt4.CacheModelConfig;
+import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Model;
 
 import java.awt.*;
@@ -16,24 +17,29 @@ public interface Modelable {
 
 	/**
 	 * The local X position of the entity
+	 *
 	 * @return local x
 	 */
 	int localX();
 
 	/**
 	 * The local Y position of the entity
+	 *
 	 * @return local y
 	 */
 	int localY();
 
+
 	/**
-	 * The orientation of the entity (which way it's facing)
-	 * @return model orientation
+	 * The orientations of the entity
+	 *
+	 * @return model orientations
 	 */
-	int modelOrientation();
+	int[] modelOrientations();
 
 	/**
 	 * Model ids to load from the cache
+	 *
 	 * @return model ids
 	 * @deprecated - not required anymore
 	 */
@@ -41,29 +47,78 @@ public interface Modelable {
 
 	org.powerbot.script.rt4.ClientContext ctx();
 
-	IRenderable renderable();
+	IRenderable[] renderables();
 
-	/**
-	 * Whether or not the model is animated
-	 * @return true if the model is animated
-	 */
-	boolean isAnimated();
+	default long getModelCacheId() {
+		return -1L;
+	}
+
+	default ICache getModelCache() {
+		return null;
+	}
 
 	/**
 	 * Load the model from the cache
+	 *
 	 * @return model
 	 */
 	default Model model() {
-		Model model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
-		if (model == null && renderable() instanceof IModel) {
-			final IModel renderableModel = (IModel) renderable();
-			ctx().modelCache.onRender(renderable(), renderableModel.getVerticesX().clone(), renderableModel.getVerticesY().clone(),
-				renderableModel.getVerticesZ().clone(), renderableModel.getIndicesX().clone(), renderableModel.getIndicesY().clone(),
-				renderableModel.getIndicesZ().clone(), modelOrientation());
+		IRenderable[] renderables = renderables();
+		for (int i = 0; i < renderables.length; i++) {
+			IRenderable renderable = renderables[i];
+			int[] orientations = modelOrientations();
+			int orientation = orientations != null && orientations.length > i ? orientations[i] : 0;
 
-			model = ctx().modelCache.getModel(ctx(), renderable(), isAnimated());
+			try {
+				if (renderable == null) {
+					continue;
+				}
+
+				if (renderable instanceof IModel) {
+					final IModel renderableModel = (IModel) renderable;
+					return new Model(ctx(), renderableModel.getVerticesX().clone(), renderableModel.getVerticesY().clone(),
+						renderableModel.getVerticesZ().clone(), renderableModel.getIndicesX().clone(), renderableModel.getIndicesY().clone(),
+						renderableModel.getIndicesZ().clone(), orientation);
+				}
+
+				if (!ctx().bot().disableModelAnimations()) {
+					Model model = ClientContext.modelCache.getModel(ctx(), renderable);
+					if (model != null) {
+						return model;
+					}
+				} else {
+					final ICache cache = getModelCache();
+					final long modelCacheId = getModelCacheId();
+					if (cache != null && modelCacheId > 0) {
+						final HashTable<INode> table = new HashTable<>(cache.getTable());
+						final INode modelNode = table.lookup(modelCacheId);
+						if (modelNode instanceof IModel) {
+							return new Model(ctx(), ((IModel) modelNode).getVerticesX().clone(),
+								((IModel) modelNode).getVerticesY().clone(), ((IModel) modelNode).getVerticesZ().clone(),
+								((IModel) modelNode).getIndicesX().clone(), ((IModel) modelNode).getIndicesY().clone(),
+								((IModel) modelNode).getIndicesZ().clone(), orientation);
+						}
+					}
+
+					int[] modelIds = modelIds();
+					if (modelIds != null) {
+						CacheModelConfig cacheModel = ctx().bot().getCacheWorker().modelConfigLoader().byIds(modelIds);
+						if (cacheModel != null && cacheModel.valid()) {
+							return new Model(ctx(), cacheModel.verticesX, cacheModel.verticesY, cacheModel.verticesZ,
+								cacheModel.indicesX, cacheModel.indicesY, cacheModel.indicesZ, orientation
+							);
+						}
+					}
+				}
+			} catch (Exception e) {
+				if (System.getenv("DEBUG_MODELS").equals("true")) {
+					e.printStackTrace();
+				}
+				//Sentry.captureException(e);
+			}
 		}
-		return model;
+
+		return null;
 	}
 
 	default Polygon hull() {
@@ -77,6 +132,7 @@ public interface Modelable {
 
 	/**
 	 * Draws the model polygons on the screen for debug purposes
+	 *
 	 * @param g - Graphics object to onRender with
 	 */
 	default void drawModel(final Graphics g) {
@@ -88,6 +144,7 @@ public interface Modelable {
 
 	/**
 	 * Get the center point of the model
+	 *
 	 * @return center point
 	 */
 	default Point modelCenterPoint() {

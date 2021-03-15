@@ -3,19 +3,101 @@ package org.powerbot.script.rt4;
 import org.powbot.input.MouseMovement;
 import org.powbot.walking.FailureReason;
 import org.powbot.walking.WebWalkingResult;
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.script.Condition;
-import org.powerbot.script.Locatable;
-import org.powerbot.script.Random;
-import org.powerbot.script.Tile;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.script.*;
 
 import java.awt.*;
 import java.util.concurrent.*;
+import java.util.function.Predicate;
 
 /**
  * Movement
  */
 public class Movement extends ClientAccessor {
+
+	public static class Builder {
+
+		private final ClientContext ctx;
+		private final Locatable locatable;
+		private boolean forceWeb;
+		private boolean refreshQuests;
+		private Callable<Boolean> walkUntil = () -> false;
+		private int runMin = -1;
+		private int runMax = -1;
+
+		Builder(ClientContext ctx, Locatable locatable) {
+			this.ctx = ctx;
+			this.locatable = locatable;
+		}
+
+		/**
+		 * Set whether or not to force using web over local walking
+		 * @param forceWeb boolean
+		 */
+		public Builder setForceWeb(boolean forceWeb) {
+			this.forceWeb = forceWeb;
+			return this;
+		}
+
+		/**
+		 * Set a global predicate, walking will continue as long as the predicate returns false
+		 * @param walkUntil callable
+		 */
+		public Builder setWalkUntil(Callable<Boolean> walkUntil) {
+			this.walkUntil = walkUntil;
+			return this;
+		}
+
+		/**
+		 * Set the min run energy bound, a random number between runMin and runMax will be calculated.
+		 * Must be less than runMax if not it will be set to runMax - 1
+		 * If runMax is not provided
+		 * @param runMin int
+		 */
+		public Builder setRunMin(int runMin) {
+			this.runMin = runMin;
+			if (runMax == -1) {
+				this.runMax = runMin + 1;
+			}
+			if (runMin >= runMax) {
+				this.runMin = runMax - 1;
+			}
+			return this;
+		}
+
+		/**
+		 * Set the max run energy bound, a random number between runMin and runMax will be calculated.
+		 * Must be greater than runMin if not it will be set to runMin + 1
+		 * If runMax is not provided
+		 * @param runMax int
+		 */
+		public Builder setRunMax(int runMax) {
+			this.runMax = runMax;
+			if (runMax <= runMin) {
+				this.runMin = runMin + 1;
+			}
+			return this;
+		}
+
+		/**
+		 * Set whether to force a completed quests list refresh
+		 * @param refreshQuests boolean
+		 */
+		public Builder setRefreshQuests(boolean refreshQuests) {
+			this.refreshQuests = refreshQuests;
+			return this;
+		}
+
+		/**
+		 * Move to the desired target
+		 */
+		public WebWalkingResult move() {
+			if (locatable == null) {
+				return new WebWalkingResult(false, false, FailureReason.TargetNull);
+			}
+			return ctx.bot().getWebWalkingService().moveTo(locatable, refreshQuests, forceWeb, walkUntil, runMin, runMax);
+		}
+	}
 
 	public Movement(ClientContext ctx) {
 		super(ctx);
@@ -54,7 +136,7 @@ public class Movement extends ClientAccessor {
 	 * @return The destination of the player.
 	 */
 	public Tile destination() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return Tile.NIL;
 		}
@@ -157,7 +239,7 @@ public class Movement extends ClientAccessor {
 	 * @return The energy of the player, which is 0-100.
 	 */
 	public int energyLevel() {
-		final Client c = ctx.client();
+		final IClient c = ctx.client();
 		return c != null ? c.getRunPercentage() : -1;
 	}
 
@@ -302,5 +384,13 @@ public class Movement extends ClientAccessor {
 			return new WebWalkingResult(false, false, FailureReason.TargetNull);
 		}
 		return ctx.bot().getWebWalkingService().moveTo(locatable, refreshQuests, forceWeb);
+	}
+
+	/**
+	 * Constructs a web walking builder
+	 * @param locatable the destination tile
+	 */
+	public Builder builder(final Locatable locatable) {
+		return new Builder(ctx, locatable);
 	}
 }

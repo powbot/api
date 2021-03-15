@@ -196,4 +196,8 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<Component>) :
             heights.any { it == c.scrollHeight() }
         })
     }
+
+    override fun nil(): Component {
+        return Component.NIL
+    }
 }

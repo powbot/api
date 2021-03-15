@@ -2,8 +2,6 @@ package org.powerbot.bot.rt4.client.internal;
 
 public interface IBoundaryObject extends IBasicObject {
 
-	int getMeta();
-
 	int getOrientation1();
 
 	int getOrientation2();
@@ -12,10 +10,18 @@ public interface IBoundaryObject extends IBasicObject {
 
 	IRenderable getRenderable2();
 
-	int getX();
+	@Override
+	default int getOrientation() {
+		return getOrientation1();
+	}
 
-	int getZ();
+	@Override
+	default int[] modelOrientations() {
+		return new int[]{getOrientation1(), getOrientation2()};
+	}
 
-	long getUid();
-
+	@Override
+	default IRenderable[] getRenderables() {
+		return new IRenderable[]{getRenderable1(), getRenderable2()};
+	}
 }

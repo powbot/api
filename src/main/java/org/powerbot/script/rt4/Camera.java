@@ -1,6 +1,6 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.script.*;
 
 import java.awt.*;
@@ -29,7 +29,7 @@ public class Camera extends ClientAccessor {
 	 * @return the offset on the x-axis
 	 */
 	public int x() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client.getCameraX();
 	}
 
@@ -39,7 +39,7 @@ public class Camera extends ClientAccessor {
 	 * @return the offset on the y-axis
 	 */
 	public int y() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client.getCameraY();
 	}
 
@@ -49,7 +49,7 @@ public class Camera extends ClientAccessor {
 	 * @return the offset on the z-axis
 	 */
 	public int z() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client.getCameraZ();
 	}
 
@@ -59,7 +59,7 @@ public class Camera extends ClientAccessor {
 	 * @return the camera yaw
 	 */
 	public int yaw() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return (int) (client.getCameraYaw() / 5.68);
 	}
 
@@ -69,7 +69,7 @@ public class Camera extends ClientAccessor {
 	 * @return the camera pitch
 	 */
 	public final int pitch() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return (int) ((client.getCameraPitch() - 128) / 2.56);
 	}
 

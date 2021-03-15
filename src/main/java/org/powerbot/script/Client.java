@@ -5,4 +5,7 @@ package org.powerbot.script;
  * A marker interface for the class containing all entry points to pertinent game data.
  */
 public interface Client {
+
+	boolean isMobile();
+
 }

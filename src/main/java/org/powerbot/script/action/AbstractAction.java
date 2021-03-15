@@ -4,7 +4,7 @@ import org.powerbot.bot.rt4.client.internal.IClient;
 
 import java.util.concurrent.Future;
 
-public abstract class AbstractAction {
+public abstract class AbstractAction<T> {
 	private String entityName;
 	private String interaction;
 	private int mouseX;
@@ -17,62 +17,53 @@ public abstract class AbstractAction {
 		return entityName;
 	}
 
-	public AbstractAction setEntityName(String entityName) {
+	public T setEntityName(String entityName) {
 		this.entityName = entityName;
-		return this;
+		return (T) this;
 	}
 
 	public String getInteraction() {
 		return interaction;
 	}
 
-	public AbstractAction setInteraction(String interaction) {
+	public T setInteraction(String interaction) {
 		this.interaction = interaction;
-		return this;
+		return (T) this;
 	}
 
 	public int getMouseX() {
 		return mouseX;
 	}
 
-	public AbstractAction setMouseX(int mouseX) {
+	public T setMouseX(int mouseX) {
 		this.mouseX = mouseX;
-		return this;
+		return (T) this;
 	}
 
 	public int getMouseY() {
 		return mouseY;
 	}
 
-	public AbstractAction setMouseY(int mouseY) {
+	public T setMouseY(int mouseY) {
 		this.mouseY = mouseY;
-		return this;
+		return (T) this;
 	}
 
 	public IClient getClient() {
 		return client;
 	}
 
-	public AbstractAction setClient(IClient client) {
+	public T setClient(IClient client) {
 		this.client = client;
-		return this;
+		return (T) this;
 	}
 
 	public boolean isAsync() {
 		return async;
 	}
 
-	public AbstractAction setAsync(boolean async) {
+	public T setAsync(boolean async) {
 		this.async = async;
-		return this;
-	}
-
-	public Future<Boolean> getOnComplete() {
-		return onComplete;
-	}
-
-	public AbstractAction setOnComplete(Future<Boolean> onComplete) {
-		this.onComplete = onComplete;
-		return this;
+		return (T) this;
 	}
 }

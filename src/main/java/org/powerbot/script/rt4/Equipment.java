@@ -59,7 +59,7 @@ public class Equipment extends ItemQuery<Item> implements Streamable<EquipmentIt
 	 */
 	@Override
 	public Item nil() {
-		return new Item(ctx, null, -1, -1);
+		return Item.NIL;
 	}
 
 	/**

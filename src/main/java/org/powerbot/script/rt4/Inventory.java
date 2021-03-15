@@ -3,7 +3,7 @@ package org.powerbot.script.rt4;
 import org.powbot.stream.item.InventoryItemStream;
 import org.powbot.stream.item.ItemStream;
 import org.powbot.stream.Streamable;
-import org.powerbot.bot.rt4.client.Client;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.script.*;
 
 import java.awt.*;
@@ -111,12 +111,12 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 	}
 
 	public int selectionType() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client != null ? client.getSelectionType() : 0;
 	}
 
 	public int selectedItemIndex() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		return client != null && selectionType() == 1 ? client.getSelectionIndex() : -1;
 	}
 
@@ -322,7 +322,7 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 
 	@Override
 	public Item nil() {
-		return new Item(ctx, null, -1, -1, -1);
+		return Item.NIL;
 	}
 
 	/**

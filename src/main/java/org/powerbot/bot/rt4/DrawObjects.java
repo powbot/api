@@ -33,7 +33,9 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 			final FontMetrics metrics = render.getFontMetrics();
 			final int textHeight = metrics.getHeight();
 
-			for (final GameObject object : ctx.objects.toStream().within(8).filter(o -> o.type() == type).collect(Collectors.toList())) {
+			for (final GameObject object : ctx.objects.toStream()
+				.within(8).filter(o -> o.type() == type)
+				.collect(Collectors.toList())) {
 				final Tile t = object.tile();
 				if (t == null) {
 					continue;
@@ -41,9 +43,14 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 				if (!object.inViewport()) {
 					continue;
 				}
+
 				final Point p = object.tile().distanceTo(player) > 4 ? object.basePoint() : object.centerPoint();
 				if (p.x == -1) {
 					continue;
+				}
+
+				if (object.tile().distanceTo(player) <= 2) {
+					object.drawModel(render);
 				}
 				final Polygon hull = object.hull();
 				if (hull != null && object.tile().distanceTo(player) <= 4) {
@@ -66,9 +73,8 @@ public class DrawObjects extends ClientAccessor implements PaintListener {
 					}
 					b.append(" (").append(n).append('/').append(arr[0]).append(')');
 				}
-				b.append(" - ").append(object.orientation()).append("/").append(object.modelOrientation())
-					.append("/").append(object.meta()).append("/").append(((object.modelOrientation() & 0x3FFF) + 1024) % 2048)
-				.append("/").append(object.modelOrientation());
+				b.append(" - ").append(object.orientation())
+					.append("/").append(object.meta());
 				if (object.tile().distanceTo(player) < 3) {
 					b.append("/").append(object.tile().toString());
 				}

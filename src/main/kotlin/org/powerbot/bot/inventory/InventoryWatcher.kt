@@ -5,7 +5,6 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
-import org.powerbot.bot.rt4.client.ItemConfig
 import org.powerbot.script.*
 import org.powerbot.script.rt4.CacheItemConfig
 import org.powerbot.script.rt4.ClientContext

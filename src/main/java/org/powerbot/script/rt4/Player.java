@@ -1,29 +1,33 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.HashTable;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.*;
+import org.powerbot.script.Nillable;
 
 import java.awt.*;
 
 /**
  * Player
  */
-public class Player extends Actor {
+public class Player extends Actor implements Nillable<Player> {
 	public static final Color TARGET_COLOR = new Color(255, 0, 0, 15);
-	private final org.powerbot.bot.rt4.client.Player player;
+	public static final Player NIL = new Player(org.powerbot.script.ClientContext.ctx(), null);
+	private final IPlayer player;
 
-	Player(final ClientContext ctx, final org.powerbot.bot.rt4.client.Player player) {
+	Player(final ClientContext ctx, final IPlayer player) {
 		super(ctx);
 		this.player = player;
 	}
 
 	@Override
-	protected org.powerbot.bot.rt4.client.Actor getActor() {
+	protected IActor getActor() {
 		return player;
 	}
 
 	@Override
 	public String name() {
-		final String str = player != null ? player.getName() : "";
+		final String str = player != null && player.getName() != null ? player.getName().getValue() : "";
 		return str != null ? str : "";
 	}
 
@@ -37,7 +41,7 @@ public class Player extends Actor {
 	}
 
 	public int[] appearance() {
-		final PlayerComposite composite = player != null ? player.getComposite() : null;
+		final IPlayerComposite composite = player != null ? player.getComposite() : null;
 		int[] arr = composite != null ? composite.getAppearance() : new int[0];
 		if (arr == null) {
 			arr = new int[0];
@@ -64,12 +68,12 @@ public class Player extends Actor {
 
 	@Override
 	public boolean valid() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null || player == null) {
 			return false;
 		}
-		final org.powerbot.bot.rt4.client.Player[] arr = client.getPlayers();
-		for (final org.powerbot.bot.rt4.client.Player a : arr) {
+		final IPlayer[] arr = client.getPlayers();
+		for (final IPlayer a : arr) {
 			if (player.equals(a)) {
 				return true;
 			}
@@ -88,5 +92,29 @@ public class Player extends Actor {
 	@Override
 	public int[] modelIds() {
 		return null;
+	}
+
+	@Override
+	public Player nil() {
+		return NIL;
+  }
+  
+	public long getModelCacheId() {
+		final IPlayerComposite composite = player != null ? player.getComposite() : null;
+		if (composite == null) {
+			return -1;
+		}
+
+		return composite.getUid();
+	}
+
+	@Override
+	public ICache getModelCache() {
+		final IClient client = ctx.client();
+		if (client == null || player == null) {
+			return null;
+		}
+
+		return client.getPlayerModelCache();
 	}
 }

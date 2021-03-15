@@ -1,12 +1,9 @@
 package org.powerbot.script.rt4;
 
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
-import org.powerbot.bot.rt4.client.internal.IActor;
-import org.powerbot.bot.rt4.client.internal.ICombatStatus;
-import org.powerbot.bot.rt4.client.internal.ICombatStatusData;
-import org.powerbot.bot.rt4.client.internal.IRenderable;
+import org.powerbot.bot.rt4.client.internal.*;
+import org.powerbot.script.Client;
 import org.powerbot.script.Tile;
 import org.powerbot.script.*;
 import org.powerbot.util.ScreenPosition;
@@ -52,7 +49,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		});
 	}
 
-	protected abstract org.powerbot.bot.rt4.client.Actor getActor();
+	protected abstract IActor getActor();
 
 	/**
 	 * The name of the entity.
@@ -75,7 +72,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return The animation ID.
 	 */
 	public int animation() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		return actor != null ? actor.getAnimation() : -1;
 	}
 
@@ -85,7 +82,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return The current speed.
 	 */
 	public int speed() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		return actor != null ? actor.getSpeed() : -1;
 	}
 
@@ -95,7 +92,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return The orientation.
 	 */
 	public int orientation() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		return actor != null ? actor.getOrientation() / 256 : -1;
 	}
 
@@ -105,7 +102,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return The message.
 	 */
 	public String overheadMessage() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		final String str = actor != null ? actor.getOverheadMessage() : "";
 		return str != null ? str : "";
 	}
@@ -137,15 +134,15 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 * @return {@code true} if the health bar is visible, {@code false} otherwise.
 	 */
 	public boolean healthBarVisible() {
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return false;
 		}
 
 		if (client.isMobile()) {
-			return ((IMobileClient) client.get()).isHealthBarVisible((IActor) getActor().get());
+			return ((IMobileClient) client).isHealthBarVisible((IActor) getActor());
 		} else {
-			final CombatStatusData[] data = getBarData();
+			final ICombatStatusData[] data = getBarData();
 			return data != null && data[1] != null && data[1].getCycleEnd() < client.getCycle();
 		}
 	}
@@ -160,15 +157,15 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			return -1;
 		}
 
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return -1;
 		}
 
 		if (client.isMobile()) {
-			return ((IMobileClient) client.get()).getHealthPercent((IActor) getActor().get());
+			return ((IMobileClient) client).getHealthPercent((IActor) getActor());
 		} else {
-			final CombatStatusData[] data = getBarData();
+			final ICombatStatusData[] data = getBarData();
 			if (data == null || data[1] == null) {
 				return 100;
 			}
@@ -216,30 +213,30 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 */
 	public Actor interacting() {
 		final Actor nil = ctx.npcs.nil();
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		final int index = actor != null ? actor.getInteractingIndex() : -1;
 		if (index == -1) {
 			return nil;
 		}
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return nil;
 		}
 		if (index < 32768) {
-			final org.powerbot.bot.rt4.client.Npc[] npcs = client.getNpcs();
+			final INpc[] npcs = client.getNpcs();
 			return index >= 0 && index < npcs.length ? new Npc(ctx, npcs[index]) : nil;
 		} else {
 			final int pos = index - 32768;
 			if (pos == client.getPlayerIndex()) {
 				return new Player(ctx, client.getPlayer());
 			}
-			final org.powerbot.bot.rt4.client.Player[] players = client.getPlayers();
+			final IPlayer[] players = client.getPlayers();
 			return pos < players.length ? new Player(ctx, players[pos]) : nil;
 		}
 	}
 
 	public int relative() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		final int x, z;
 		if (actor != null) {
 			x = actor.getX();
@@ -252,8 +249,8 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 
 	@Override
 	public Tile tile() {
-		final Client client = ctx.client();
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IClient client = ctx.client();
+		final IActor actor = getActor();
 		if (client != null && actor != null) {
 			return new Tile(client.getOffsetX() + (actor.getX() >> 7), client.getOffsetY() + (actor.getZ() >> 7), client.getFloor());
 		}
@@ -261,7 +258,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	}
 
 	public Point basePoint() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 
 		if (actor != null) {
 			return ctx.game.worldToScreen(localX(), localY(), (actor.getHeight() / 2));
@@ -270,7 +267,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	}
 
 	public int getHeight() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		if (actor != null) {
 			return actor.getHeight();
 		}
@@ -279,7 +276,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 
 	@Override
 	public Point nextPoint() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		if (actor == null) {
 			return NIL_POINT;
 		}
@@ -300,7 +297,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 
 	@Override
 	public Point centerPoint() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		if (actor == null) {
 			return NIL_POINT;
 		}
@@ -323,7 +320,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 
 	@Override
 	public boolean contains(final Point point) {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		if (actor == null) {
 			return false;
 		}
@@ -345,89 +342,86 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		if (o == null || !Actor.class.isAssignableFrom(o.getClass())) {
 			return false;
 		}
-		final org.powerbot.bot.rt4.client.Actor actor = ((Actor) o).getActor();
+		final IActor actor = ((Actor) o).getActor();
 		return actor != null && actor.equals(getActor());
 	}
 
 	@Override
 	public int hashCode() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 		return actor != null ? actor.hashCode() : 0;
 	}
 
-	private CombatStatus[] getBarNodes() {
-		final org.powerbot.bot.rt4.client.Actor accessor = getActor();
+	private ICombatStatus[] getBarNodes() {
+		final IActor accessor = getActor();
 		if (accessor == null) {
 			return null;
 		}
-		final org.powerbot.bot.rt4.client.LinkedList barList = accessor.getCombatStatusList();
+		final ILinkedList barList = accessor.getCombatStatusList();
 		if (barList == null) {
 			return null;
 		}
-		final Node tail = barList.getSentinel();
+		final INode tail = barList.getSentinel();
 		if (tail == null) {
 			return null;
 		}
-		final CombatStatus health;
-		final CombatStatus secondary;
-		final Node current;
+		final ICombatStatus health;
+		final ICombatStatus secondary;
+		final INode current;
 		current = tail.getNext();
 		if (current.getNext().getNodeId() != tail.getNodeId()) {
-			if (ICombatStatus.class.isAssignableFrom(current.get().getClass())) {
-				secondary = new CombatStatus((ICombatStatus) current.get());
+			if (ICombatStatus.class.isAssignableFrom(current.getClass())) {
+				secondary = (ICombatStatus) current;
 			} else {
 				secondary = null;
 			}
-			if (ICombatStatus.class.isAssignableFrom(current.getNext().get().getClass())) {
-				health = new CombatStatus((ICombatStatus) current.getNext().get());
+			if (ICombatStatus.class.isAssignableFrom(current.getNext().getClass())) {
+				health = (ICombatStatus) current.getNext();
 			} else {
 				health = null;
 			}
 		} else {
 			secondary = null;
-			if (ICombatStatus.class.isAssignableFrom(current.get().getClass())) {
-				health = new CombatStatus((ICombatStatus) current.get());
+			if (ICombatStatus.class.isAssignableFrom(current.getClass())) {
+				health = (ICombatStatus) current;
 			} else {
 				health = null;
 			}
 		}
-		return new CombatStatus[]{secondary, health};
+		return new ICombatStatus[]{secondary, health};
 	}
 
-	private BarComponent getBarComponent() {
-		final CombatStatus[] nodes = getBarNodes();
-		final Client client = ctx.client();
+	private IBarComponent getBarComponent() {
+		final ICombatStatus[] nodes = getBarNodes();
+		final IClient client = ctx.client();
 		if (nodes == null || client == null) {
 			return null;
 		}
-		for (CombatStatus node : nodes) {
-			if (node == null || node.isNull() ||
-				!node.isTypeOf(CombatStatus.class)) {
+		for (ICombatStatus node : nodes) {
+			if (node == null) {
 				continue;
 			}
 
-			final CombatStatus status = new CombatStatus(node.get());
-
-			return status.getBarComponent();
+			return node.getBarComponent();
 		}
 		return null;
 	}
 
-	private CombatStatusData[] getBarData() {
-		final CombatStatus[] nodes = getBarNodes();
-		final Client client = ctx.client();
+	private ICombatStatusData[] getBarData() {
+		final ICombatStatus[] nodes = getBarNodes();
+		final IClient client = ctx.client();
 		if (nodes == null || client == null) {
 			return null;
 		}
-		final CombatStatusData[] data = new CombatStatusData[nodes.length];
+		final ICombatStatusData[] data = new ICombatStatusData[nodes.length];
 		for (int i = 0; i < nodes.length; i++) {
-			if (nodes[i] == null || nodes[i].isNull()) {
+			if (nodes[i] == null) {
 				data[i] = null;
 				continue;
 			}
-			final CombatStatus status = nodes[i];
+			final ICombatStatus status = nodes[i];
 
-			final org.powerbot.bot.rt4.client.LinkedList statuses;
+			final ILinkedList statuses;
 			try {
 				statuses = status.getList();
 			} catch (final IllegalArgumentException ignored) {
@@ -437,12 +431,12 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 				data[i] = null;
 				continue;
 			}
-			final Node<ICombatStatus> node = statuses.getSentinel().getNext();
-			if (node.isNull() || !node.isTypeOf(CombatStatusData.class)) {
+			final INode node = statuses.getSentinel().getNext();
+			if (!(node instanceof ICombatStatusData)) {
 				data[i] = null;
 				continue;
 			}
-			data[i] = new CombatStatusData((ICombatStatusData) node.get());
+			data[i] = (ICombatStatusData) node;
 		}
 		return data;
 	}
@@ -452,7 +446,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 */
 	@Override
 	public int localX() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 
 		return actor != null ? getActor().getX() : 0;
 	}
@@ -462,31 +456,33 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	 */
 	@Override
 	public int localY() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+		final IActor actor = getActor();
 
 		return actor != null ? actor.getZ() : 0;
 	}
 
 	@Override
-	public IRenderable renderable() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+	public IRenderable[] renderables() {
+		final IActor actor = getActor();
 
-		return actor != null ? (IRenderable) actor.get() : null;
+		return actor != null ? new IRenderable[]{(IRenderable) actor} : null;
 	}
 
 	@Override
-	public int modelOrientation() {
-		final org.powerbot.bot.rt4.client.Actor actor = getActor();
+	public int[] modelOrientations() {
+		final IActor actor = getActor();
 
-		return actor != null ? (actor.getOrientation() + 512) & 0x3FFF : 0;
+		return new int[]{actor != null ? (actor.getOrientation()) & 0x3FFF : 0};
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Whether or not the actor is animating (animation() != -1)
+	 *
+	 * @return boolean
 	 */
-	@Override
+	@Deprecated
 	public boolean isAnimated() {
-		return true;
+		return animation() != -1;
 	}
 
 	@Override

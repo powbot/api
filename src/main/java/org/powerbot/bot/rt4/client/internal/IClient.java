@@ -1,8 +1,14 @@
 package org.powerbot.bot.rt4.client.internal;
 
 import org.powerbot.bot.EventDispatcher;
+import org.powerbot.script.Client;
 
-public interface IClient extends IGameEngine {
+public interface IClient extends IGameEngine, Client {
+
+	@Override
+	default boolean isMobile() {
+		return false;
+	}
 
 	int getCameraPitch();
 

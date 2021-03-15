@@ -3,9 +3,9 @@ package org.powerbot.script.rt4;
 import org.powbot.stream.locatable.ProjectileStream;
 import org.powbot.stream.Streamable;
 import org.powerbot.bot.rt4.*;
-import org.powerbot.bot.rt4.client.Projectile;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.extended.IMobileClient;
+import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.bot.rt4.client.internal.IProjectile;
 
 import java.util.ArrayList;
@@ -29,17 +29,17 @@ public class Projectiles extends IdQuery<org.powerbot.script.rt4.Projectile> imp
 	public List<org.powerbot.script.rt4.Projectile> get() {
 		final List<org.powerbot.script.rt4.Projectile> items = new ArrayList<>();
 
-		final Client client = ctx.client();
+		final IClient client = ctx.client();
 		if (client == null) {
 			return items;
 		}
 
 		if (client.isMobile()) {
-			for (final IProjectile projectile : ((IMobileClient) client.get()).getAllProjectiles()) {
-				items.add(new org.powerbot.script.rt4.Projectile(ctx, new Projectile(projectile)));
+			for (final IProjectile projectile : ((IMobileClient) client).getAllProjectiles()) {
+				items.add(new org.powerbot.script.rt4.Projectile(ctx, projectile));
 			}
 		} else {
-			for (final Projectile n : NodeQueue.get(client.getProjectiles(), Projectile.class)) {
+			for (final IProjectile n : NodeQueue.get(client.getProjectiles(), IProjectile.class)) {
 				final org.powerbot.script.rt4.Projectile p = new org.powerbot.script.rt4.Projectile(ctx, n);
 				items.add(p);
 			}
@@ -53,7 +53,7 @@ public class Projectiles extends IdQuery<org.powerbot.script.rt4.Projectile> imp
 	 */
 	@Override
 	public org.powerbot.script.rt4.Projectile nil() {
-		return new org.powerbot.script.rt4.Projectile(ctx, new Projectile(null));
+		return org.powerbot.script.rt4.Projectile.NIL;
 	}
 
 	/**

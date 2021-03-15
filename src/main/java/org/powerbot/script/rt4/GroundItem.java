@@ -1,8 +1,10 @@
 package org.powerbot.script.rt4;
 
 import org.powerbot.bot.rt4.*;
-import org.powerbot.bot.rt4.client.Client;
-import org.powerbot.bot.rt4.client.*;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IClient;
+import org.powerbot.bot.rt4.client.internal.IItemNode;
+import org.powerbot.bot.rt4.client.internal.INodeDeque;
 import org.powerbot.script.Tile;
 import org.powerbot.script.*;
 import org.powerbot.util.ScreenPosition;
@@ -13,10 +15,11 @@ import java.util.concurrent.Callable;
 /**
  * GroundItem
  */
-public class GroundItem extends GenericItem implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable {
+public class GroundItem extends GenericItem implements Nameable, InteractiveEntity, Identifiable, Validatable, Actionable, Nillable<GroundItem> {
 	public static final Color TARGET_COLOR = new Color(255, 255, 0, 75);
+	public static final GroundItem NIL = new GroundItem(ClientContext.ctx(), Tile.NIL, null);
 	private final TileMatrix tile;
-	private final ItemNode node;
+	private final IItemNode node;
 
 	/**
 	 * A representation of an item which is currently on the floor of the game.
@@ -25,7 +28,7 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 	 * @param tile The tile the item is located on
 	 * @param node The ItemNode
 	 */
-	public GroundItem(final ClientContext ctx, final Tile tile, final ItemNode node) {
+	public GroundItem(final ClientContext ctx, final Tile tile, final IItemNode node) {
 		super(ctx);//TODO: valid
 		this.tile = tile.matrix(ctx);
 		boundingModel = this.tile.boundingModel;
@@ -99,13 +102,13 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 
 	@Override
 	public boolean valid() {
-		final Client c = ctx.client();
-		if (c == null || node.isNull()) {
+		final IClient c = ctx.client();
+		if (c == null || node == null) {
 			return false;
 		}
 
 		if (!c.isMobile()) {
-			final NodeDeque[][][] nd = c.getGroundItems();
+			final INodeDeque[][][] nd = c.getGroundItems();
 			if (nd != null) {
 				final int f = c.getFloor();
 				if (f < 0 || f >= nd.length || nd[f] == null) {
@@ -115,12 +118,12 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 				if (t.x() < 0 || t.y() < 0 || t.x() >= nd[f].length) {
 					return false;
 				}
-				final NodeDeque[] nd2 = nd[f][t.x()];
+				final INodeDeque[] nd2 = nd[f][t.x()];
 				if (nd2 == null || t.y() >= nd2.length) {
 					return false;
 				}
-				final NodeDeque d = nd2[t.y()];
-				return d != null && NodeQueue.get(d, ItemNode.class).contains(node);
+				final INodeDeque d = nd2[t.y()];
+				return d != null && NodeQueue.get(d, IItemNode.class).contains(node);
 			}
 			return false;
 		} else {
@@ -133,4 +136,8 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 		return ScreenPosition.of(ctx, this);
 	}
 
+	@Override
+	public GroundItem nil() {
+		return NIL;
+	}
 }
