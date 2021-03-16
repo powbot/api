@@ -30,6 +30,12 @@ public interface IActor extends IRenderable, Viewable, Interactive, Modelable,
 	int getX();
 
 	int getZ();
+	
+	int getCombatLevel();
+
+	default int combatLevel() {
+		return getCombatLevel();
+	}
 
 	/**
 	 * Whether or not the entity has a health bar displayed over their head. This is

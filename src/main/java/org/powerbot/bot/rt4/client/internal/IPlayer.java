@@ -4,17 +4,11 @@ import org.powerbot.script.rt4.ClientContext;
 
 public interface IPlayer extends IActor {
 
-	int getCombatLevel();
-
 	IPlayerComposite getComposite();
 
 	IStringRecord getName();
 
 	int getTeam();
-
-	default int combatLevel() {
-		return getCombatLevel();
-	}
 
 	@Override
 	default String[] actions() {
