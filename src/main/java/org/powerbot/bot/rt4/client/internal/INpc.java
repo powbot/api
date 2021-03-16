@@ -19,9 +19,11 @@ public interface INpc extends IActor, Nillable<INpc>, Emittable<NpcAction> {
 
 	INpcConfig getConfig();
 
-	default int combatLevel() {
+	@Override
+	default int getCombatLevel() {
 		final CacheNpcConfig c = CacheNpcConfig.load(ctx().bot().getCacheWorker(), id());
 		return c != null ? c.level : -1;
+
 	}
 
 	default short[] colors1() {
