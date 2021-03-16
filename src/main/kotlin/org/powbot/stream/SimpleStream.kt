@@ -429,4 +429,8 @@ abstract class SimpleStream<T, I, S : SimpleStream<T, I, S>>(override val ctx: C
 
         return this as S
     }
+
+    fun size(): Int {
+        return count().toInt()
+    }
 }
