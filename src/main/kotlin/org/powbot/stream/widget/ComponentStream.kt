@@ -201,6 +201,18 @@ open class ComponentStream(ctx: ClientContext, stream: Stream<IWidget>) :
         })
     }
 
+    /**
+     * Filters the current query's contents to only include components whose text color matches at least one (1) of the parameter ints
+     *
+     * @param colors the text colors to compare component to
+     * @return filtered query
+     */
+    open fun textColor(vararg colors: Int): ComponentStream {
+        return filter(Filter { c: IWidget ->
+            colors.any { it == c.textColor }
+        })
+    }
+
     override fun nil(): IWidget {
         return Widgets.NIL
     }

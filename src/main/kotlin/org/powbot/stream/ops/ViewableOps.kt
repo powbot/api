@@ -9,4 +9,8 @@ interface ViewableOps<T, I: Viewable, S: SimpleStream<T, I, S>>: WrappedStream<T
     fun viewable(): S {
         return filter { it.inViewport() }
     }
+
+    fun visible(): S {
+        return viewable()
+    }
 }
