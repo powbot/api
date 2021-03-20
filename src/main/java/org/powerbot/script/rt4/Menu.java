@@ -160,13 +160,15 @@ public class Menu extends ClientAccessor {
 				return false;
 			}
 
-			if (!Condition.wait(() -> ctx.client().isMenuOpen(), 10, 60)) {
+			if (!Condition.wait(() -> ctx.client().isMenuOpen(), 10, 100)) {
+				System.out.println("Menu not opened within 1000ms");
 				return false;
 			}
 		}
 
 
-		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 60)) {
+		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 100)) {
+			System.out.println("Menu item not found - closing menu");
 			if (opened()) {
 				close();
 			}
@@ -198,6 +200,12 @@ public class Menu extends ClientAccessor {
 			Random.nextInt(rectangle.y, rectangle.y + rectangle.height)) || !client.isMenuOpen()) {
 			System.out.println("returning because suck");
 			return false;
+		}
+
+		if(ctx.client().isMobile()) {
+			final Point scaled = ctx.input.scale(rectangle.getLocation());
+			rectangle.setLocation(scaled);
+			System.out.println("Menu box: " + scaled);
 		}
 		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
 	}

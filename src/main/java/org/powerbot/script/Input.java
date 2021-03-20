@@ -384,4 +384,8 @@ public abstract class Input {
 
 	public abstract Dimension getComponentSize();
 
+	public Point scale(Point x) {
+		return x;
+	}
+
 }
