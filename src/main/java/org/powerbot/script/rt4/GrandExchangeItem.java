@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 public class GrandExchangeItem {
 	private int id;
@@ -54,6 +55,7 @@ public class GrandExchangeItem {
 			e.printStackTrace();
 			initNIL();
 		}
+		initLivePrices();
 	}
 
 	private GrandExchangeItem() {
@@ -78,13 +80,13 @@ public class GrandExchangeItem {
 			while ((string = r.readLine()) != null) {
 				sb.append(string);
 			}
-			string = sb.toString().subString(sb.toString().indexOf(sb.toString().indexOf(":", sb.toString().indexOf(Integer.toString(id)))));
-			string = string.replaceAll("\"{}", "");
+			string = sb.toString().substring(sb.toString().indexOf(sb.toString().indexOf(":", sb.toString().indexOf(Integer.toString(id)))));
+			string = string.replace("\"", "").replace("{", "").replace("}", "");
 			String[] strings = string.split(",");
 			high = Integer.parseInt(strings[0]);
-			highTime = Long.parseInt(strings[1]);
+			highTime = Long.parseLong(strings[1]);
 			low = Integer.parseInt(strings[2]);
-			lowTime = Long.parseInt(strings[3]);
+			lowTime = Long.parseLong(strings[3]);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,5 +130,21 @@ public class GrandExchangeItem {
 
 	public boolean isMembers() {
 		return members;
+	}
+
+	public int getHigh() {
+		return high;
+	}
+
+	public int getLow() {
+		return low;
+	}
+
+	public long getHighTime() {
+		return highTime;
+	}
+
+	public long getLowTime() {
+		return lowTime;
 	}
 }

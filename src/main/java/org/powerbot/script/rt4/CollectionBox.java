@@ -2,6 +2,8 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.script.Condition;
 
+import java.util.ArrayList;
+
 import static org.powerbot.script.rt4.Constants.*;
 
 public class CollectionBox extends ClientAccessor {
@@ -81,15 +83,14 @@ public class CollectionBox extends ClientAccessor {
 		return (ctx.client().isMembers() ? COLLECTION_BOX_FIRST_OFFER_SLOT + GRAND_EXCHANGE_P2P_SLOTS : COLLECTION_BOX_FIRST_OFFER_SLOT + GRAND_EXCHANGE_F2P_SLOTS);
 	}
 
-	public List<CollectionSlot> getAllSlots() {
-		CollectionSlot[] slots = new CollectionSlot[(ctx.client().isMembers() ? GRAND_EXCHANGE_P2P_SLOTS : GRAND_EXCHANGE_F2P_SLOTS)];
-		int j = 0;
+	public ArrayList<CollectionSlot> getAllSlots() {
+		ArrayList<CollectionSlot> slots = new ArrayList<>();
 		for (int i = COLLECTION_BOX_FIRST_OFFER_SLOT; i <= getLastOfferSlot(); i++) {
-			slots[j] = new CollectionSlot(ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, i));
-			if (slots[j].getItemId() == -1) {
-				slots[j] = CollectionSlot.NIL;
+			CollectionSlot s = new CollectionSlot(ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, i));
+			if (s.getItemId() == -1) {
+				s = CollectionSlot.NIL;
 			}
-			j++;
+			slots.add(s);
 		}
 		return slots;
 	}

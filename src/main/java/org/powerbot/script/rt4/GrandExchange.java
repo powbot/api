@@ -5,6 +5,7 @@ import org.powerbot.script.Random;
 import org.powerbot.script.StringUtils;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import static org.powerbot.script.rt4.Constants.*;
 
@@ -39,16 +40,16 @@ public class GrandExchange extends ClientAccessor {
 			GRAND_EXCHANGE_CREATE_OFFER_PRICE
 		);
 		final Component chatInput = ctx.widgets.component(CHAT_INPUT, CHAT_INPUT_TEXT);
-		if (StringUtils.filterCoinsText(priceComponent.text()) != price) {
+		if (StringUtils.parseCoinsAmount(priceComponent.text()) != price) {
 			ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID,
 				GRAND_EXCHANGE_CREATE_OFFER_COMPONENT, GRAND_EXCHANGE_CUSTOM_PRICE_BUTTON).click();
 			if (Condition.wait(() -> chatInput.visible() && chatInput.text().contains("Set a price for each item"), 500, 5)) {
 				Condition.sleep(Random.nextInt(900, 2400));
 				ctx.input.sendln(Integer.toString(price));
-				Condition.wait(() -> price == StringUtils.filterCoinsText(priceComponent.text()), 500, 5);
+				Condition.wait(() -> price == StringUtils.parseCoinsAmount(priceComponent.text()), 500, 5);
 			}
 		}
-		return StringUtils.filterCoinsText(priceComponent.text()) == price;
+		return StringUtils.parseCoinsAmount(priceComponent.text()) == price;
 	}
 
 	public boolean collectOffer(GeSlot slot) {
@@ -205,15 +206,14 @@ public class GrandExchange extends ClientAccessor {
 		return ctx.client().isMembers() ? GRAND_EXCHANGE_FIRST_OFFER_SLOT + GRAND_EXCHANGE_P2P_SLOTS : GRAND_EXCHANGE_FIRST_OFFER_SLOT + GRAND_EXCHANGE_F2P_SLOTS;
 	}
 
-	public List<GeSlot> getAllSlots() {
-		GeSlot[] slots = new GeSlot[(ctx.client().isMembers() ? GRAND_EXCHANGE_P2P_SLOTS : GRAND_EXCHANGE_F2P_SLOTS)];
-		int j = 0;
+	public ArrayList<GeSlot> getAllSlots() {
+		ArrayList<GeSlot> slots = new ArrayList<>();
 		for (int i = GRAND_EXCHANGE_FIRST_OFFER_SLOT; i <= (getLastOfferIndex()); i++) {
-			slots[j] = new GeSlot(ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, i));
-			if (slots[j].getItemId() == -1) {
-				slots[j] = GeSlot.NIL;
+			GeSlot s = new GeSlot(ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, i));
+			if (s.getItemId() == -1) {
+				s = GeSlot.NIL;
 			}
-			j++;
+			slots.add(s);
 		}
 		return slots;
 	}
@@ -249,7 +249,7 @@ public class GrandExchange extends ClientAccessor {
 
 		Npc npc = ctx.npcs.toStream().action("Exchange").nearest().first();
 		if (npc.interact("Exchange")) {
-			return Condition.wait(this::opened, 500, 5)
+			return Condition.wait(this::opened, 500, 5);
 		}
 		return false;
 	}
