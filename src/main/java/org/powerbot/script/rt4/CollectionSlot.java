@@ -2,6 +2,8 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.script.Condition;
 
+import static org.powerbot.script.rt4.Constants.*;
+
 public class CollectionSlot {
 	private final Component component;
 	private String name = null;
@@ -13,8 +15,8 @@ public class CollectionSlot {
 	}
 
 	public CollectionSlot(GeSlot slot) {
-		component = ClientContext.ctx().widgets.component(Constants.COLLECTION_BOX_WIDGET_ID,
-			slot.getComponent().index() - Constants.GRAND_EXCHANGE_FIRST_OFFER_SLOT + Constants.COLLECTION_BOX_FIRST_OFFER_SLOT);
+		component = ClientContext.ctx().widgets.component(COLLECTION_BOX_WIDGET_ID,
+			slot.getComponent().index() - GRAND_EXCHANGE_FIRST_OFFER_SLOT + COLLECTION_BOX_FIRST_OFFER_SLOT);
 	}
 
 	public CollectionSlot(Component component) {
@@ -33,7 +35,7 @@ public class CollectionSlot {
 			return "";
 		}
 
-		Component progressInfo = ClientContext.ctx().widgets.component(Constants.COLLECTION_BOX_WIDGET_ID,13, 2);
+		Component progressInfo = ClientContext.ctx().widgets.component(COLLECTION_BOX_WIDGET_ID, COLLECTION_BOX_PROGRESS_COMPONENT, COLLECTION_BOX_PROGRESS_CHILD);
 		component.hover();
 		if (!Condition.wait(progressInfo::visible, 500, 5)) {
 			return "";
@@ -42,11 +44,11 @@ public class CollectionSlot {
 	}
 
 	public int getItemId() {
-		return component.component(21).itemId();
+		return component.component(COLLECTION_BOX_SLOT_ITEM).itemId();
 	}
 
 	public int getQuantity() {
-		return component.component(21).itemStackSize();
+		return component.component(COLLECTION_BOX_SLOT_ITEM).itemStackSize();
 	}
 
 	public boolean isBuy() {
@@ -63,7 +65,7 @@ public class CollectionSlot {
 			return -1;
 		}
 
-		Component progressInfo = ClientContext.ctx().widgets.component(Constants.COLLECTION_BOX_WIDGET_ID,13,2);
+		Component progressInfo = Component progressInfo = ClientContext.ctx().widgets.component(COLLECTION_BOX_WIDGET_ID, COLLECTION_BOX_PROGRESS_COMPONENT, COLLECTION_BOX_PROGRESS_CHILD);
 		component.hover();
 		if (!Condition.wait(progressInfo::visible, 500, 5)) {
 			return -1;
@@ -72,8 +74,7 @@ public class CollectionSlot {
 	}
 
 	public boolean isFinished() {
-		final int completedTextColor = 24320;
-		return component.component(15).textColor() == completedTextColor;
+		return component.component(COLLECTION_BOX_PROGRESS_BAR).textColor() == GE_FINISHED_TEXT_COLOR;
 	}
 
 	public GrandExchangeItem getGrandExchangeItem() {
@@ -85,8 +86,7 @@ public class CollectionSlot {
 	}
 
 	public boolean isAborted() {
-		final int abortedTextColor = 9371648;
-		return component.component(15).textColor() == abortedTextColor;
+		return component.component().textColor() == GE_ABORTED_TEXT_COLOR;
 	}
 
 	public Component getComponent() {

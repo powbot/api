@@ -18,7 +18,7 @@ public class CollectionBox extends ClientAccessor {
 	}
 
 	public boolean collectCoins(CollectionSlot slot, boolean toBank) {
-		Component item = slot.getComponent().component(4);
+		Component item = slot.getComponent().component(COLLECTION_BOX_ITEM_TWO);
 		if (toBank) {
 			item.interact("Bank");
 		} else {
@@ -28,7 +28,7 @@ public class CollectionBox extends ClientAccessor {
 	}
 
 	public boolean collectItems(CollectionSlot slot, boolean toBank) {
-		Component item = slot.getComponent().component(3);
+		Component item = slot.getComponent().component(COLLECTION_BOX_ITEM_ONE);
 		if (toBank) {
 			item.interact("Bank");
 		} else {
@@ -43,14 +43,18 @@ public class CollectionBox extends ClientAccessor {
 		}
 
 		Npc npc = ctx.npcs.toStream().action("Collect").nearest().first();
-		npc.interact("Collect");
-		return Condition.wait(this::opened, 500, 5);
+		if (npc.interact("Collect")) {
+			return Condition.wait(this::opened, 500, 5);
+		}
+		return false;
 	}
 
 	public boolean close() {
-		Component button = ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, 2, 11);
-		button.interact("Close");
-		return Condition.wait(() -> !opened(), 500, 5);
+		Component button = ctx.components.toStream().widget(COLLECTION_BOX_WIDGET_ID).texture(CLOSE_BUTTON_TEXTURES).first();
+		if (button.interact("Close")) {
+			return Condition.wait(() -> !opened(), 500, 5);
+		}
+		return false;
 	}
 
 	public boolean opened() {
@@ -58,7 +62,7 @@ public class CollectionBox extends ClientAccessor {
 	}
 
 	public boolean collectToInventory() {
-		Component button = ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, 3, 1);
+		Component button = ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, COLLECTION_BOX_TO_INVENTORY_BUTTON_COMPONENT, COLLECTION_BOX_TO_INVENTORY_BUTTON_CHILD);
 		if (button.textColor() == CAN_COLLECT_ITEM_TEXT_COLOR) {
 			button.click();
 		}
@@ -66,7 +70,7 @@ public class CollectionBox extends ClientAccessor {
 	}
 
 	public boolean collectToBank() {
-		Component button = ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, 4, 1);
+		Component button = ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, COLLECTION_BOX_TO_BANK_BUTTON_COMPONENT, COLLECTION_BOX_TO_BANK_BUTTON_CHILD);
 		if (button.textColor() == CAN_COLLECT_ITEM_TEXT_COLOR) {
 			button.click();
 		}
@@ -74,17 +78,18 @@ public class CollectionBox extends ClientAccessor {
 	}
 
 	private int getLastOfferSlot() {
-		return (ctx.client().isMembers() ? COLLECTION_BOX_FIRST_OFFER_SLOT + 8 : COLLECTION_BOX_FIRST_OFFER_SLOT + 3);
+		return (ctx.client().isMembers() ? COLLECTION_BOX_FIRST_OFFER_SLOT + GRAND_EXCHANGE_P2P_SLOTS : COLLECTION_BOX_FIRST_OFFER_SLOT + GRAND_EXCHANGE_F2P_SLOTS);
 	}
 
-	public CollectionSlot[] getAllSlots() {
-		CollectionSlot[] slots = new CollectionSlot[(ctx.client().isMembers() ? 8 : 3)];
+	public List<CollectionSlot> getAllSlots() {
+		CollectionSlot[] slots = new CollectionSlot[(ctx.client().isMembers() ? GRAND_EXCHANGE_P2P_SLOTS : GRAND_EXCHANGE_F2P_SLOTS)];
 		int j = 0;
 		for (int i = COLLECTION_BOX_FIRST_OFFER_SLOT; i <= getLastOfferSlot(); i++) {
-			slots[j++] = new CollectionSlot(ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, i));
-			if (slots[j - 1].getItemId() == -1) {
-				slots[j - 1] = CollectionSlot.NIL;
+			slots[j] = new CollectionSlot(ctx.widgets.component(COLLECTION_BOX_WIDGET_ID, i));
+			if (slots[j].getItemId() == -1) {
+				slots[j] = CollectionSlot.NIL;
 			}
+			j++;
 		}
 		return slots;
 	}

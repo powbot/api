@@ -20,11 +20,10 @@ public class GrandExchange extends ClientAccessor {
 			GRAND_EXCHANGE_CREATE_OFFER_COMPONENT,
 			GRAND_EXCHANGE_CREATE_OFFER_QUANTITY
 		);
-		final int customQuantityButton = 7;
 		final Component chatInput = ctx.widgets.component(CHAT_INPUT, CHAT_INPUT_TEXT);
 		if (Integer.parseInt(quantityComponent.text()) != quantity) {
 			ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID,
-				GRAND_EXCHANGE_CREATE_OFFER_COMPONENT,customQuantityButton).click();
+				GRAND_EXCHANGE_CREATE_OFFER_COMPONENT,GRAND_EXCHANGE_CUSTOM_QUANTITY_BUTTON).click();
 			if (Condition.wait(() -> chatInput.visible() && chatInput.text().contains("How many do you wish to"), 500, 5)) {
 				ctx.input.sendln(Integer.toString(quantity));
 				Condition.wait(() -> Integer.parseInt(quantityComponent.text()) == quantity, 500, 5);
@@ -39,13 +38,12 @@ public class GrandExchange extends ClientAccessor {
 			GRAND_EXCHANGE_CREATE_OFFER_COMPONENT,
 			GRAND_EXCHANGE_CREATE_OFFER_PRICE
 		);
-		final int customPriceButton = 12;
 		final Component chatInput = ctx.widgets.component(CHAT_INPUT, CHAT_INPUT_TEXT);
 		if (StringUtils.filterCoinsText(priceComponent.text()) != price) {
 			ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID,
-				GRAND_EXCHANGE_CREATE_OFFER_COMPONENT, customPriceButton).click();
+				GRAND_EXCHANGE_CREATE_OFFER_COMPONENT, GRAND_EXCHANGE_CUSTOM_PRICE_BUTTON).click();
 			if (Condition.wait(() -> chatInput.visible() && chatInput.text().contains("Set a price for each item"), 500, 5)) {
-				Condition.sleep(Random.nextInt(900, 1400));
+				Condition.sleep(Random.nextInt(900, 2400));
 				ctx.input.sendln(Integer.toString(price));
 				Condition.wait(() -> price == StringUtils.filterCoinsText(priceComponent.text()), 500, 5);
 			}
@@ -54,15 +52,14 @@ public class GrandExchange extends ClientAccessor {
 	}
 
 	public boolean collectOffer(GeSlot slot) {
-		final int CF_COLLECTION_ITEMS = 23;
-		final int C_COLLECTION_ITEM_ONE = 2;
-		final int C_COLLECTION_ITEM_TWO = 3;
-		Component itemOne, itemTwo;
+		if (!slot.getComponent().interact("View offer")) {
+			return false;
+		}
+		Condition.wait(() -> ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_COLLECT_OFFER_ITEMS_COMPONENT).visible(), 500, 5);
 
-		slot.getComponent().interact("View offer");
-		Condition.wait(() -> ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, CF_COLLECTION_ITEMS).visible(), 600, 5);
-		itemOne = ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, CF_COLLECTION_ITEMS, C_COLLECTION_ITEM_ONE);
-		itemTwo = ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, CF_COLLECTION_ITEMS, C_COLLECTION_ITEM_TWO);
+		Component itemOne, itemTwo;
+		itemOne = ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_COLLECT_OFFER_ITEMS_COMPONENT, GRAND_EXCHANGE_COLLECT_OFFER_ITEM_ONE);
+		itemTwo = ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_COLLECT_OFFER_ITEMS_COMPONENT, GRAND_EXCHANGE_COLLECT_OFFER_ITEM_TWO);
 
 		if (itemOne.itemId() != -1) {
 			itemOne.interact("Collect");
@@ -81,7 +78,7 @@ public class GrandExchange extends ClientAccessor {
 
 	public GeSlot createOffer(GrandExchangeItem geItem, int quantity, int price, boolean buy) {
 		GeSlot slot = getAvailableSlot();
-		if (slot == null) {
+		if (slot == null || slot.equals(GeSlot.NIL)) {
 			return GeSlot.NIL;
 		}
 		if (!startOffer(slot, geItem.getId(), geItem.getName(), buy)) {
@@ -105,10 +102,18 @@ public class GrandExchange extends ClientAccessor {
 		return slot;
 	}
 
+	/**
+	 *
+	 * @param itemId item id of item made offer for
+	 * @param slot the ge slot made offer on
+	 * @return returns true only if the correct itemId is found at the correct GeSlot
+	 */
 	public boolean confirmOffer(int itemId, GeSlot slot) {
-		final int confirm = 54;
-		ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_CREATE_OFFER_COMPONENT, confirm).click();
-		return Condition.wait(() -> slot.getItemId() == itemId, 500, 5);
+		final int confirm = GRAND_EXCHANGE_CONFIRM_OFFER_BUTTON;
+		if ( ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_CREATE_OFFER_COMPONENT, GRAND_EXCHANGE_CONFIRM_OFFER_BUTTON).click()) {
+			return Condition.wait(() -> slot.getItemId() == itemId, 500, 5);
+		}
+		return false;
 	}
 
 	/**
@@ -116,18 +121,19 @@ public class GrandExchange extends ClientAccessor {
 	 * @return returns true if no longer in create offer window
 	 */
 	public boolean cancelOffer() {
-		final int button = 4;
-		Component component = ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, button);
-		component.click();
-		return Condition.wait(() -> !component.visible(), 600, 5);
+		Component component = ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_CANCEL_BUTTON);
+		if (component.click()) {
+			return Condition.wait(() -> !component.visible(), 600, 5);
+		}
+		return false;
 	}
 
 	public boolean startOffer(GeSlot slot, int itemId, String itemName, boolean buy) {
 		Component itemComponent = null;
 		if (buy) {
-			slot.getComponent().component(0).click();
+			slot.getComponent().component(GRAND_EXCHANGE_BUY_BUTTON).click();
 			Component chatItemInput = ctx.widgets.component(CHAT_INPUT, CHAT_INPUT_ITEM);
-			Component searchResults = ctx.widgets.component(CHAT_INPUT, 53);
+			Component searchResults = ctx.widgets.component(CHAT_INPUT, GRAND_EXCHANGE_SEARCH_RESULT_COMPONENT);
 			if (Condition.wait(() -> chatItemInput.visible() && chatItemInput.text().contains("would you like to buy"), 500, 5)) {
 				ctx.input.send(itemName);
 
@@ -142,7 +148,7 @@ public class GrandExchange extends ClientAccessor {
 			}
 
 		} else {
-			for (Component co : ctx.widgets.component(GRAND_EXCHANGE_INVENTORY_WIDGET_ID, 0).components()) {
+			for (Component co : ctx.widgets.component(GRAND_EXCHANGE_INVENTORY_WIDGET_ID, GRAND_EXCHANGE_INVENTORY_COMPONENT).components()) {
 				if (co.itemId() == itemId) {
 					itemComponent = co;
 					break;
@@ -157,27 +163,27 @@ public class GrandExchange extends ClientAccessor {
 		itemComponent.hover();
 		itemComponent.interact(true, (buy ? "Select" : "Offer"), itemName);
 
-		return Condition.wait(() -> ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_CREATE_OFFER_COMPONENT,21).itemId() == itemId, 500, 5);
+		return Condition.wait(() -> ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID,
+			GRAND_EXCHANGE_CREATE_OFFER_COMPONENT,GRAND_EXCHANGE_CREATE_OFFER_ITEM).itemId() == itemId, 500, 5);
 	}
 
 	private boolean scrollToComponent(Rectangle view, Component component) {
 		Point scrollPoint = new Point(-1, -1);
-		final Component scrollBar = ctx.widgets.component(162, 54, 1);
+		final Component scrollBar = ctx.widgets.component(CHAT_INPUT, GRAND_EXCHANGE_SEARCH_RESULT_SCROLL_BAR_COMPONENT, GRAND_EXCHANGE_SEARCH_RESULT_SCROLL_BAR_CHILD);
 
 		while (component.valid() && !view.contains(component.centerPoint()) &&
 			!scrollPoint.equals(scrollBar.screenPoint())) {
 			scrollPoint = scrollBar.screenPoint();
 			ctx.input.move(new Point(Random.nextInt(view.x + 10, view.x + view.width - 10), Random.nextInt(view.y + 10, view.y + view.height - 10)));
 			ctx.input.scroll(true);
-			Condition.sleep(Random.nextGaussian(100, 200, 120));
+			Condition.sleep(Random.nextGaussian(300, 700, 420));
 			ctx.input.scroll(true);
 		}
 		return view.contains(component.centerPoint());
 	}
 
 	private Component getBuyItemComponent(int itemId) {
-		final int searchResultsFolder = 53;
-		for (Component component : ctx.widgets.component(CHAT_INPUT, searchResultsFolder).components()) {
+		for (Component component : ctx.widgets.component(CHAT_INPUT, GRAND_EXCHANGE_SEARCH_RESULT_COMPONENT).components()) {
 			if (component.itemId() == itemId && component.visible()) {
 				return component;
 			}
@@ -196,17 +202,18 @@ public class GrandExchange extends ClientAccessor {
 	}
 
 	private int getLastOfferIndex() {
-		return ctx.client().isMembers() ? GRAND_EXCHANGE_FIRST_OFFER_SLOT + 8 : GRAND_EXCHANGE_FIRST_OFFER_SLOT + 3;
+		return ctx.client().isMembers() ? GRAND_EXCHANGE_FIRST_OFFER_SLOT + GRAND_EXCHANGE_P2P_SLOTS : GRAND_EXCHANGE_FIRST_OFFER_SLOT + GRAND_EXCHANGE_F2P_SLOTS;
 	}
 
-	public GeSlot[] getAllSlots() {
-		GeSlot[] slots = new GeSlot[(ctx.client().isMembers() ? 8 : 3)];
+	public List<GeSlot> getAllSlots() {
+		GeSlot[] slots = new GeSlot[(ctx.client().isMembers() ? GRAND_EXCHANGE_P2P_SLOTS : GRAND_EXCHANGE_F2P_SLOTS)];
 		int j = 0;
 		for (int i = GRAND_EXCHANGE_FIRST_OFFER_SLOT; i <= (getLastOfferIndex()); i++) {
-			slots[j++] = new GeSlot(ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, i));
-			if (slots[j - 1].getItemId() == -1) {
-				slots[j - 1] = GeSlot.NIL;
+			slots[j] = new GeSlot(ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, i));
+			if (slots[j].getItemId() == -1) {
+				slots[j] = GeSlot.NIL;
 			}
+			j++;
 		}
 		return slots;
 	}
@@ -217,8 +224,10 @@ public class GrandExchange extends ClientAccessor {
 			GRAND_EXCHANGE_COLLECT_BUTTON_COMPONENT,
 			GRAND_EXCHANGE_COLLECT_BUTTON_CHILD
 		);
-		button.interact("Collect to bank");
-		return Condition.wait(button::visible, 500, 5);
+		if (button.interact("Collect to bank")) {
+			return Condition.wait(button::visible, 500, 5);
+		}
+		return false;
 	}
 
 	public boolean collectAllToInventory() {
@@ -227,8 +236,10 @@ public class GrandExchange extends ClientAccessor {
 			GRAND_EXCHANGE_COLLECT_BUTTON_COMPONENT,
 			GRAND_EXCHANGE_COLLECT_BUTTON_CHILD
 		);
-		button.interact("Collect to inventory");
-		return Condition.wait(button::	visible, 500, 5);
+		if (button.interact("Collect to inventory")) {
+			return Condition.wait(button::	visible, 500, 5);
+		}
+		return false;
 	}
 
 	public boolean open() {
@@ -237,14 +248,18 @@ public class GrandExchange extends ClientAccessor {
 		}
 
 		Npc npc = ctx.npcs.toStream().action("Exchange").nearest().first();
-		npc.interact("Exchange");
-		return Condition.wait(this::opened, 500, 5);
+		if (npc.interact("Exchange")) {
+			return Condition.wait(this::opened, 500, 5)
+		}
+		return false;
 	}
 
 	public boolean close() {
 		Component button = ctx.components.toStream().widget(GRAND_EXCHANGE_WIDGET_ID).texture(CLOSE_BUTTON_TEXTURES).first();
-		button.interact("Close");
-		return Condition.wait(() -> !opened(), 500, 5);
+		if (button.interact("Close")) {
+			return Condition.wait(() -> !opened(), 500, 5);
+		}
+		return false;
 	}
 
 	public boolean opened() {

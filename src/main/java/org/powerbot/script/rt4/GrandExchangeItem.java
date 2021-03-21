@@ -14,6 +14,11 @@ public class GrandExchangeItem {
 	private boolean members;
 	private int buyLimit;
 
+	private int high = -1;
+	private long highTime = -1;
+	private int low = -1;
+	private long lowTime = -1;
+
 	public final static GrandExchangeItem NIL = new GrandExchangeItem();
 
 	public GrandExchangeItem(String name) {
@@ -53,6 +58,39 @@ public class GrandExchangeItem {
 
 	private GrandExchangeItem() {
 		initNIL();
+	}
+
+	/**
+	 * uses wikis api to get high/low price and the time of high/low prices in unix timestamp SECONDS
+	 * for more info see: https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices
+	 * @return returns false if failed to connect
+	 */
+	public boolean initLivePrices() {
+		try {
+			URLConnection connection = new URL("https://prices.runescape.wiki/api/v1/osrs/latest?id=" + id).openConnection();
+			connection.setRequestProperty("User-Agent", "price_checker");
+			connection.connect();
+
+			BufferedReader r  = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+			StringBuilder sb = new StringBuilder();
+
+			String string;
+			while ((string = r.readLine()) != null) {
+				sb.append(string);
+			}
+			string = sb.toString().subString(sb.toString().indexOf(sb.toString().indexOf(":", sb.toString().indexOf(Integer.toString(id)))));
+			string = string.replaceAll("\"{}", "");
+			String[] strings = string.split(",");
+			high = Integer.parseInt(strings[0]);
+			highTime = Long.parseInt(strings[1]);
+			low = Integer.parseInt(strings[2]);
+			lowTime = Long.parseInt(strings[3]);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			initNIL();
+		}
+		return false;
 	}
 
 	public static GrandExchangeItem nil() {
