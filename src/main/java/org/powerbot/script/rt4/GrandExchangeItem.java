@@ -62,7 +62,7 @@ public class GrandExchangeItem {
 	}
 
 	/**
-	 * uses wikis api to get high/low price and the time of high/low prices in unix timestamp SECONDS
+	 * uses wiki's api to get high/low price and the time of high/low prices in unix timestamp SECONDS
 	 * for more info see: https://oldschool.runescape.wiki/w/RuneScape:Real-time_Prices
 	 * @return returns false if failed to connect
 	 */
@@ -89,7 +89,6 @@ public class GrandExchangeItem {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			initNIL();
 		}
 		return false;
 	}
