@@ -14,11 +14,10 @@ public class GrandExchangeItem {
 	private int guidePrice;
 	private boolean members;
 	private int buyLimit;
-
-	private int high = -1;
-	private long highTime = -1;
-	private int low = -1;
-	private long lowTime = -1;
+	private int high;
+	private long highTime;
+	private int low;
+	private long lowTime;
 
 	public final static GrandExchangeItem NIL = new GrandExchangeItem();
 
@@ -106,6 +105,10 @@ public class GrandExchangeItem {
 		guidePrice = -1;
 		buyLimit = -1;
 		members = false;
+		high = -1;
+		highTime = -1;
+		low = -1;
+		lowTime = -1;
 	}
 
 	public int getGuidePrice() {
