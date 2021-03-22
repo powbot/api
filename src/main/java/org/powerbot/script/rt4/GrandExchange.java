@@ -73,8 +73,10 @@ public class GrandExchange extends ClientAccessor {
 	}
 
 	public boolean abortOffer(GeSlot slot) {
-		slot.getComponent().interact("Abort offer");
-		return  (Condition.wait(slot::isAborted, 600, 5));
+		if (slot.getComponent().interact("Abort offer")) {
+			return  (Condition.wait(slot::isAborted, 600, 5));
+		}
+		return false;
 	}
 
 	public GeSlot createOffer(GrandExchangeItem geItem, int quantity, int price, boolean buy) {
@@ -110,7 +112,6 @@ public class GrandExchange extends ClientAccessor {
 	 * @return returns true only if the correct itemId is found at the correct GeSlot
 	 */
 	public boolean confirmOffer(int itemId, GeSlot slot) {
-		final int confirm = GRAND_EXCHANGE_CONFIRM_OFFER_BUTTON;
 		if ( ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_CREATE_OFFER_COMPONENT, GRAND_EXCHANGE_CONFIRM_OFFER_BUTTON).click()) {
 			return Condition.wait(() -> slot.getItemId() == itemId, 500, 5);
 		}
