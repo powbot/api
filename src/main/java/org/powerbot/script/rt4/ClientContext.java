@@ -6,14 +6,14 @@ import org.powerbot.bot.rt4.client.internal.IClient;
 import org.powerbot.script.*;
 import org.powerbot.script.action.ActionEmitter;
 
-import java.util.List;
-
 /**
  * ClientContext
  * A utility class with references to all major points of the API.
  */
 public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 	public final Bank bank;
+	public final GrandExchange grandExchange;
+	public final CollectionBox collectionBox;
 	public final Camera camera;
 	public final Chat chat;
 	public final Combat combat;
@@ -43,6 +43,8 @@ public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 	private ClientContext(final Bot<ClientContext> bot) {
 		super(bot);
 		bank = new Bank(this);
+		grandExchange = new GrandExchange(this);
+		collectionBox = new CollectionBox(this);
 		camera = new Camera(this);
 		chat = new Chat(this);
 		combat = new Combat(this);
@@ -76,6 +78,8 @@ public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 		super(ctx);
 
 		bank = ctx.bank;
+		grandExchange = ctx.grandExchange;
+		collectionBox = ctx.collectionBox;
 		camera = ctx.camera;
 		chat = ctx.chat;
 		combat = ctx.combat;
