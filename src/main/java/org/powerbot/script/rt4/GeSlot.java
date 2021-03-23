@@ -39,7 +39,7 @@ public class GeSlot {
 	}
 
 	public int getPricePerItem() {
-		return StringUtils.filterCoinsText(component.component(GE_SLOT_PRICE_PER_ITEM).text());
+		return StringUtils.parseCoinsAmount(component.component(GE_SLOT_PRICE_PER_ITEM).text());
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class GeSlot {
 
 		Component progressInfo = ClientContext.ctx().widgets.component(
 			Constants.GRAND_EXCHANGE_WIDGET_ID,
-			GE_SLOT_PROGRESS_INFO,
+			GE_SLOT_PROGRESS_INFO_COMPONENT,
 			GE_SLOT_PROGRESS_INFO_CHILD);
 
 		if (component.hover()) {

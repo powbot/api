@@ -65,7 +65,7 @@ public class CollectionSlot {
 			return -1;
 		}
 
-		Component progressInfo = Component progressInfo = ClientContext.ctx().widgets.component(COLLECTION_BOX_WIDGET_ID, COLLECTION_BOX_PROGRESS_COMPONENT, COLLECTION_BOX_PROGRESS_CHILD);
+		Component progressInfo = ClientContext.ctx().widgets.component(COLLECTION_BOX_WIDGET_ID, COLLECTION_BOX_PROGRESS_COMPONENT, COLLECTION_BOX_PROGRESS_CHILD);
 		component.hover();
 		if (!Condition.wait(progressInfo::visible, 500, 5)) {
 			return -1;
@@ -86,7 +86,7 @@ public class CollectionSlot {
 	}
 
 	public boolean isAborted() {
-		return component.component().textColor() == GE_ABORTED_TEXT_COLOR;
+		return component.component(COLLECTION_BOX_PROGRESS_BAR).textColor() == GE_ABORTED_TEXT_COLOR;
 	}
 
 	public Component getComponent() {
