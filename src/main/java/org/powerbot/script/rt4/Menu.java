@@ -190,23 +190,25 @@ public class Menu extends ClientAccessor {
 			return false;
 		}
 
-		final int headerOffset = ctx.client().isMobile() ? 29 : 19;
-		final int itemOffset = ctx.client().isMobile() ? 24 : 15;
+		final int headerOffset = ctx.client().isMobile() ? 27 : 19;
+		final int itemOffset = ctx.client().isMobile() ? 27 : 15;
 
-		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + headerOffset + slot * itemOffset, client.getMenuWidth(), itemOffset);
+
+		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + headerOffset + (slot * itemOffset), client.getMenuWidth(), itemOffset);
 		Condition.sleep(Random.hicks(slot));
 		if (!ctx.input.move(
-			Random.nextInt(rectangle.x, rectangle.x + rectangle.width),
-			Random.nextInt(rectangle.y, rectangle.y + rectangle.height)) || !client.isMenuOpen()) {
-			System.out.println("returning because suck");
+			Random.nextInt(rectangle.x + 10, rectangle.x + rectangle.width - 10),
+			Random.nextInt(rectangle.y + 10, rectangle.y + rectangle.height - 10)) || !client.isMenuOpen()) {
 			return false;
 		}
 
-		if(ctx.client().isMobile()) {
+		if (ctx.client().isMobile()) {
 			final Point scaled = ctx.input.scale(rectangle.getLocation());
 			rectangle.setLocation(scaled);
-			System.out.println("Menu box: " + scaled);
 		}
+
+		boolean inSpot = rectangle.contains(ctx.input.getLocation());
+		System.out.println("in spot: " + inSpot + " bounds: " + rectangle + " pos: " + ctx.input.getLocation());
 		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
 	}
 
