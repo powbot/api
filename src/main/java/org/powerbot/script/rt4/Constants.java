@@ -221,4 +221,10 @@ public final class Constants {
 	};
 	//Textures of "X" close button
 	public static final int[] CLOSE_BUTTON_TEXTURES = {831, 535, 537, 539, 541};
+
+	public static final int MOBILE_VIEWPORT_WIDGET_ID = getInt("MOBILE_VIEWPORT_WIDGET_ID");
+	public static final int MOBILE_VIEWPORT_COMPONENT_ID = getInt("MOBILE_VIEWPORT_COMPONENT_ID");
+	public static final int MOBILE_MAP_AND_ORBS_WIDGET_ID = getInt("MOBILE_MAP_AND_ORBS_WIDGET_ID");
+	public static final int MOBILE_MAP_AND_ORBS_COMPONENT_ID = getInt("MOBILE_MAP_AND_ORBS_COMPONENT_ID");
+
 }

@@ -147,7 +147,7 @@ public class Menu extends ClientAccessor {
 	 * @param click  Whether or not to left-click.
 	 * @return {@code true} if the mouse has successfully clicked within the bounds of the {@link MenuCommand}
 	 */
-	private boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
+	public boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
 		final IClient client = ctx.client();
 		if (client == null) {
 			return false;

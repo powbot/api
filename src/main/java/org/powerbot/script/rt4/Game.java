@@ -320,7 +320,13 @@ public class Game extends ClientAccessor {
 	 */
 	public boolean pointInViewport(final int x, final int y, final boolean resizable) {
 		if (ctx.client().isMobile()) {
-			return x >= 0 && y >= 0 && x <= ctx.client().getClientWidth() && y <= ctx.client().getClientHeight();
+			final Component minimapAndOrbs = ctx.widgets.component(MOBILE_MAP_AND_ORBS_WIDGET_ID, MOBILE_MAP_AND_ORBS_COMPONENT_ID);
+			if (minimapAndOrbs.contains(new Point(x, y))) {
+				return false;
+			}
+
+			final Component mobileViewport = ctx.widgets.component(MOBILE_VIEWPORT_WIDGET_ID, MOBILE_VIEWPORT_COMPONENT_ID);
+			return mobileViewport.contains(new Point(x, y));
 		} else if (resizable) {
 			final Dimension d = dimensions();
 			return x >= 0 && y >= 0 && (x > 520 || y <= d.height - 170) &&
