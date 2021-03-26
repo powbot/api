@@ -68,6 +68,10 @@ public interface Modelable {
 		}
 
 		IRenderable[] renderables = renderables();
+		if (renderables == null) {
+			return null;
+		}
+		
 		for (int i = 0; i < renderables.length; i++) {
 			IRenderable renderable = renderables[i];
 			int[] orientations = modelOrientations();
@@ -115,7 +119,8 @@ public interface Modelable {
 					}
 				}
 			} catch (Exception e) {
-				if (System.getenv("DEBUG_MODELS").equals("true")) {
+				if (System.getenv().containsKey("DEBUG_MODELS") &&
+					System.getenv("DEBUG_MODELS").equals("true")) {
 					e.printStackTrace();
 				}
 				//Sentry.captureException(e);
