@@ -74,17 +74,17 @@ public class Equipment extends ItemQuery<Item> implements Streamable<EquipmentIt
 	 * An enumeration of equipment slots.
 	 */
 	public enum Slot {
-		HEAD(0, 14),
-		CAPE(1, 15),
-		NECK(2, 16),
-		MAIN_HAND(3, 17),
-		TORSO(4, 18),
-		OFF_HAND(5, 19),
-		LEGS(7, 20),
-		HANDS(9, 21),
-		FEET(10, 22),
-		RING(12, 23),
-		QUIVER(13, 24);
+		HEAD(0, 15),
+		CAPE(1, 16),
+		NECK(2, 17),
+		MAIN_HAND(3, 18),
+		TORSO(4, 19),
+		OFF_HAND(5, 20),
+		LEGS(7, 21),
+		HANDS(9, 22),
+		FEET(10, 23),
+		RING(12, 24),
+		QUIVER(13, 25);
 		private final int index, component;
 
 		Slot(final int index, final int component) {
