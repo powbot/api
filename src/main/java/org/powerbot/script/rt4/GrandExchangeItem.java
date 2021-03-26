@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
 
 public class GrandExchangeItem {
 	private int id;
@@ -79,13 +78,16 @@ public class GrandExchangeItem {
 			while ((string = r.readLine()) != null) {
 				sb.append(string);
 			}
-			string = sb.toString().substring(sb.toString().indexOf(sb.toString().indexOf(":", sb.toString().indexOf(Integer.toString(id)))));
+			int indexOfId = sb.toString().indexOf(Integer.toString(id));
+			int indexOfColonAfterId = sb.toString().indexOf(":", indexOfId);
+			string = sb.toString().substring(indexOfColonAfterId + 1);
 			string = string.replace("\"", "").replace("{", "").replace("}", "");
 			String[] strings = string.split(",");
-			high = Integer.parseInt(strings[0]);
-			highTime = Long.parseLong(strings[1]);
-			low = Integer.parseInt(strings[2]);
-			lowTime = Long.parseLong(strings[3]);
+
+			high = Integer.parseInt(strings[0].split(":")[1]);
+			highTime = Long.parseLong(strings[1].split(":")[1]);
+			low = Integer.parseInt(strings[2].split(":")[1]);
+			lowTime = Long.parseLong(strings[3].split(":")[1]);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

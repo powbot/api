@@ -111,7 +111,7 @@ public class GrandExchange extends ClientAccessor {
 	 * @param slot the ge slot made offer on
 	 * @return returns true only if the correct itemId is found at the correct GeSlot
 	 */
-	public boolean confirmOffer(int itemId, GeSlot slot) {
+	private boolean confirmOffer(int itemId, GeSlot slot) {
 		if ( ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_CREATE_OFFER_COMPONENT, GRAND_EXCHANGE_CONFIRM_OFFER_BUTTON).click()) {
 			return Condition.wait(() -> slot.getItemId() == itemId, 500, 5);
 		}
@@ -122,7 +122,7 @@ public class GrandExchange extends ClientAccessor {
 	 * cancels an offer that is being made
 	 * @return returns true if no longer in create offer window
 	 */
-	public boolean cancelOffer() {
+	private boolean cancelOffer() {
 		Component component = ctx.widgets.component(GRAND_EXCHANGE_WIDGET_ID, GRAND_EXCHANGE_CANCEL_BUTTON);
 		if (component.click()) {
 			return Condition.wait(() -> !component.visible(), 600, 5);

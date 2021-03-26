@@ -19,7 +19,7 @@ public class CollectionBox extends ClientAccessor {
 		return collectItems(slot, toBank);
 	}
 
-	public boolean collectCoins(CollectionSlot slot, boolean toBank) {
+	private boolean collectCoins(CollectionSlot slot, boolean toBank) {
 		Component item = slot.getComponent().component(COLLECTION_BOX_ITEM_TWO);
 		if (toBank) {
 			item.interact("Bank");
@@ -29,7 +29,7 @@ public class CollectionBox extends ClientAccessor {
 		return Condition.wait(() -> !item.visible(), 500, 5);
 	}
 
-	public boolean collectItems(CollectionSlot slot, boolean toBank) {
+	private boolean collectItems(CollectionSlot slot, boolean toBank) {
 		Component item = slot.getComponent().component(COLLECTION_BOX_ITEM_ONE);
 		if (toBank) {
 			item.interact("Bank");
