@@ -5,7 +5,7 @@ import java.util.concurrent.Callable
 
 data class MouseMovement(
     val target: Callable<Point>,
-    val valid: Callable<Boolean>,
+    val valid: Callable<Boolean>
 ) {
     fun canRun(): Boolean {
 
