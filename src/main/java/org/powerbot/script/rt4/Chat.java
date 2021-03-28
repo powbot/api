@@ -37,16 +37,22 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 	}
 
 	public boolean chatting() {
-		if (ctx.widgets.component(Constants.CHAT_WIDGET, 0).valid()) {
-			return true;
+		return chatComponent() != Component.NIL;
+	}
+
+	public Component chatComponent() {
+		Component component = ctx.widgets.component(Constants.CHAT_WIDGET, 0);
+		if (component.valid()) {
+			return component;
 		}
 		for (final int[] arr : Constants.CHAT_CONTINUES) {
-			if (ctx.widgets.component(arr[0], 0).valid()) {
-				return true;
+			component = ctx.widgets.component(arr[0], 0);
+			if (component.valid()) {
+				return component;
 			}
 		}
 
-		return false;
+		return Component.NIL;
 	}
 
 

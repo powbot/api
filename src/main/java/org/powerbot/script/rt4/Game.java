@@ -324,6 +324,16 @@ public class Game extends ClientAccessor {
 			if (minimapAndOrbs.contains(new Point(x, y))) {
 				return false;
 			}
+			if (tab() != Tab.NONE) {
+				final Component tabWindow = ctx.widgets.component(MOBILE_TAB_WINDOW_WIDGET_ID, MOBILE_TAB_WINDOW_COMPONENT_ID);
+				if (tabWindow.contains(new Point(x, y))) {
+					return false;
+				}
+			}
+			final Component chatComponent = ctx.chat.chatComponent();
+			if (chatComponent.valid() && chatComponent.contains(new Point(x, y))) {
+				return false;
+			}
 
 			final Component mobileViewport = ctx.widgets.component(MOBILE_VIEWPORT_WIDGET_ID, MOBILE_VIEWPORT_COMPONENT_ID);
 			return mobileViewport.contains(new Point(x, y));
