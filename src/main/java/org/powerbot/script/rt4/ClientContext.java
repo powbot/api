@@ -137,7 +137,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 		if (scriptStateWatcher.getState() != ScriptState.Running) {
 			return false;
 		}
-		
+
 		final AbstractScript script = scriptStateWatcher.getScript();
 		return script != null && script.getManifest().properties().contains("category=Plugin;");
 	}
