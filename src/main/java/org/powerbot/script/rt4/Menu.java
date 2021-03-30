@@ -191,7 +191,7 @@ public class Menu extends ClientAccessor {
 		}
 
 		final int headerOffset = ctx.client().isMobile() ? 27 : 19;
-		final int itemOffset = ctx.client().isMobile() ? 27 : 15;
+		final int itemOffset = ctx.client().isMobile() ? 24 : 15;
 
 
 		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + headerOffset + (slot * itemOffset), client.getMenuWidth(), itemOffset);
@@ -208,7 +208,6 @@ public class Menu extends ClientAccessor {
 		}
 
 		boolean inSpot = rectangle.contains(ctx.input.getLocation());
-		System.out.println("in spot: " + inSpot + " bounds: " + rectangle + " pos: " + ctx.input.getLocation());
 		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
 	}
 
