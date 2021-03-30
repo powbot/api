@@ -115,6 +115,11 @@ public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 	}
 
 	public boolean isScriptRunning() {
+		if (scriptStateWatcher.getState() == ScriptState.Unknown) {
+			final AbstractScript script = controller.script();
+			return script != null && !script.getManifest().properties().contains("category=Plugin;");
+		}
+
 		if (scriptStateWatcher.getState() != ScriptState.Running) {
 			return false;
 		}
@@ -124,9 +129,15 @@ public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 	}
 
 	public boolean isPluginRunning() {
+		if (scriptStateWatcher.getState() == ScriptState.Unknown) {
+			final AbstractScript script = controller.script();
+			return script != null && script.getManifest().properties().contains("category=Plugin;");
+		}
+
 		if (scriptStateWatcher.getState() != ScriptState.Running) {
 			return false;
 		}
+		
 		final AbstractScript script = scriptStateWatcher.getScript();
 		return script != null && script.getManifest().properties().contains("category=Plugin;");
 	}

@@ -128,7 +128,7 @@ public class Game extends ClientAccessor {
 	}
 
 	private int openedTabIndexOffset(final Tab tab) {
-		if (resizable() && bottomLineTabs()) {
+		if (!ctx.client().isMobile() && resizable() && bottomLineTabs()) {
 			switch (tab) {
 				case LOGOUT:
 					return 1;
@@ -283,6 +283,10 @@ public class Game extends ClientAccessor {
 	 * @return {@code true} if it is resizeable, {@code false} otherwise.
 	 */
 	public boolean resizable() {
+//		if (ctx.client().isMobile()) {
+//			return false;
+//		}
+
 		if (ctx.input.inputBounds().width == 765 && ctx.input.inputBounds().height == 503) {
 			return false;
 		}
