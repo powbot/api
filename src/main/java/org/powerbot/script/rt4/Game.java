@@ -7,7 +7,11 @@ import org.powerbot.script.Tile;
 
 import java.applet.Applet;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static org.powerbot.script.rt4.Constants.*;
 
@@ -545,6 +549,103 @@ public class Game extends ClientAccessor {
 			}
 		}
 		return new Component(ctx, i, -1);
+	}
+
+	/***
+	 *
+	 * 	Sets the mouse toggle button to return to expected clicking for mobile.
+	 * @return true if it in expected state.
+	 *
+	 * @param enabled Expected state you want for the toggle
+	 * @return true if in expected state.
+	 */
+	private boolean setMouseToggle(boolean enabled) {
+		if (!ctx.client().isMobile()) {
+			return false;
+		}
+
+		if (toggleStatus() == enabled) {
+			return true;
+		}
+
+		Component component = getMouseToggleComponent();
+		if (!component.valid()) {
+			return false;
+		}
+
+		if (component.interact("Toggle")) {
+			return Condition.wait(() -> toggleStatus() == enabled, 100, 10);
+		}
+		return false;
+	}
+
+	public boolean toggleStatus() {
+		MouseToggle toggle = getMouseToggle();
+		switch (toggle) {
+			default:
+				return false;
+			case SINGLETAP:
+				return singleTapEnabled();
+			case DROP:
+				return ctx.inventory.shiftDroppingEnabled();
+			case KEYBOARD:
+				return false; // TODO
+		}
+	}
+
+	/***
+	 * 	Returns the component on the side of the screen which lets the user toggle enabled/disabled.
+	 * @return The component of the toggle button.
+	 */
+	private Component getMouseToggleComponent() {
+		return ctx.widgets.component(601, MOUSE_TOGGLE_WIDGET_COMPONENT);
+	}
+
+	/***
+	 *	Checks if single tap is enabled
+	 * @return true if enabled
+	 */
+	public boolean singleTapEnabled() {
+		return ctx.varpbits.varpbit(MOUSE_SINGLE_TAP_VARPBIT) == 1;
+	}
+
+	/***
+	 * 	Gets the mouse toggle state for mobile.
+	 * @return The type of mouse toggle set.
+	 */
+	public MouseToggle getMouseToggle() {
+		if (ctx.client().isMobile()) {
+			return MouseToggle.DISABLED;
+		}
+		int mouseToggle = ctx.varpbits.varpbit(MOUSE_FUNCTION_VARPBIT, 20, 0x3);
+		return MouseToggle.fromInt(mouseToggle);
+	}
+
+	/***
+	 * 	The current set button of the mouse toggle button.
+	 */
+	public enum MouseToggle {
+		DISABLED(0),
+		DROP(1),
+		SINGLETAP(2),
+		KEYBOARD(3);
+
+		private static Map<Integer, MouseToggle> map =
+			Arrays.stream(MouseToggle.values()).collect(Collectors.toMap(MouseToggle::getValue, Function.identity()));
+
+		private int value;
+
+		MouseToggle(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+
+		public static MouseToggle fromInt(final int id) {
+			return map.getOrDefault(id, DISABLED);
+		}
 	}
 
 	/**

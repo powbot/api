@@ -146,6 +146,9 @@ public class Inventory extends ItemQuery<Item> implements Streamable<InventoryIt
 	 */
 	public boolean drop(final Item i, final boolean shift) {
 		if (shift && shiftDroppingEnabled()) {
+			if (ctx.client().isMobile()){
+				return i.click();
+			}
 			return ctx.input.send("{VK_SHIFT down}") && i.click(true) && ctx.input.send("{VK_SHIFT up}");
 		} else {
 			return i.interact("Drop", i.name());

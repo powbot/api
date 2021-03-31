@@ -278,4 +278,9 @@ public final class Constants {
 	public static final int GRAND_EXCHANGE_CREATE_OFFER_ITEM = getInt("GRAND_EXCHANGE_CREATE_OFFER_ITEM");
 	public static final int GRAND_EXCHANGE_INVENTORY_COMPONENT = getInt("GRAND_EXCHANGE_INVENTORY_COMPONENT");
 
+	// Mobile
+	public static final int MOUSE_FUNCTION_VARPBIT = 1055;
+	public static final int MOUSE_SINGLE_TAP_VARPBIT = 170;
+
+	public static final int MOUSE_TOGGLE_WIDGET_COMPONENT = 34;
 }
