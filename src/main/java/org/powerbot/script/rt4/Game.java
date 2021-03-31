@@ -579,7 +579,7 @@ public class Game extends ClientAccessor {
 		return false;
 	}
 
-	public boolean toggleStatus() {
+	private boolean toggleStatus() {
 		MouseToggle toggle = getMouseToggle();
 		switch (toggle) {
 			default:
