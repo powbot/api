@@ -39,6 +39,7 @@ public final class Constants {
 	public static final int LOGIN_STATE_WELCOME = getInt("LOGIN_STATE_WELCOME");
 	public static final int LOGIN_STATE_PVP_WARNING = getInt("LOGIN_STATE_PVP_WARNING");
 	public static final int LOGIN_STATE_ENTER_CREDENTIALS = getInt("LOGIN_STATE_ENTER_CREDENTIALS");
+	public static final int CLIENT_STATE_MOBILE_PLAY_NOW = getInt("CLIENT_STATE_MOBILE_PLAY_NOW");
 	public static final int LOGIN_STATE_DISCONNECTED = getInt("LOGIN_STATE_DISCONNECTED");
 
 	public static final int BANK_WIDGET = getInt("BANK_WIDGET");
