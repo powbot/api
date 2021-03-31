@@ -589,7 +589,8 @@ public class Game extends ClientAccessor {
 			case DROP:
 				return ctx.inventory.shiftDroppingEnabled();
 			case KEYBOARD:
-				return false; // TODO
+				// There is no way to check if android keyboard is visible
+				return true;
 		}
 	}
 
