@@ -243,11 +243,20 @@ public class Camera extends ClientAccessor {
 
 		// Define the min and max screen boundaries in which the vector can be dragged.
 		int minX, minY, maxX, maxY;
-		minX = minY = 0; // By default, we assume that the base of the boundary starts at 0.
+		if (ctx.client().isMobile()) {
+			final Component viewport = ctx.game.mobileViewport();
+			final Point p = viewport.basePoint();
+			minX = p.x;
+			minY = p.y;
+			maxX = p.x + viewport.width();
+			maxY = p.x + viewport.height();
+		} else {
+			minX = minY = 0; // By default, we assume that the base of the boundary starts at 0.
 
 
-		maxX = ctx.client().getCanvas().getWidth(); // By default, we assume that the max of the boundary end with the screen.
-		maxY = ctx.client().getCanvas().getHeight();
+			maxX = ctx.client().getCanvas().getWidth(); // By default, we assume that the max of the boundary end with the screen.
+			maxY = ctx.client().getCanvas().getHeight();
+		}
 
 		// Adjust the boundaries based on the values of the components in the screen vector.
 		if (vector.x < 0) {
@@ -275,7 +284,6 @@ public class Camera extends ClientAccessor {
 		input.move(new Point(randX, randY));
 		input.drag(new Point(randX + vector.x, randY + vector.y), MouseEvent.BUTTON2);
 	}
-
 	/**
 	 * Turns to the specified {@link org.powerbot.script.Locatable}.
 	 *

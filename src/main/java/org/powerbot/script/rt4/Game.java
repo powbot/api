@@ -314,6 +314,10 @@ public class Game extends ClientAccessor {
 		return pointInViewport(x, y, resizable());
 	}
 
+	public Component mobileViewport() {
+		return ctx.widgets.component(MOBILE_VIEWPORT_WIDGET_ID, MOBILE_VIEWPORT_COMPONENT_ID);
+	}
+
 	/**
 	 * Whether or not the 2-dimension point is within the viewport of the applet.
 	 *
@@ -339,8 +343,7 @@ public class Game extends ClientAccessor {
 				return false;
 			}
 
-			final Component mobileViewport = ctx.widgets.component(MOBILE_VIEWPORT_WIDGET_ID, MOBILE_VIEWPORT_COMPONENT_ID);
-			return mobileViewport.contains(new Point(x, y));
+			return mobileViewport().contains(new Point(x, y));
 		} else if (resizable) {
 			final Dimension d = dimensions();
 			return x >= 0 && y >= 0 && (x > 520 || y <= d.height - 170) &&
