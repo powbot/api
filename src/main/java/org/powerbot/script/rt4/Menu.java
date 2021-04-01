@@ -168,7 +168,6 @@ public class Menu extends ClientAccessor {
 
 
 		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 100)) {
-			System.out.println("Menu item not found - closing menu");
 			if (opened()) {
 				close();
 			}
@@ -206,8 +205,6 @@ public class Menu extends ClientAccessor {
 			final Point scaled = ctx.input.scale(rectangle.getLocation());
 			rectangle.setLocation(scaled);
 		}
-
-		boolean inSpot = rectangle.contains(ctx.input.getLocation());
 		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
 	}
 
