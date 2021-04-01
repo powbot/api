@@ -5,12 +5,10 @@ import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Tile;
 
-import java.applet.Applet;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static org.powerbot.script.rt4.Constants.*;
@@ -559,7 +557,7 @@ public class Game extends ClientAccessor {
 	 * @param enabled Expected state you want for the toggle
 	 * @return true if in expected state.
 	 */
-	private boolean setMouseToggle(boolean enabled) {
+	private boolean setMouseActionState(boolean enabled) {
 		if (!ctx.client().isMobile()) {
 			return false;
 		}
@@ -580,7 +578,7 @@ public class Game extends ClientAccessor {
 	}
 
 	private boolean toggleStatus() {
-		MouseToggle toggle = getMouseToggle();
+		MouseToggleAction toggle = getMouseToggle();
 		switch (toggle) {
 			default:
 				return false;
@@ -614,29 +612,29 @@ public class Game extends ClientAccessor {
 	 * 	Gets the mouse toggle state for mobile.
 	 * @return The type of mouse toggle set.
 	 */
-	public MouseToggle getMouseToggle() {
+	public MouseToggleAction getMouseToggle() {
 		if (ctx.client().isMobile()) {
-			return MouseToggle.DISABLED;
+			return MouseToggleAction.DISABLED;
 		}
 		int mouseToggle = ctx.varpbits.varpbit(MOUSE_FUNCTION_VARPBIT, 20, 0x3);
-		return MouseToggle.fromInt(mouseToggle);
+		return MouseToggleAction.fromInt(mouseToggle);
 	}
 
 	/***
 	 * 	The current set button of the mouse toggle button.
 	 */
-	public enum MouseToggle {
+	public enum MouseToggleAction {
 		DISABLED(0),
 		DROP(1),
 		SINGLETAP(2),
 		KEYBOARD(3);
 
-		private static Map<Integer, MouseToggle> map =
-			Arrays.stream(MouseToggle.values()).collect(Collectors.toMap(MouseToggle::getValue, Function.identity()));
+		private static Map<Integer, MouseToggleAction> map =
+			Arrays.stream(MouseToggleAction.values()).collect(Collectors.toMap(MouseToggleAction::getValue, Function.identity()));
 
 		private int value;
 
-		MouseToggle(int value) {
+		MouseToggleAction(int value) {
 			this.value = value;
 		}
 
@@ -644,7 +642,7 @@ public class Game extends ClientAccessor {
 			return value;
 		}
 
-		public static MouseToggle fromInt(final int id) {
+		public static MouseToggleAction fromInt(final int id) {
 			return map.getOrDefault(id, DISABLED);
 		}
 	}
