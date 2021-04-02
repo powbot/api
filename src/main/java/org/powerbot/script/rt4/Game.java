@@ -557,7 +557,7 @@ public class Game extends ClientAccessor {
 	 * @param enabled Expected state you want for the toggle
 	 * @return true if in expected state.
 	 */
-	private boolean enableToggledMouseAction(boolean enabled) {
+	private boolean setMouseActionToggled(boolean enabled) {
 		if (!ctx.client().isMobile()) {
 			return false;
 		}
