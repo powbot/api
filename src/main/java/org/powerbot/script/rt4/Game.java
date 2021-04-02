@@ -557,12 +557,12 @@ public class Game extends ClientAccessor {
 	 * @param enabled Expected state you want for the toggle
 	 * @return true if in expected state.
 	 */
-	private boolean setMouseActionState(boolean enabled) {
+	private boolean enableToggledMouseAction(boolean enabled) {
 		if (!ctx.client().isMobile()) {
 			return false;
 		}
 
-		if (toggleStatus() == enabled) {
+		if (toggleMouseAction() == enabled) {
 			return true;
 		}
 
@@ -572,12 +572,12 @@ public class Game extends ClientAccessor {
 		}
 
 		if (component.interact("Toggle")) {
-			return Condition.wait(() -> toggleStatus() == enabled, 100, 10);
+			return Condition.wait(() -> toggleMouseAction() == enabled, 100, 10);
 		}
 		return false;
 	}
 
-	private boolean toggleStatus() {
+	private boolean toggleMouseAction() {
 		MouseToggleAction toggle = getMouseToggle();
 		switch (toggle) {
 			default:
@@ -613,7 +613,7 @@ public class Game extends ClientAccessor {
 	 * @return The type of mouse toggle set.
 	 */
 	public MouseToggleAction getMouseToggle() {
-		if (ctx.client().isMobile()) {
+		if (!ctx.client().isMobile()) {
 			return MouseToggleAction.DISABLED;
 		}
 		int mouseToggle = ctx.varpbits.varpbit(MOUSE_FUNCTION_VARPBIT, 20, 0x3);
