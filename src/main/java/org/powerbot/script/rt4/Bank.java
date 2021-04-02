@@ -48,7 +48,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 			final GameObject object = ctx.objects.poll();
 			return t.distanceTo(npc) < t.distanceTo(object) ? npc : object;
 		}
-		
+
 		final double dist = Math.min(t.distanceTo(ctx.npcs.peek()), t.distanceTo(ctx.objects.peek()));
 		final double d2 = Math.min(2d, Math.max(0d, dist - 1d));
 
@@ -78,7 +78,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 
 		final Tile loc = ctx.players.local().tile();
 		for (final GameObject object : ctx.objects.select().select(Bank::UNREACHABLE_FILTER).
-				name(Constants.BANK_BOOTHS, Constants.BANK_CHESTS).nearest().limit(1)) {
+			name(Constants.BANK_BOOTHS, Constants.BANK_CHESTS).nearest().limit(1)) {
 			if (loc.distanceTo(object) < loc.distanceTo(nearest)) {
 				nearest = object;
 			}
@@ -118,6 +118,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 
 		return Component.NIL;
 	}
+
 	/**
 	 * Opens a random in-view bank.
 	 * Do not continue execution within the current poll after this method so BankPin may activate.
@@ -207,6 +208,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 
 	/**
 	 * Closes the bank
+	 *
 	 * @param key if {@code true}, and escape closing enabled, will press escape key. If {@code false}, clicks the close button.
 	 * @return {@code true} if the bank is already closed or is successfully closed; {@code false} otherwise.
 	 */
@@ -215,8 +217,8 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 			return true;
 		}
 		final Component closeButton = ctx.widgets.component(BANK_WIDGET, BANK_MASTER, BANK_CLOSE);
-		return ((key && ctx.game.settings.escClosingEnabled() && ctx.input.send("{VK_ESCAPE}")) || closeButton.click())
-				&& Condition.wait(() -> !opened(), 30, 10);
+		return ((!ctx.client().isMobile() && key && ctx.game.settings.escClosingEnabled() && ctx.input.send("{VK_ESCAPE}")) || closeButton.click())
+			&& Condition.wait(() -> !opened(), 30, 30);
 	}
 
 	/**
@@ -505,10 +507,10 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 
 	private boolean scrollToItem(final Item item) {
 		return ctx.widgets.scroll(
-				item.component,
-				ctx.widgets.component(BANK_WIDGET, BANK_ITEMS),
-				ctx.widgets.component(BANK_WIDGET, BANK_SCROLLBAR),
-				true
+			item.component,
+			ctx.widgets.component(BANK_WIDGET, BANK_ITEMS),
+			ctx.widgets.component(BANK_WIDGET, BANK_SCROLLBAR),
+			true
 		);
 	}
 
@@ -569,8 +571,8 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		final int inventoryCount = ctx.inventory.select().id(id).count(true);
 		final String action = bankActionString("Deposit", item, inventoryCount, amount);
 		if ((item.contains(ctx.input.getLocation())
-				&& ctx.menu.click(c -> c.action.equalsIgnoreCase(action)))
-				|| item.interact(c -> c.action.equalsIgnoreCase(action))) {
+			&& ctx.menu.click(c -> c.action.equalsIgnoreCase(action)))
+			|| item.interact(c -> c.action.equalsIgnoreCase(action))) {
 			if (action.endsWith("X")) {
 				if (!Condition.wait(ctx.chat::pendingInput)) {
 					return false;
@@ -772,7 +774,7 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 		} else if (!opened() || (quantityComponentValue = quantityComponentValue(amount)) < -1) {
 			return false;
 		} else {
-			return (ctx.widgets.widget(Constants.BANK_WIDGET).component(quantityComponentValue).click() && Condition.wait(()-> withdrawModeQuantity() == amount, 30, 10));
+			return (ctx.widgets.widget(Constants.BANK_WIDGET).component(quantityComponentValue).click() && Condition.wait(() -> withdrawModeQuantity() == amount, 30, 10));
 		}
 	}
 
