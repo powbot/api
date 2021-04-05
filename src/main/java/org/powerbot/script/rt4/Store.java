@@ -90,7 +90,7 @@ public class Store extends ClientAccessor {
 		long previousCount = ctx.inventory.toStream().id(itemId).mapToInt(Item::stackSize).sum();
 
 		if (itemComponent.interact("Buy " + buyAction)) {
-			Condition.wait(() -> previousCount < ctx.inventory.toStream().mapToInt(Item::stackSize).sum());
+			return Condition.wait(() -> previousCount < ctx.inventory.toStream().id(itemId).mapToInt(Item::stackSize).sum());
 		}
 
 		return false;
