@@ -202,14 +202,6 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 		};
 
 		try {
-//			if (ctx.client().isMobile() && (Interactive.this instanceof Actor || Interactive.this instanceof GameObject)) {
-//				// We need to do this in order to load the menu
-//				final Point target = position.call();
-//				ctx.input.move(target);
-//				ctx.input.drag(new Point(target.x + 3, target.y + 3), false);
-//				Condition.sleep(Random.nextInt(10, 20));
-//			}
-
 			final MouseMovement movement = new MouseMovement(position, valid);
 			if (ctx.input.move(movement)) {
 				return ctx.menu.click(f);
@@ -219,7 +211,7 @@ public abstract class Interactive extends ClientAccessor implements org.powerbot
 			t.printStackTrace();
 			return false;
 		} finally {
-			if (ctx.menu.opened()) {
+			if (!Condition.wait(() -> !ctx.menu.opened(), 100, 10)) {
 				ctx.menu.close();
 			}
 		}

@@ -67,7 +67,7 @@ public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBox
 			return true;
 		}
 		final boolean interacted;
-		if (hotkey) {
+		if (hotkey && !ctx.client().isMobile()) {
 			interacted = ctx.input.send("{VK_ESCAPE}");
 		} else {
 			interacted = ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, 1).component(Constants.DEPOSITBOX_CLOSE).interact("Close");

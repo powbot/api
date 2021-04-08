@@ -63,6 +63,10 @@ public interface Modelable {
 	 * @return model
 	 */
 	default Model model() {
+		if(ctx().client().isMobile()) {
+			return null;
+		}
+
 		IRenderable[] renderables = renderables();
 		if (renderables == null) {
 			return null;
@@ -74,7 +78,7 @@ public interface Modelable {
 			int orientation = orientations != null && orientations.length > i ? orientations[i] : 0;
 
 			try {
-				if (renderable == null) {
+				if (renderable == null ) {
 					continue;
 				}
 

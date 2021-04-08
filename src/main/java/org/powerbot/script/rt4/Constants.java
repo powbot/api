@@ -39,6 +39,7 @@ public final class Constants {
 	public static final int LOGIN_STATE_WELCOME = getInt("LOGIN_STATE_WELCOME");
 	public static final int LOGIN_STATE_PVP_WARNING = getInt("LOGIN_STATE_PVP_WARNING");
 	public static final int LOGIN_STATE_ENTER_CREDENTIALS = getInt("LOGIN_STATE_ENTER_CREDENTIALS");
+	public static final int CLIENT_STATE_MOBILE_PLAY_NOW = getInt("CLIENT_STATE_MOBILE_PLAY_NOW");
 	public static final int LOGIN_STATE_DISCONNECTED = getInt("LOGIN_STATE_DISCONNECTED");
 
 	public static final int BANK_WIDGET = getInt("BANK_WIDGET");
@@ -222,6 +223,13 @@ public final class Constants {
 	//Textures of "X" close button
 	public static final int[] CLOSE_BUTTON_TEXTURES = {831, 535, 537, 539, 541};
 
+	public static final int MOBILE_VIEWPORT_WIDGET_ID = getInt("MOBILE_VIEWPORT_WIDGET_ID");
+	public static final int MOBILE_VIEWPORT_COMPONENT_ID = getInt("MOBILE_VIEWPORT_COMPONENT_ID");
+	public static final int MOBILE_MAP_AND_ORBS_WIDGET_ID = getInt("MOBILE_MAP_AND_ORBS_WIDGET_ID");
+	public static final int MOBILE_MAP_AND_ORBS_COMPONENT_ID = getInt("MOBILE_MAP_AND_ORBS_COMPONENT_ID");
+	public static final int MOBILE_TAB_WINDOW_WIDGET_ID = getInt("MOBILE_TAB_WINDOW_WIDGET_ID");
+	public static final int MOBILE_TAB_WINDOW_COMPONENT_ID = getInt("MOBILE_TAB_WINDOW_COMPONENT_ID");
+
 	public static final int GRAND_EXCHANGE_CREATE_OFFER_COMPONENT = getInt("GRAND_EXCHANGE_CREATE_OFFER_COMPONENT");
 	public static final int GRAND_EXCHANGE_INVENTORY_WIDGET_ID = getInt("GRAND_EXCHANGE_INVENTORY_WIDGET_ID");
 	public static final int GRAND_EXCHANGE_WIDGET_ID = getInt("GRAND_EXCHANGE_WIDGET_ID");
@@ -271,7 +279,6 @@ public final class Constants {
 	public static final int GRAND_EXCHANGE_CREATE_OFFER_ITEM = getInt("GRAND_EXCHANGE_CREATE_OFFER_ITEM");
 	public static final int GRAND_EXCHANGE_INVENTORY_COMPONENT = getInt("GRAND_EXCHANGE_INVENTORY_COMPONENT");
 
-
 	// Store
 	public static final int STORE_WIDGET_ID = getInt("STORE_WIDGET_ID");
 	public static final int STORE_CLOSE_COMPONENT_ID = getInt("STORE_CLOSE_COMPONENT_ID");
@@ -284,4 +291,9 @@ public final class Constants {
 	public static final int STORE_QUANTITY_FIFTY_COMPONENT_ID = getInt("STORE_QUANTITY_FIFTY_COMPONENT_ID");
 	public static final int STORE_ITEMS_COMPONENT_ID = getInt("STORE_ITEMS_COMPONENT_ID");
 
+	// Mobile
+	public static final int MOUSE_FUNCTION_VARPBIT = getInt("MOUSE_FUNCTION_VARPBIT");
+	public static final int MOUSE_SINGLE_TAP_VARPBIT = getInt("MOUSE_SINGLE_TAP_VARPBIT");
+
+	public static final int MOUSE_TOGGLE_WIDGET_COMPONENT = getInt("MOUSE_TOGGLE_WIDGET_COMPONENT");
 }

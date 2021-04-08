@@ -24,7 +24,7 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 	/**
 	 * A representation of an item which is currently on the floor of the game.
 	 *
-	 * @param ctx The ClientContext
+	 * @param ctx  The ClientContext
 	 * @param tile The tile the item is located on
 	 * @param node The ItemNode
 	 */
@@ -106,24 +106,29 @@ public class GroundItem extends GenericItem implements Nameable, InteractiveEnti
 		if (c == null || node == null) {
 			return false;
 		}
-		final INodeDeque[][][] nd = c.getGroundItems();
-		if (nd != null) {
-			final int f = c.getFloor();
-			if (f < 0 || f >= nd.length || nd[f] == null) {
-				return false;
+
+		if (!c.isMobile()) {
+			final INodeDeque[][][] nd = c.getGroundItems();
+			if (nd != null) {
+				final int f = c.getFloor();
+				if (f < 0 || f >= nd.length || nd[f] == null) {
+					return false;
+				}
+				final Tile t = tile.tile().derive(-c.getOffsetX(), -c.getOffsetY());
+				if (t.x() < 0 || t.y() < 0 || t.x() >= nd[f].length) {
+					return false;
+				}
+				final INodeDeque[] nd2 = nd[f][t.x()];
+				if (nd2 == null || t.y() >= nd2.length) {
+					return false;
+				}
+				final INodeDeque d = nd2[t.y()];
+				return d != null && NodeQueue.get(d, IItemNode.class).contains(node);
 			}
-			final Tile t = tile.tile().derive(-c.getOffsetX(), -c.getOffsetY());
-			if (t.x() < 0 || t.y() < 0 || t.x() >= nd[f].length) {
-				return false;
-			}
-			final INodeDeque[] nd2 = nd[f][t.x()];
-			if (nd2 == null || t.y() >= nd2.length) {
-				return false;
-			}
-			final INodeDeque d = nd2[t.y()];
-			return d != null && NodeQueue.get(d, IItemNode.class).contains(node);
+			return false;
+		} else {
+			return ctx.groundItems.select(0).get().contains(this);
 		}
-		return false;
 	}
 
 	@Override

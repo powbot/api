@@ -37,16 +37,22 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 	}
 
 	public boolean chatting() {
-		if (ctx.widgets.component(Constants.CHAT_WIDGET, 0).valid()) {
-			return true;
+		return chatComponent() != Component.NIL;
+	}
+
+	public Component chatComponent() {
+		Component component = ctx.widgets.component(Constants.CHAT_WIDGET, 0);
+		if (component.valid()) {
+			return component;
 		}
 		for (final int[] arr : Constants.CHAT_CONTINUES) {
-			if (ctx.widgets.component(arr[0], 0).valid()) {
-				return true;
+			component = ctx.widgets.component(arr[0], 0);
+			if (component.valid()) {
+				return component;
 			}
 		}
 
-		return false;
+		return Component.NIL;
 	}
 
 
@@ -91,7 +97,7 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 
 	private Component getContinue() {
 		for (final int[] a : Constants.CHAT_CONTINUES) {
-			final Component c = ctx.components.select(a.length > 2, a[0]).textContains("Click here to continue").poll();
+			final Component c = ctx.components.select(a.length > 2, a[0]).textContains(" here to continue").poll();
 			if (!c.valid()) {
 				continue;
 			}

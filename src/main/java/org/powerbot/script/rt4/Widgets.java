@@ -263,7 +263,7 @@ public class Widgets extends IdQuery<Widget> implements Streamable<WidgetStream>
 		if (closeButton == null || !closeButton.valid()) {
 			return true;
 		}
-		return (hotkey ? ctx.input.send("{VK_ESCAPE}") : closeButton.click()) && Condition.wait(new Condition.Check() {
+		return (!ctx.client().isMobile() && hotkey ? ctx.input.send("{VK_ESCAPE}") : closeButton.click()) && Condition.wait(new Condition.Check() {
 			@Override
 			public boolean poll() {
 				return !closeButton.valid();

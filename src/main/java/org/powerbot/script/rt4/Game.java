@@ -5,9 +5,11 @@ import org.powerbot.bot.rt4.client.extended.IMobileClient;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Tile;
 
-import java.applet.Applet;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.powerbot.script.rt4.Constants.*;
 
@@ -128,7 +130,7 @@ public class Game extends ClientAccessor {
 	}
 
 	private int openedTabIndexOffset(final Tab tab) {
-		if (resizable() && bottomLineTabs()) {
+		if (!ctx.client().isMobile() && resizable() && bottomLineTabs()) {
 			switch (tab) {
 				case LOGOUT:
 					return 1;
@@ -283,6 +285,10 @@ public class Game extends ClientAccessor {
 	 * @return {@code true} if it is resizeable, {@code false} otherwise.
 	 */
 	public boolean resizable() {
+		if (ctx.client().isMobile()) {
+			return false;
+		}
+
 		if (ctx.input.inputBounds().width == 765 && ctx.input.inputBounds().height == 503) {
 			return false;
 		}
@@ -310,6 +316,10 @@ public class Game extends ClientAccessor {
 		return pointInViewport(x, y, resizable());
 	}
 
+	public Component mobileViewport() {
+		return ctx.widgets.component(MOBILE_VIEWPORT_WIDGET_ID, MOBILE_VIEWPORT_COMPONENT_ID);
+	}
+
 	/**
 	 * Whether or not the 2-dimension point is within the viewport of the applet.
 	 *
@@ -320,7 +330,22 @@ public class Game extends ClientAccessor {
 	 */
 	public boolean pointInViewport(final int x, final int y, final boolean resizable) {
 		if (ctx.client().isMobile()) {
-			return true;
+			final Component minimapAndOrbs = ctx.widgets.component(MOBILE_MAP_AND_ORBS_WIDGET_ID, MOBILE_MAP_AND_ORBS_COMPONENT_ID);
+			if (minimapAndOrbs.contains(new Point(x, y))) {
+				return false;
+			}
+			if (tab() != Tab.NONE) {
+				final Component tabWindow = ctx.widgets.component(MOBILE_TAB_WINDOW_WIDGET_ID, MOBILE_TAB_WINDOW_COMPONENT_ID);
+				if (tabWindow.contains(new Point(x, y))) {
+					return false;
+				}
+			}
+			final Component chatComponent = ctx.chat.chatComponent();
+			if (chatComponent.valid() && chatComponent.contains(new Point(x, y))) {
+				return false;
+			}
+
+			return mobileViewport().contains(new Point(x, y));
 		} else if (resizable) {
 			final Dimension d = dimensions();
 			return x >= 0 && y >= 0 && (x > 520 || y <= d.height - 170) &&
@@ -376,6 +401,7 @@ public class Game extends ClientAccessor {
 		if (client == null) {
 			return 0;
 		}
+
 		int floor = client.getFloor();
 		int x = relativeX >> 7;
 		int y = relativeZ >> 7;
@@ -383,6 +409,11 @@ public class Game extends ClientAccessor {
 			floor < 0 || floor > 3) {
 			return 0;
 		}
+
+		if (client.isMobile()) {
+			return ((IMobileClient) client).getTileHeight(floor, x, y);
+		}
+
 		final byte[][][] meta = client.getLandscapeMeta();
 		final int[][][] heights = client.getTileHeights();
 		if (meta == null) {
@@ -416,7 +447,7 @@ public class Game extends ClientAccessor {
 		}
 
 		return ctx.bot().getMobileClient()
-			.map(it -> it.worldToScreen(relativeX, relativeZ, h))
+			.map(it -> it.worldToScreen(relativeX, relativeZ, h, false))
 			.orElseGet(() -> worldToScreen(relativeX, relativeZ, h, resizable()));
 	}
 
@@ -440,7 +471,9 @@ public class Game extends ClientAccessor {
 	 * @return The 2-dimensional point on screen.
 	 */
 	public Point worldToScreen(final int relativeX, final int relativeY, final int relativeZ, final int h) {
-		return worldToScreen(relativeX, relativeY, relativeZ, h, resizable());
+		return ctx.bot().getMobileClient()
+			.map(it -> it.worldToScreen(relativeX, relativeZ, relativeY, true))
+			.orElseGet(() -> worldToScreen(relativeX, relativeY, relativeZ, h, resizable()));
 	}
 
 	/**
@@ -483,8 +516,8 @@ public class Game extends ClientAccessor {
 			int mx = 256, my = 167;
 			if (resizable) {
 				final Dimension d = dimensions();
-				mx = d.width / 2;
-				my = d.height / 2;
+				mx = ctx.client().getClientWidth() / 2;
+				my = ctx.client().getClientHeight() / 2;
 			}
 			final int proj = client.getTileSize();
 			return new Point(
@@ -517,6 +550,104 @@ public class Game extends ClientAccessor {
 			}
 		}
 		return new Component(ctx, i, -1);
+	}
+
+	/***
+	 *
+	 * 	Sets the mouse toggle button to return to expected clicking for mobile.
+	 * @return true if it in expected state.
+	 *
+	 * @param enabled Expected state you want for the toggle
+	 * @return true if in expected state.
+	 */
+	private boolean setMouseActionToggled(boolean enabled) {
+		if (!ctx.client().isMobile()) {
+			return false;
+		}
+
+		if (toggleMouseAction() == enabled) {
+			return true;
+		}
+
+		Component component = getMouseToggleComponent();
+		if (!component.valid()) {
+			return false;
+		}
+
+		if (component.interact("Toggle")) {
+			return Condition.wait(() -> toggleMouseAction() == enabled, 100, 10);
+		}
+		return false;
+	}
+
+	private boolean toggleMouseAction() {
+		MouseToggleAction toggle = getMouseToggle();
+		switch (toggle) {
+			default:
+				return false;
+			case SINGLETAP:
+				return singleTapEnabled();
+			case DROP:
+				return ctx.inventory.shiftDroppingEnabled();
+			case KEYBOARD:
+				// There is no way to check if android keyboard is visible
+				return true;
+		}
+	}
+
+	/***
+	 * 	Returns the component on the side of the screen which lets the user toggle enabled/disabled.
+	 * @return The component of the toggle button.
+	 */
+	private Component getMouseToggleComponent() {
+		return ctx.widgets.component(601, MOUSE_TOGGLE_WIDGET_COMPONENT);
+	}
+
+	/***
+	 *	Checks if single tap is enabled
+	 * @return true if enabled
+	 */
+	public boolean singleTapEnabled() {
+		return ctx.varpbits.varpbit(MOUSE_SINGLE_TAP_VARPBIT) == 1;
+	}
+
+	/***
+	 * 	Gets the mouse toggle state for mobile.
+	 * @return The type of mouse toggle set.
+	 */
+	public MouseToggleAction getMouseToggle() {
+		if (!ctx.client().isMobile()) {
+			return MouseToggleAction.DISABLED;
+		}
+		int mouseToggle = ctx.varpbits.varpbit(MOUSE_FUNCTION_VARPBIT, 20, 0x3);
+		return MouseToggleAction.fromInt(mouseToggle);
+	}
+
+	/***
+	 * 	The current set button of the mouse toggle button.
+	 */
+	public enum MouseToggleAction {
+		DISABLED(0),
+		DROP(1),
+		SINGLETAP(2),
+		KEYBOARD(3);
+
+		private static Map<Integer, MouseToggleAction> map =
+			Arrays.stream(MouseToggleAction.values()).collect(Collectors.toMap(MouseToggleAction::getValue, Function.identity()));
+
+		private int value;
+
+		MouseToggleAction(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+
+		public static MouseToggleAction fromInt(final int id) {
+			return map.getOrDefault(id, DISABLED);
+		}
 	}
 
 	/**

@@ -147,18 +147,30 @@ public class Menu extends ClientAccessor {
 	 * @param click  Whether or not to left-click.
 	 * @return {@code true} if the mouse has successfully clicked within the bounds of the {@link MenuCommand}
 	 */
-	private boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
+	public boolean click(final Filter<? super MenuCommand> filter, final boolean click) {
 		final IClient client = ctx.client();
 		if (client == null) {
 			return false;
 		}
 
+
 		if (ctx.client().isMobile() && !ctx.client().isMenuOpen()) {
-			// TODO: set tap to click to on
-			if (!ctx.input.click(true)) return false;
+
+			if (!ctx.input.click(true)) {
+				return false;
+			}
+
+			if (!Condition.wait(() -> ctx.client().isMenuOpen(), 10, 100)) {
+				System.out.println("Menu not opened within 1000ms");
+				return false;
+			}
 		}
 
-		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 60)) {
+
+		if (!Condition.wait(() -> indexOf(filter) != -1, 10, 100)) {
+			if (opened()) {
+				close();
+			}
 			return false;
 		}
 
@@ -177,15 +189,21 @@ public class Menu extends ClientAccessor {
 			return false;
 		}
 
-		final int headerOffset = ctx.client().isMobile() ? 29 : 19;
+		final int headerOffset = ctx.client().isMobile() ? 27 : 19;
 		final int itemOffset = ctx.client().isMobile() ? 24 : 15;
 
-		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + headerOffset + slot * itemOffset, client.getMenuWidth(), itemOffset);
+
+		final Rectangle rectangle = new Rectangle(client.getMenuX(), client.getMenuY() + headerOffset + (slot * itemOffset), client.getMenuWidth(), itemOffset);
 		Condition.sleep(Random.hicks(slot));
 		if (!ctx.input.move(
-			Random.nextInt(rectangle.x, rectangle.x + rectangle.width),
-			Random.nextInt(rectangle.y, rectangle.y + rectangle.height)) || !client.isMenuOpen()) {
+			Random.nextInt(rectangle.x + 10, rectangle.x + rectangle.width - 10),
+			Random.nextInt(rectangle.y + 10, rectangle.y + rectangle.height - 10)) || !client.isMenuOpen()) {
 			return false;
+		}
+
+		if (ctx.client().isMobile()) {
+			final Point scaled = ctx.input.scale(rectangle.getLocation());
+			rectangle.setLocation(scaled);
 		}
 		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
 	}
