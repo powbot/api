@@ -13,6 +13,7 @@ import org.powerbot.script.action.ActionEmitter;
 public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 	public final Bank bank;
 	public final GrandExchange grandExchange;
+	public final Store store;
 	public final CollectionBox collectionBox;
 	public final Camera camera;
 	public final Chat chat;
@@ -44,6 +45,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 		super(bot);
 		bank = new Bank(this);
 		grandExchange = new GrandExchange(this);
+		store = new Store(this);
 		collectionBox = new CollectionBox(this);
 		camera = new Camera(this);
 		chat = new Chat(this);
@@ -79,6 +81,7 @@ public class ClientContext extends org.powerbot.script.ClientContext<IClient> {
 
 		bank = ctx.bank;
 		grandExchange = ctx.grandExchange;
+		store = ctx.store;
 		collectionBox = ctx.collectionBox;
 		camera = ctx.camera;
 		chat = ctx.chat;
