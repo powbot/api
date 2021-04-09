@@ -86,7 +86,7 @@ public class Game extends ClientAccessor {
 		hotkey = hotkey && !ctx.client().isMobile();
 
 		final Keybind keybind;
-		final boolean interacteIMobileClientd;
+		final boolean interacted;
 		final String key;
 		if (hotkey && (keybind = Keybind.keybind(tab)) != Keybind.NONE && !(key = keybind.key(ctx)).equals("")) {
 			interacted = ctx.input.send(key);
