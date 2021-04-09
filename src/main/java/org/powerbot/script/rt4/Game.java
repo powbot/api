@@ -79,12 +79,14 @@ public class Game extends ClientAccessor {
 	 * @param hotkey whether or not to use hotkeys to open the tab
 	 * @return {@code true} if the tab is open, {@code false} otherwise.
 	 */
-	public boolean tab(final Tab tab, final boolean hotkey) {
+	public boolean tab(final Tab tab, boolean hotkey) {
 		if (tab == tab()) {
 			return true;
 		}
+		hotkey = hotkey && !ctx.client().isMobile();
+
 		final Keybind keybind;
-		final boolean interacted;
+		final boolean interacteIMobileClientd;
 		final String key;
 		if (hotkey && (keybind = Keybind.keybind(tab)) != Keybind.NONE && !(key = keybind.key(ctx)).equals("")) {
 			interacted = ctx.input.send(key);

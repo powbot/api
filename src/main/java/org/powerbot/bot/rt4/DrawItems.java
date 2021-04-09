@@ -37,7 +37,7 @@ public class DrawItems extends ClientAccessor implements PaintListener {
 			render.setColor(Color.green);
 			final Point p = item.centerPoint();
 			p.translate(-21, -18);
-			render.drawString(item.id() + "", p.x, p.y + 36);
+			render.drawString(String.valueOf(item.id()), p.x, p.y + 36);
 		}
 	}
 }

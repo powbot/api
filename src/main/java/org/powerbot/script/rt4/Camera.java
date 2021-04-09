@@ -93,26 +93,31 @@ public class Camera extends ClientAccessor {
 		if (percent == pitch()) {
 			return true;
 		}
-		final boolean up = pitch() < percent;
-		ctx.input.send(up ? "{VK_UP down}" : "{VK_DOWN down}");
-		for (; ; ) {
-			final int tp = pitch();
-			if (!Condition.wait(new Condition.Check() {
-				@Override
-				public boolean poll() {
-					return pitch() != tp;
+
+		if (ctx.client().isMobile()) {
+			turnTo(yaw(), percent + 10);
+		} else {
+			final boolean up = pitch() < percent;
+			ctx.input.send(up ? "{VK_UP down}" : "{VK_DOWN down}");
+			for (; ; ) {
+				final int tp = pitch();
+				if (!Condition.wait(new Condition.Check() {
+					@Override
+					public boolean poll() {
+						return pitch() != tp;
+					}
+				}, 10, 10)) {
+					break;
 				}
-			}, 10, 10)) {
-				break;
+				final int p = pitch();
+				if (up && p >= percent) {
+					break;
+				} else if (!up && p <= percent) {
+					break;
+				}
 			}
-			final int p = pitch();
-			if (up && p >= percent) {
-				break;
-			} else if (!up && p <= percent) {
-				break;
-			}
+			ctx.input.send(up ? "{VK_UP up}" : "{VK_DOWN up}");
 		}
-		ctx.input.send(up ? "{VK_UP up}" : "{VK_DOWN up}");
 		return Math.abs(percent - pitch()) <= 8;
 	}
 
@@ -284,6 +289,7 @@ public class Camera extends ClientAccessor {
 		input.move(new Point(randX, randY));
 		input.drag(new Point(randX + vector.x, randY + vector.y), MouseEvent.BUTTON2);
 	}
+
 	/**
 	 * Turns to the specified {@link org.powerbot.script.Locatable}.
 	 *

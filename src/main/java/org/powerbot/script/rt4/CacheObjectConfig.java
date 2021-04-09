@@ -67,6 +67,38 @@ public class CacheObjectConfig {
 		this.index = index;
 	}
 
+	public CacheObjectConfig(int index, String name, int xSize, int[] materialPointers, int ySize, int[] meshId, int[] meshType, boolean swapYZ, int yScale, int xScale, int zScale, int xTranslate, int yTranslate, int stageOperationId, int stageIndex, int zTranslate, short[] originalColors, short[] modifiedColors, int unwalkableFlag, boolean blocksProjectiles, int actionsAvailable, int adjustToTerrain, int animationId, boolean nonFlatShading, int brightness, int contrast, int minimapIcon, int mapSceneId, boolean solid) {
+		this.index = index;
+		this.name = name;
+		this.xSize = xSize;
+		this.materialPointers = materialPointers;
+		this.ySize = ySize;
+		this.meshId = meshId;
+		this.meshType = meshType;
+		this.swapYZ = swapYZ;
+		this.yScale = yScale;
+		this.xScale = xScale;
+		this.zScale = zScale;
+		this.xTranslate = xTranslate;
+		this.yTranslate = yTranslate;
+		this.stageOperationId = stageOperationId;
+		this.stageIndex = stageIndex;
+		this.zTranslate = zTranslate;
+		this.originalColors = originalColors;
+		this.modifiedColors = modifiedColors;
+		this.unwalkableFlag = unwalkableFlag;
+		this.blocksProjectiles = blocksProjectiles;
+		this.actionsAvailable = actionsAvailable;
+		this.adjustToTerrain = adjustToTerrain;
+		this.animationId = animationId;
+		this.nonFlatShading = nonFlatShading;
+		this.brightness = brightness;
+		this.contrast = contrast;
+		this.minimapIcon = minimapIcon;
+		this.mapSceneId = mapSceneId;
+		this.solid = solid;
+	}
+
 	@Override
 	public String toString() {
 		return "CacheObjectConfig{" +

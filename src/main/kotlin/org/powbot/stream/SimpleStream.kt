@@ -381,6 +381,10 @@ abstract class SimpleStream<T, S : SimpleStream<T, S>>(override val ctx: ClientC
         return this.stream.count() > 0
     }
 
+    fun list(): List<T> {
+        return this.stream.collect(Collectors.toList())
+    }
+
     private fun <T> shuffler(): Comparator<T> {
         val uniqueIds: MutableMap<T, UUID> = IdentityHashMap()
         return Comparator.comparing { e ->

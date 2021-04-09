@@ -79,6 +79,59 @@ public class CacheItemConfig implements Validatable {
 		this.index = index;
 	}
 
+	public CacheItemConfig(int index, String name, String shiftAction, boolean tradeable, boolean stackable, boolean members, int team, int value, int modelId, int modelZoom, int modelOffsetX, int modelOffsetY, int modelRotationX, int modelRotationY, int modelRotationZ, short[] originalColors, short[] modifiedColors, int cosmeticTemplateId, int cosmeticId, int certTemplateId, int certId, int stackId, int stackAmount, int shiftActionIndex, boolean cosmetic, boolean noted, String[] actions, String[] groundActions, String[] equipActions, int equippedModelMale1, int equippedModelMaleOffsetY, int equippedModelMale2, int equippedModelMale3, int equippedModelMaleDialogue1, int equippedModelMaleDialogue2, int equippedModelFemale1, int equippedModelFemaleOffsetY, int equippedModelFemale2, int equippedModelFemale3, int equippedModelFemaleDialogue1, int equippedModelFemaleDialogue2, short[] originalModelTexture, short[] modifiedModelTexture, int modelScaleX, int modelScaleY, int modelScaleZ, byte lightIntensity, byte lightMag, int placeholderId, int placeholderTemplateId) {
+		this.index = index;
+		this.name = name;
+		this.shiftAction = shiftAction;
+		this.tradeable = tradeable;
+		this.stackable = stackable;
+		this.members = members;
+		this.team = team;
+		this.value = value;
+		this.modelId = modelId;
+		this.modelZoom = modelZoom;
+		this.modelOffsetX = modelOffsetX;
+		this.modelOffsetY = modelOffsetY;
+		this.modelRotationX = modelRotationX;
+		this.modelRotationY = modelRotationY;
+		this.modelRotationZ = modelRotationZ;
+		this.originalColors = originalColors;
+		this.modifiedColors = modifiedColors;
+		this.cosmeticTemplateId = cosmeticTemplateId;
+		this.cosmeticId = cosmeticId;
+		this.certTemplateId = certTemplateId;
+		this.certId = certId;
+		this.stackId = stackId;
+		this.stackAmount = stackAmount;
+		this.shiftActionIndex = shiftActionIndex;
+		this.cosmetic = cosmetic;
+		this.noted = noted;
+		this.actions = actions;
+		this.groundActions = groundActions;
+		this.equipActions = equipActions;
+		this.equippedModelMale1 = equippedModelMale1;
+		this.equippedModelMaleOffsetY = equippedModelMaleOffsetY;
+		this.equippedModelMale2 = equippedModelMale2;
+		this.equippedModelMale3 = equippedModelMale3;
+		this.equippedModelMaleDialogue1 = equippedModelMaleDialogue1;
+		this.equippedModelMaleDialogue2 = equippedModelMaleDialogue2;
+		this.equippedModelFemale1 = equippedModelFemale1;
+		this.equippedModelFemaleOffsetY = equippedModelFemaleOffsetY;
+		this.equippedModelFemale2 = equippedModelFemale2;
+		this.equippedModelFemale3 = equippedModelFemale3;
+		this.equippedModelFemaleDialogue1 = equippedModelFemaleDialogue1;
+		this.equippedModelFemaleDialogue2 = equippedModelFemaleDialogue2;
+		this.originalModelTexture = originalModelTexture;
+		this.modifiedModelTexture = modifiedModelTexture;
+		this.modelScaleX = modelScaleX;
+		this.modelScaleY = modelScaleY;
+		this.modelScaleZ = modelScaleZ;
+		this.lightIntensity = lightIntensity;
+		this.lightMag = lightMag;
+		this.placeholderId = placeholderId;
+		this.placeholderTemplateId = placeholderTemplateId;
+	}
+
 	@Override
 	public String toString() {
 		return "CacheItemConfig{" +

@@ -22,6 +22,13 @@ public class CacheVarbitConfig implements Validatable {
 		this.id = id;
 	}
 
+	public CacheVarbitConfig(int id, int configId, int startBit, int endBit) {
+		this.id = id;
+		this.configId = configId;
+		this.startBit = startBit;
+		this.endBit = endBit;
+	}
+
 	public final int id;
 	public int configId;
 	public int startBit;

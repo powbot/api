@@ -57,6 +57,36 @@ public class CacheNpcConfig {
 		this.index = index;
 	}
 
+	public CacheNpcConfig(int index, String name, int[] modelIds, int[] materialPointers, int[] additionalModels, int[][] modelOffsets, int size, int idleSequence, int turnLeftSequence, int turnRightSequence, int walkSequence, int walkBackSequence, int walkLeftSequence, int walkRightSequence, boolean visible, int level, int widthScale, int heightScale, int lightModifier, int shadowModifier, int headIconPrayer, int turnDegrees, int stageOperation, int stageIndex, boolean clickable, short[] recolorOriginal, short[] recolorTarget) {
+		this.index = index;
+		this.name = name;
+		this.modelIds = modelIds;
+		this.materialPointers = materialPointers;
+		this.additionalModels = additionalModels;
+		this.modelOffsets = modelOffsets;
+		this.size = size;
+		this.idleSequence = idleSequence;
+		this.turnLeftSequence = turnLeftSequence;
+		this.turnRightSequence = turnRightSequence;
+		this.walkSequence = walkSequence;
+		this.walkBackSequence = walkBackSequence;
+		this.walkLeftSequence = walkLeftSequence;
+		this.walkRightSequence = walkRightSequence;
+		this.visible = visible;
+		this.level = level;
+		this.widthScale = widthScale;
+		this.heightScale = heightScale;
+		this.lightModifier = lightModifier;
+		this.shadowModifier = shadowModifier;
+		this.headIconPrayer = headIconPrayer;
+		this.turnDegrees = turnDegrees;
+		this.stageOperation = stageOperation;
+		this.stageIndex = stageIndex;
+		this.clickable = clickable;
+		this.recolorOriginal = recolorOriginal;
+		this.recolorTarget = recolorTarget;
+	}
+
 	@Override
 	public String toString() {
 		return "CacheNpcConfig{" +

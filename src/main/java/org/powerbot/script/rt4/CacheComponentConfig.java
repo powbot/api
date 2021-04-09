@@ -2,6 +2,7 @@ package org.powerbot.script.rt4;
 
 import org.powerbot.bot.cache.AbstractCacheWorker;
 import org.powerbot.bot.cache.Block;
+import org.powerbot.bot.cache.CacheWorker;
 import org.powerbot.bot.cache.JagexBufferStream;
 
 import java.util.Arrays;
