@@ -200,11 +200,6 @@ public class Menu extends ClientAccessor {
 			Random.nextInt(rectangle.y + 10, rectangle.y + rectangle.height - 10)) || !client.isMenuOpen()) {
 			return false;
 		}
-
-		if (ctx.client().isMobile()) {
-			final Point scaled = ctx.input.scale(rectangle.getLocation());
-			rectangle.setLocation(scaled);
-		}
 		return client.isMenuOpen() && Condition.wait(() -> rectangle.contains(ctx.input.getLocation()), 10, 60) && (!click || ctx.input.click(true));
 	}
 

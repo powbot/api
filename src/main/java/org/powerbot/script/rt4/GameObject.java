@@ -350,6 +350,9 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int localX() {
+		if (object == null) {
+			return -1;
+		}
 		if (object.getX() != -1) {
 			return object.getX();
 		}
@@ -363,6 +366,9 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	 */
 	@Override
 	public int localY() {
+		if (object == null) {
+			return -1;
+		}
 		if (object.getZ() != -1) {
 			return object.getZ();
 		}
@@ -382,11 +388,17 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public IRenderable[] renderables() {
+		if (object == null || object.object == null) {
+			return new IRenderable[]{};
+		}
 		return object.object.getRenderables();
 	}
 
 	@Override
 	public int[] modelOrientations() {
+		if (object == null || object.object == null) {
+			return new int[]{};
+		}
 		return object.object.modelOrientations();
 	}
 
@@ -420,7 +432,7 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 	}
 
 	public int meta() {
-		return object.getMeta();
+		return object != null ? object.getMeta() : -1;
 	}
 
 	@Override
@@ -430,6 +442,9 @@ public class GameObject extends Interactive implements Nameable, InteractiveEnti
 
 	@Override
 	public long getModelCacheId() {
+		if (object == null) {
+			return -1;
+		}
 		// This id doesn't seem to be right?
 		int[] orientations = modelOrientations();
 
