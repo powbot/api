@@ -8,8 +8,8 @@ import static org.powerbot.script.rt4.Constants.STORE_QUANTITY_FIFTY_COMPONENT_I
 
 public class Store extends ClientAccessor {
 
-	private String ACTION_TRADE = "Trade";
-	private String ACTION_CLOSE = "Close";
+	private final String ACTION_TRADE = "Trade";
+	private final String ACTION_CLOSE = "Close";
 
 	public Store(ClientContext ctx) {
 		super(ctx);
@@ -25,11 +25,11 @@ public class Store extends ClientAccessor {
 
 	/**
 	 *  Opens the store by talking to a nearby NPC
-	 * @param npcName Name of NPC to open the store
+	 * @param npcNames Name of NPC to open the store
 	 * @return  Returns true if opened
 	 */
-	public boolean open(String npcName) {
-		Npc npc = ctx.npcs.toStream().name(npcName).action(ACTION_TRADE).nearest().first();
+	public boolean open(String... npcNames) {
+		Npc npc = ctx.npcs.toStream().name(npcNames).action(ACTION_TRADE).nearest().first();
 
 		if (npc.valid() && npc.interact(ACTION_TRADE)) {
 			return Condition.wait(this::opened);
