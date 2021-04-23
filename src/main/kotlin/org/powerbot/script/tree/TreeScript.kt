@@ -22,6 +22,8 @@ abstract class TreeScript : PollingScript<ClientContext>() {
 
     val ctx: ClientContext get() = super.ctx
 
+    var lastLeaf: Leaf<*> = SimpleLeaf(this, "Init") {}
+
     override fun poll() {
         rootComponent.execute()
         sleep(Random.nextInt(100, 200))
@@ -42,13 +44,18 @@ class TestBranch(override val script: TestScript) : Branch<TestScript>(script) {
     override val successComponent: TreeComponent<TestScript> =
         SimpleLeaf(script, "Deposit Inventory") { ctx.bank.depositInventory() }
 
-    override val failedComponent: TreeComponent<TestScript> =
-        SimpleLeaf(script, "Open Bank") { ctx.bank.open() }
+    override val failedComponent: TreeComponent<TestScript> = TestLeaf(script)
 
     override val name: String = "TestBranch - Is Bank open"
 
     override fun validate(): Boolean {
         return ctx.bank.opened()
+    }
+}
+
+class TestLeaf(override val script: TestScript) : Leaf<TestScript>(script, "Opening Bank") {
+    override fun execute() {
+        ctx.bank.open()
     }
 }
 
