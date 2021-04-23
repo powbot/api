@@ -32,6 +32,7 @@ public class Movement extends ClientAccessor {
 
 		/**
 		 * Set whether or not to force using web over local walking
+		 *
 		 * @param forceWeb boolean
 		 */
 		public Builder setForceWeb(boolean forceWeb) {
@@ -41,6 +42,7 @@ public class Movement extends ClientAccessor {
 
 		/**
 		 * Set a global predicate, walking will continue as long as the predicate returns false
+		 *
 		 * @param walkUntil callable
 		 */
 		public Builder setWalkUntil(Callable<Boolean> walkUntil) {
@@ -52,6 +54,7 @@ public class Movement extends ClientAccessor {
 		 * Set the min run energy bound, a random number between runMin and runMax will be calculated.
 		 * Must be less than runMax if not it will be set to runMax - 1
 		 * If runMax is not provided
+		 *
 		 * @param runMin int
 		 */
 		public Builder setRunMin(int runMin) {
@@ -69,6 +72,7 @@ public class Movement extends ClientAccessor {
 		 * Set the max run energy bound, a random number between runMin and runMax will be calculated.
 		 * Must be greater than runMin if not it will be set to runMin + 1
 		 * If runMax is not provided
+		 *
 		 * @param runMax int
 		 */
 		public Builder setRunMax(int runMax) {
@@ -81,6 +85,7 @@ public class Movement extends ClientAccessor {
 
 		/**
 		 * Set whether to force a completed quests list refresh
+		 *
 		 * @param refreshQuests boolean
 		 */
 		public Builder setRefreshQuests(boolean refreshQuests) {
@@ -148,6 +153,15 @@ public class Movement extends ClientAccessor {
 	}
 
 	/**
+	 * Returns whether or not the player is moving by looking at the current destination
+	 *
+	 * @return true if player currently has a destination.
+	 */
+	public boolean moving() {
+		return destination() != Tile.NIL;
+	}
+
+	/**
 	 * Attempts to use the mini-map to step towards the {@link Locatable}.
 	 *
 	 * @param locatable The location of where to step towards.
@@ -160,7 +174,7 @@ public class Movement extends ClientAccessor {
 	/**
 	 * Attempts to use the mini-map to step towards the {@link Locatable}.
 	 *
-	 * @param locatable The location of where to step towards.
+	 * @param locatable   The location of where to step towards.
 	 * @param minDistance - The minimum distance allowed between the player and locatable while still in motion before returning
 	 * @return {@code true} if successfully clicked the mini-map, {@code false} otherwise.
 	 */
@@ -181,8 +195,8 @@ public class Movement extends ClientAccessor {
 		if (ctx.input.move(movement)) {
 			ctx.input.click(true);
 			return Condition.wait(() ->
-				ClientContext.ctx().movement.destination() != Tile.NIL
-					|| ClientContext.ctx().players.local().tile().distanceTo(locatable) <= minDistance
+					ClientContext.ctx().movement.destination() != Tile.NIL
+						|| ClientContext.ctx().players.local().tile().distanceTo(locatable) <= minDistance
 				, 500, 5);
 		}
 		return false;
@@ -360,7 +374,7 @@ public class Movement extends ClientAccessor {
 	/**
 	 * Uses web walking to walk to a destination
 	 *
-	 * @param locatable the destination tile
+	 * @param locatable     the destination tile
 	 * @param refreshQuests set to true to force refreshing completed quests
 	 * @return true if player walked to the destination tile
 	 */
@@ -374,9 +388,9 @@ public class Movement extends ClientAccessor {
 	/**
 	 * Uses web walking to walk to a destination
 	 *
-	 * @param locatable the destination tile
+	 * @param locatable     the destination tile
 	 * @param refreshQuests set to true to force refreshing completed quests
-	 * @param forceWeb set to true to force using web and don't try walking using local walking first
+	 * @param forceWeb      set to true to force using web and don't try walking using local walking first
 	 * @return true if player walked to the destination tile
 	 */
 	public WebWalkingResult moveTo(final Locatable locatable, final boolean refreshQuests, final boolean forceWeb) {
@@ -388,6 +402,7 @@ public class Movement extends ClientAccessor {
 
 	/**
 	 * Constructs a web walking builder
+	 *
 	 * @param locatable the destination tile
 	 */
 	public Builder builder(final Locatable locatable) {
