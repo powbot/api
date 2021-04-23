@@ -16,7 +16,11 @@ class GameObjectStream(ctx: ClientContext, stream: Stream<GameObject>) :
         return GameObject.NIL
     }
 
-    fun color(vararg ids: Int): WrappedStream<GameObject, GameObjectStream> {
+    fun originalColor(vararg ids: Int): WrappedStream<GameObject, GameObjectStream> {
         return filter { ids.any { id -> id.toShort() in it.originalColors() } }
+    }
+
+    fun modifiedColor(vararg ids: Int): WrappedStream<GameObject, GameObjectStream> {
+        return filter { ids.any { id -> id.toShort() in it.modifiedColors() } }
     }
 }
