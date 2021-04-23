@@ -4,6 +4,7 @@ abstract class Leaf<S : TreeScript>(override val script: S, override val name: S
 
 class SimpleLeaf<S : TreeScript>(script: S, name: String, val action: () -> Unit) :
     Leaf<S>(script, name) {
+    
     override fun execute() {
         action()
     }
