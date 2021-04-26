@@ -153,15 +153,6 @@ public class Movement extends ClientAccessor {
 	}
 
 	/**
-	 * Returns whether or not the player is moving by looking at the current destination
-	 *
-	 * @return true if player currently has a destination.
-	 */
-	public boolean moving() {
-		return destination() != Tile.NIL;
-	}
-
-	/**
 	 * Attempts to use the mini-map to step towards the {@link Locatable}.
 	 *
 	 * @param locatable The location of where to step towards.
