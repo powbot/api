@@ -114,7 +114,7 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 			case 3:
 				return new Tile(t.x() - 1, t.y(), t.floor());
 		}
-		return t;
+		return Tile.NIL;
 	}
 
 	/**
