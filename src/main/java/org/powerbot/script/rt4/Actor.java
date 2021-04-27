@@ -97,6 +97,27 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	}
 
 	/**
+	 * The tile to which the actor is oriented or facing
+	 *
+	 * @return the Tile to which the actor is oriented
+	 */
+	public Tile facingTile() {
+		int orientation = orientation();
+		Tile t = tile();
+		switch (orientation) {
+			case 0:
+				return new Tile(t.x(), t.y() + 1, t.floor());
+			case 1:
+				return new Tile(t.x() + 1, t.y(), t.floor());
+			case 2:
+				return new Tile(t.x(), t.y() - 1, t.floor());
+			case 3:
+				return new Tile(t.x() - 1, t.y(), t.floor());
+		}
+		return t;
+	}
+
+	/**
 	 * The current message which appears above the head of the entity.
 	 *
 	 * @return The message.
