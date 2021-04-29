@@ -202,25 +202,25 @@ object LocalPathFinder {
             && !n.blocked(flags, Flag.W_E)
             && !e.blocked(flags, Flag.W_N)
         ) {
-            neighbors = checkForDiagonal(ne, flags, this, neighbors)
+            neighbors = checkForDiagonal(ne, neighbors)
         }
         if (!current.blocked(flags, Flag.W_SE or Flag.W_S or Flag.W_E)
             && !s.blocked(flags, Flag.W_E)
             && !e.blocked(flags, Flag.W_S)
         ) {
-            neighbors = checkForDiagonal(se, flags, this, neighbors)
+            neighbors = checkForDiagonal(se, neighbors)
         }
         if (!current.blocked(flags, Flag.W_SW or Flag.W_S or Flag.W_W)
             && !s.blocked(flags, Flag.W_W)
             && !w.blocked(flags, Flag.W_S)
         ) {
-            neighbors = checkForDiagonal(sw, flags, this, neighbors)
+            neighbors = checkForDiagonal(sw, neighbors)
         }
         if (!current.blocked(flags, Flag.W_NW or Flag.W_N or Flag.W_W)
             && !n.blocked(flags, Flag.W_W)
             && !w.blocked(flags, Flag.W_N)
         ) {
-            neighbors = checkForDiagonal(nw, flags, this, neighbors)
+            neighbors = checkForDiagonal(nw, neighbors)
         }
 
         return neighbors
@@ -230,16 +230,15 @@ object LocalPathFinder {
      * If the given tile (diagonal neighbor) is not blocked, it gets added to the neighbors.
      * If it is blocked, we check if there is a door that has a diagonal rotation [Flag.Rotation.DIAGONAL]
      */
-    fun checkForDiagonal(
+    fun LocalEdge.checkForDiagonal(
         tile: Tile,
-        flags: ICollisionMap,
-        parent: LocalEdge,
-        neighbors: MutableList<LocalEdge>
+        neighbors: MutableList<LocalEdge>,
+        flags: ICollisionMap = cachedFlags
     ): MutableList<LocalEdge> {
         if (!tile.blocked(flags)) {
             neighbors.add(
                 LocalTileEdge(
-                    parent,
+                    this,
                     tile
                 )
             )
@@ -249,7 +248,7 @@ object LocalPathFinder {
                 neighbors.add(
                     LocalDoorEdge(
                         door.get(),
-                        parent,
+                        this,
                         tile
                     )
                 )
