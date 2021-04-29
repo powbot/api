@@ -87,13 +87,34 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 	}
 
 	/**
-	 * The way the entity is facing. 0 for North, 1 for East, 2 for South, 3 for West.
+	 * The way the entity is facing. 0 for South, 2 for East, 4 for North, 6 for West.
 	 *
 	 * @return The orientation.
 	 */
 	public int orientation() {
 		final IActor actor = getActor();
 		return actor != null ? actor.getOrientation() / 256 : -1;
+	}
+
+	/**
+	 * The tile to which the actor is oriented or facing
+	 *
+	 * @return the Tile to which the actor is oriented
+	 */
+	public Tile facingTile() {
+		int orientation = orientation();
+		Tile t = tile();
+		switch (orientation) {
+			case 4:
+				return new Tile(t.x(), t.y() + 1, t.floor());
+			case 6:
+				return new Tile(t.x() + 1, t.y(), t.floor());
+			case 0:
+				return new Tile(t.x(), t.y() - 1, t.floor());
+			case 2:
+				return new Tile(t.x() - 1, t.y(), t.floor());
+		}
+		return Tile.NIL;
 	}
 
 	/**
