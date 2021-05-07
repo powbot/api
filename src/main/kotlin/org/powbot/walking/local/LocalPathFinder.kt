@@ -277,7 +277,6 @@ object LocalPathFinder {
         val x = t.x()
         val y = t.y()
         val f = t.floor()
-        val cm = org.powerbot.script.rt4.ClientContext.ctx().client().collisionMaps[f]
 
         val n = Tile(x, y + 1, f)
         val e = Tile(x + 1, y, f)
@@ -291,10 +290,10 @@ object LocalPathFinder {
         val diagonal = listOf(ne, se, sw, nw)
 
         val walkableNeighbors = mutableListOf<Tile>()
-        walkableNeighbors.addAll(straight.filter { !it.blocked(cm) })
+        walkableNeighbors.addAll(straight.filter { !it.blocked(cachedFlags) })
 
         if (diagonalTiles) {
-            walkableNeighbors.addAll(diagonal.filter { !it.blocked(cm) })
+            walkableNeighbors.addAll(diagonal.filter { !it.blocked(cachedFlags) })
         }
         return walkableNeighbors
     }
