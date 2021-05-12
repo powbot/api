@@ -29,7 +29,7 @@ class LocalPath(val actions: List<LocalEdge>) {
 //        println("Cutting of at: $cutOff of $size total, ${remainder.size} left")
             val firstSpecial = remainder.firstOrNull { it.type != LocalEdgeType.WALKING }
             if (firstSpecial != null) {
-                logger.info("Found special: $firstSpecial")
+//                logger.info("Found special: $firstSpecial")
                 return firstSpecial
             } else {
                 val possibleOptions = remainder.filter { it.destination.distance() <= 13 }

@@ -10,7 +10,6 @@ import org.powerbot.bot.rt4.client.internal.ICollisionMap
 import org.powerbot.script.ClientContext
 import org.powerbot.script.Locatable
 import org.powerbot.script.Tile
-import org.powerbot.script.rt4.GameObject
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger

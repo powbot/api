@@ -62,7 +62,7 @@ class LocalDoorEdge(val door: GameObject, parent: LocalEdge, destination: Tile) 
     }
 
     override fun toString(): String {
-        return "LocalDoorEdge: ${door.name()} @ ${door.tile()}"
+        return "LocalDoorEdge(door=(${door.name()}) at=${door.tile()})"
     }
 
     companion object {

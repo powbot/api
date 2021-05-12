@@ -40,6 +40,10 @@ abstract class LocalEdge(val destination: Tile, val finalDestination: Tile) {
         }
         return cost
     }
+
+    override fun toString(): String {
+        return "LocalEdge(to=${destination})"
+    }
 }
 
 class StartEdge(startTile: Tile, finalDestination: Tile) : LocalEdge(startTile, finalDestination) {
@@ -56,5 +60,9 @@ class StartEdge(startTile: Tile, finalDestination: Tile) : LocalEdge(startTile, 
 
     override fun execute(): Boolean {
         return ClientContext.ctx().movement.step(destination)
+    }
+
+    override fun toString(): String {
+        return "StartEdge(to=${destination})"
     }
 }

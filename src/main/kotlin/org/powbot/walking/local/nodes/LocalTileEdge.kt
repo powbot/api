@@ -30,7 +30,7 @@ open class LocalTileEdge(
     }
 
     override fun toString(): String {
-        return "LocalTileEdge: $destination"
+        return "LocalTileEdge(at=$destination)"
     }
 
 }
