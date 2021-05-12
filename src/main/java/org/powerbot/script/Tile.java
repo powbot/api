@@ -134,6 +134,18 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 	}
 
 	/**
+	 * Checks if the regionTile constructed from the current Tile is within the bounds of the collisionFlags
+	 *
+	 * @return true if x and y are both < 104 (size of the collisionMap)
+	 */
+	private boolean loaded() {
+		Tile regionTile = regionTile();
+		int x = regionTile.x();
+		int y = regionTile.y();
+		return x >= 0 && x < 104 && y >= 0 && y < 104;
+	}
+
+	/**
 	 * Retrieves the collision flag for the current tile from the provided {@link ICollisionMap}.
 	 *
 	 * @param collisionMap
