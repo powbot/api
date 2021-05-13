@@ -138,7 +138,7 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 	 *
 	 * @return true if x and y are both < 104 (size of the collisionMap)
 	 */
-	private boolean loaded() {
+	public boolean loaded() {
 		Tile regionTile = regionTile();
 		int x = regionTile.x();
 		int y = regionTile.y();

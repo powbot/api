@@ -34,11 +34,17 @@ object LocalPathFinder {
         this.cachedFlags = ClientContext.ctx().client().collisionMaps[begin.floor()]
         val end = if (end.blocked(cachedFlags)) end.getWalkableNeighbor() else end
 
+        if (end == null || !end.loaded()) {
+            logger.info("Tile not loaded: $end")
+            return LocalPath(emptyList())
+        }
+
         val startAction = StartEdge(
             begin,
-            end ?: begin
+            end
         )
-        if (begin == end || end == null) {
+        if (begin == end) {
+            logger.info("Begin and end are the same begin=$begin, end=$end")
             return LocalPath(listOf(startAction))
         }
         logger.log(Level.INFO, "FIND LOCAL PATH: $begin -> $end, distance: ${begin.distanceTo(end)}")
