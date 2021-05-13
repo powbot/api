@@ -1,9 +1,9 @@
 package org.powerbot.script;
 
-import org.powbot.walking.local.Flag;
-import org.powerbot.bot.rt4.client.internal.ICollisionMap;
 import org.powerbot.script.rt4.Player;
 import org.powerbot.script.rt4.TileMatrix;
+import org.powbot.walking.local.Flag;
+import org.powerbot.bot.rt4.client.internal.ICollisionMap;
 
 import java.awt.*;
 
@@ -26,7 +26,7 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 
 	/**
 	 * Converts an integer matrix into a Tile array.
-	 *
+	 * 
 	 * @param list The integer matrix to convert from.
 	 * @return The converted Tile array.
 	 */
@@ -41,7 +41,7 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 
 	/**
 	 * The point which represents where the tile is on the x-axis.
-	 *
+	 * 
 	 * @return Where the tile lies on the x-axis.
 	 */
 	public int x() {
@@ -50,7 +50,7 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 
 	/**
 	 * The point which represents where the tile is on the y-axis.
-	 *
+	 * 
 	 * @return Where the tile lies on the y-axis.
 	 */
 	public int y() {
@@ -60,25 +60,11 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 
 	/**
 	 * The point which represents where the tile is on the z-axis.
-	 *
+	 * 
 	 * @return Where the tile lies on the z-axis.
 	 */
 	public int floor() {
 		return p.z;
-	}
-
-	/**
-	 * Calculates the euclidean distance between the Tile and the given
-	 * {@link Locatable}.
-	 *
-	 * @param l The secondary point to calculate the distance from.
-	 * @return the distance between the two points. If either points are
-	 * {@code null}, or they are on separate floors, it will return
-	 * {@link Double#POSITIVE_INFINITY}.
-	 */
-	public double distanceTo(final Locatable l) {
-		final Tile o;
-		return l == null || (o = l.tile()) == null || p.z != o.p.z || o.p.z == NIL.p.z ? Double.POSITIVE_INFINITY : p.distanceTo(o.p);
 	}
 
 	/**
@@ -91,8 +77,22 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 	}
 
 	/**
+	 * Calculates the euclidean distance between the Tile and the given
+	 * {@link Locatable}.
+	 * 
+	 * @param l The secondary point to calculate the distance from.
+	 * @return the distance between the two points. If either points are
+	 * {@code null}, or they are on separate floors, it will return
+	 * {@link Double#POSITIVE_INFINITY}.
+	 */
+	public double distanceTo(final Locatable l) {
+		final Tile o;
+		return l == null || (o = l.tile()) == null || p.z != o.p.z || o.p.z == NIL.p.z ? Double.POSITIVE_INFINITY : p.distanceTo(o.p);
+	}
+
+	/**
 	 * Calculates a derivative with the specified parameters.
-	 *
+	 * 
 	 * @param x The relative amount to shift on the x-axis.
 	 * @param y The relative amount to shift on the y-axis.
 	 * @return The derived tile from the specified values.
@@ -103,7 +103,7 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 
 	/**
 	 * Calculates a derivative with the specified parameters.
-	 *
+	 * 
 	 * @param x The relative amount to shift on the x-axis.
 	 * @param y The relative amount to shift on the y-axis.
 	 * @param z The relative amount to shift on the z-axis.
@@ -115,13 +115,14 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 
 	/**
 	 * Constructs a {@link TileMatrix} for the given Tile.
-	 *
+	 * 
 	 * @param ctx The {@link ClientContext}.
 	 * @return The constructed TileMatrix.
 	 */
 	public TileMatrix matrix(final org.powerbot.script.rt4.ClientContext ctx) {
 		return new TileMatrix(ctx, this);
 	}
+
 
 	/**
 	 * Constructs a Tile that is offset such that it can be used to get the collision map flags
@@ -131,18 +132,6 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 	private Tile regionTile() {
 		Tile offset = org.powerbot.script.rt4.ClientContext.ctx().game.mapOffset();
 		return derive(-offset.x(), -offset.y());
-	}
-
-	/**
-	 * Checks if the regionTile constructed from the current Tile is within the bounds of the collisionFlags
-	 *
-	 * @return true if x and y are both < 104 (size of the collisionMap)
-	 */
-	public boolean loaded() {
-		Tile regionTile = regionTile();
-		int x = regionTile.x();
-		int y = regionTile.y();
-		return x >= 0 && x < 104 && y >= 0 && y < 104;
 	}
 
 	/**
@@ -187,6 +176,13 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 			return false;
 		}
 		return (flag & (Flag.WATER | Flag.BLOCKED | Flag.BLOCKED2 | Flag.BLOCKED4 | blockFlag)) != 0;
+	}
+
+	public boolean loaded() {
+		Tile regionTile = regionTile();
+		int x = regionTile.x();
+		int y = regionTile.y();
+		return x >= 0 && x < 104 && y >= 0 && y < 104;
 	}
 
 	@Override
