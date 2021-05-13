@@ -180,7 +180,9 @@ public class Tile implements Locatable, Nillable<Tile>, Comparable<Tile> {
 
 	public boolean loaded() {
 		Tile regionTile = regionTile();
-		return regionTile.x() < 104 && regionTile.y() < 104;
+		int x = regionTile.x();
+		int y = regionTile.y();
+		return x >= 0 && x < 104 && y >= 0 && y < 104;
 	}
 
 	@Override
