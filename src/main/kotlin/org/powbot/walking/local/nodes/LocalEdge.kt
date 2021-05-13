@@ -55,7 +55,7 @@ class StartEdge(startTile: Tile, finalDestination: Tile) : LocalEdge(startTile, 
     override fun getCost(): Double = 1.0
 
     override fun getNeighbors(): MutableList<LocalEdge> {
-        return this.getLocalNeighbors(finalDestination)
+        return this.getLocalNeighbors()
     }
 
     override fun execute(): Boolean {

@@ -22,7 +22,7 @@ open class LocalTileEdge(
     }
 
     override fun getNeighbors(): MutableList<LocalEdge> {
-        return getLocalNeighbors(finalDestination)
+        return getLocalNeighbors()
     }
 
     override fun execute(): Boolean {
