@@ -1,6 +1,7 @@
 package org.powbot.walking.local.nodes
 
 import org.powbot.walking.local.LocalPathFinder.getLocalNeighbors
+import org.powerbot.script.Condition
 import org.powerbot.script.Tile
 import org.powerbot.script.rt4.ClientContext
 
@@ -26,7 +27,19 @@ open class LocalTileEdge(
     }
 
     override fun execute(): Boolean {
-        return ClientContext.ctx().movement.step(destination)
+        val ctx = org.powerbot.script.ClientContext.ctx()
+        if (destination.distance() <= 1) {
+            val matrix = destination.matrix(ctx)
+            return if (ctx.input.move(matrix.nextPoint())) {
+                ctx.input.click(true)
+                Condition.wait({
+                    destination.distance() == 0.0
+                }, 500, 5)
+            } else {
+                false
+            }
+        }
+        return ctx.movement.step(destination)
     }
 
     override fun toString(): String {
