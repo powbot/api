@@ -34,17 +34,23 @@ object LocalPathFinder {
         this.cachedFlags = ClientContext.ctx().client().collisionMaps[begin.floor()]
         val end = if (end.blocked(cachedFlags)) end.getWalkableNeighbor() else end
 
+        if (end == null || !end.loaded()) {
+            logger.info("Tile not loaded: $end")
+            return LocalPath(emptyList())
+        }
+
         val startAction = StartEdge(
             begin,
-            end ?: begin
+            end
         )
-        if (begin == end || end == null) {
+        if (begin == end) {
+            logger.info("Begin and end are the same begin=$begin, end=$end")
             return LocalPath(listOf(startAction))
         }
         logger.log(Level.INFO, "FIND LOCAL PATH: $begin -> $end, distance: ${begin.distanceTo(end)}")
         var attempts = 0
 
-        val open = startAction.getLocalNeighbors(end)
+        val open = startAction.getLocalNeighbors()
         val searched = mutableListOf<LocalEdge>()
 
         while (open.isNotEmpty() && attempts < maxAttempts) {
@@ -88,13 +94,65 @@ object LocalPathFinder {
     }
 
     /**
+     * Enum class used to standardize getting edge for each straight neighbor
+     */
+    enum class NeighBors(val currentFlag: Int, val currentRotation: Int, val nextRotation: Int) {
+        NORTH(Flag.W_N, Rotation.NORTH, Rotation.SOUTH),
+        EAST(Flag.W_E, Rotation.EAST, Rotation.WEST),
+        SOUTH(Flag.W_S, Rotation.SOUTH, Rotation.NORTH),
+        WEST(Flag.W_W, Rotation.WEST, Rotation.EAST);
+
+        fun getEdge(currentEdge: LocalEdge, flags: ICollisionMap): Optional<LocalEdge> {
+            val current = currentEdge.destination
+            val neighbor = when (this) {
+                NORTH -> Tile(current.x(), current.y() + 1, current.floor())
+                EAST -> Tile(current.x() + 1, current.y(), current.floor())
+                SOUTH -> Tile(current.x(), current.y() - 1, current.floor())
+                WEST -> Tile(current.x() - 1, current.y(), current.floor())
+            }
+            if (!neighbor.blocked(flags)) {
+                if (!current.blocked(flags, currentFlag)) {
+                    return Optional.of(
+                        LocalTileEdge(
+                            currentEdge,
+                            neighbor
+                        )
+                    )
+                } else {
+                    var door = current.getDoor(currentRotation)
+                    if (door.isEmpty) door = neighbor.getDoor(nextRotation)
+                    if (door.isPresent) {
+                        return Optional.of(
+                            LocalDoorEdge(
+                                door.get(),
+                                currentEdge,
+                                neighbor
+                            )
+                        )
+                    }
+                }
+            }
+            return Optional.empty()
+        }
+    }
+
+    /**
      * Used to find neighbors of LocalTile
      */
     fun LocalEdge.getLocalNeighbors(
-        finalDesination: Tile,
         flags: ICollisionMap = cachedFlags
     ): MutableList<LocalEdge> {
         var neighbors = mutableListOf<LocalEdge>()
+
+        /**
+         * Get horizontal/vertical edges
+         */
+        NeighBors.values().forEach {
+            val edge = it.getEdge(this, flags)
+            if (edge.isPresent) {
+                neighbors.add(edge.get())
+            }
+        }
 
         val current = destination
         val p = current.floor()
@@ -109,95 +167,9 @@ object LocalPathFinder {
         val sw = Tile(current.x() - 1, current.y() - 1, p)
         val nw = Tile(current.x() - 1, current.y() + 1, p)
 
-        if (!n.blocked(flags)) {
-            if (!current.blocked(flags, Flag.W_N)) {
-                neighbors.add(
-                    LocalTileEdge(
-                        this,
-                        n
-                    )
-                )
-            } else {
-                var door = current.getDoor(Rotation.NORTH)
-                if (door.isEmpty) door = n.getDoor(Rotation.SOUTH)
-                if (door.isPresent) {
-                    neighbors.add(
-                        LocalDoorEdge(
-                            door.get(),
-                            this,
-                            n
-                        )
-                    )
-                }
-            }
-        }
-        if (!e.blocked(flags)) {
-            if (!current.blocked(flags, Flag.W_E)) {
-                neighbors.add(
-                    LocalTileEdge(
-                        this,
-                        e
-                    )
-                )
-            } else {
-                var door = current.getDoor(Rotation.EAST)
-                if (door.isEmpty) door = e.getDoor(Rotation.WEST)
-                if (door.isPresent) {
-                    neighbors.add(
-                        LocalDoorEdge(
-                            door.get(),
-                            this,
-                            e
-                        )
-                    )
-                }
-            }
-        }
-        if (!s.blocked(flags)) {
-            if (!current.blocked(flags, Flag.W_S)) {
-                neighbors.add(
-                    LocalTileEdge(
-                        this,
-                        s
-                    )
-                )
-            } else {
-                var door = current.getDoor(Rotation.SOUTH)
-                if (door.isEmpty) door = s.getDoor(Rotation.NORTH)
-                if (door.isPresent) {
-                    neighbors.add(
-                        LocalDoorEdge(
-                            door.get(),
-                            this,
-                            s
-                        )
-                    )
-                }
-            }
-        }
-        if (!w.blocked(flags)) {
-            if (!current.blocked(flags, Flag.W_W)) {
-                neighbors.add(
-                    LocalTileEdge(
-                        this,
-                        w
-                    )
-                )
-            } else {
-                var door = current.getDoor(Rotation.WEST)
-                if (door.isEmpty) door = w.getDoor(Rotation.EAST)
-                if (door.isPresent) {
-                    neighbors.add(
-                        LocalDoorEdge(
-                            door.get(),
-                            this,
-                            w
-                        )
-                    )
-                }
-            }
-        }
-
+        /**
+         * Get diagonal edges
+         */
         if (!current.blocked(flags, Flag.W_NE or Flag.W_N or Flag.W_E)
             && !n.blocked(flags, Flag.W_E)
             && !e.blocked(flags, Flag.W_N)

@@ -62,7 +62,7 @@ class LocalDoorEdge(val door: GameObject, parent: LocalEdge, destination: Tile) 
     }
 
     override fun toString(): String {
-        return "LocalDoorEdge: ${door.name()} @ ${door.tile()}"
+        return "LocalDoorEdge(door=(${door.name()}) at=${door.tile()})"
     }
 
     companion object {
@@ -100,7 +100,7 @@ class LocalDoorEdge(val door: GameObject, parent: LocalEdge, destination: Tile) 
          * Returns a door for the given [orientation] if present.
          */
         fun Tile.getDoor(orientation: Int): Optional<GameObject> {
-            return org.powerbot.script.ClientContext.ctx().objects.toStream().at(this).filter {
+            return org.powerbot.script.ClientContext.ctx().objects.toStream().action(actions).at(this).filter {
                 it.name() != null && it.isDoor()
                     && it.orientation() == orientation
                     && it.canUseDoor()

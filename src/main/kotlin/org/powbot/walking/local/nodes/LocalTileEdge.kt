@@ -22,7 +22,7 @@ open class LocalTileEdge(
     }
 
     override fun getNeighbors(): MutableList<LocalEdge> {
-        return getLocalNeighbors(finalDestination)
+        return getLocalNeighbors()
     }
 
     override fun execute(): Boolean {
@@ -30,7 +30,7 @@ open class LocalTileEdge(
     }
 
     override fun toString(): String {
-        return "LocalTileEdge: $destination"
+        return "LocalTileEdge(at=$destination)"
     }
 
 }
