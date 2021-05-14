@@ -34,7 +34,7 @@ class LocalPath(val actions: List<LocalEdge>) {
             } else {
                 val possibleOptions = remainder.filter { it.destination.distance() <= 13 }
 //            possibleOptions.forEach { println(it.destination) }
-                return possibleOptions.lastOrNull() ?: null
+                return possibleOptions.lastOrNull()
             }
         }
 
