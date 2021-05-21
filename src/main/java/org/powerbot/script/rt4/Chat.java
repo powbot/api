@@ -153,7 +153,7 @@ public class Chat extends TextQuery<ChatOption> implements Streamable<ChatOption
 	}
 
 	private Component inputBox() {
-		return ctx.widgets.component(Constants.CHAT_INPUT, Constants.CHAT_INPUT_TEXT);
+		return ctx.components.toStream().widget(Constants.CHAT_INPUT).text("Enter amount:").first();
 	}
 
 	/**
