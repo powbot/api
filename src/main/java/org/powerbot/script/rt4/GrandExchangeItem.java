@@ -65,6 +65,7 @@ public class GrandExchangeItem {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			initNIL();
 			return;
 		}
 		initLivePrices();
