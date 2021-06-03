@@ -25,8 +25,9 @@ public class GrandExchangeItem {
 		try {
 			String itemNameURL = name.replaceAll(" ", "_");
 			URLConnection connection = null;
-			boolean connectionFailed = false;
+			boolean connectionFailed = true;
 			if (name.contains("teleport")) {
+				connectionFailed = false;
 				try {
 					connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL + "_(tablet)").openConnection();
 					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
@@ -35,6 +36,7 @@ public class GrandExchangeItem {
 					connectionFailed = true;
 				}
 			}
+
 			if (connectionFailed) {
 				connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL).openConnection();
 				connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
