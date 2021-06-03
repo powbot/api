@@ -1,7 +1,10 @@
 package org.powerbot.script.rt4;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -22,13 +25,30 @@ public class GrandExchangeItem {
 
 	public GrandExchangeItem(String name) {
 		this.name = name;
+		URLConnection connection = null;
+		BufferedReader r = null;
+
 		try {
 			String itemNameURL = name.replaceAll(" ", "_");
-			URLConnection connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL).openConnection();
-			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-			connection.connect();
+			boolean connectionFailed = true;
+			if (name.contains("teleport")) {
+				connectionFailed = false;
+				try {
+					connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL + "_(tablet)").openConnection();
+					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+					connection.connect();
+				} catch (Exception ignored) {
+					connectionFailed = true;
+				}
+			}
 
-			BufferedReader r  = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+			if (connectionFailed) {
+				connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL).openConnection();
+				connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+				connection.connect();
+			}
+
+			r  = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 			StringBuilder sb = new StringBuilder();
 
 			String string;
@@ -52,6 +72,15 @@ public class GrandExchangeItem {
 		} catch (Exception e) {
 			e.printStackTrace();
 			initNIL();
+			return;
+		} finally {
+			if (r != null) {
+				try {
+					r.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		initLivePrices();
 	}
