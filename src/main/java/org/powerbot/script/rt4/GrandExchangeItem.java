@@ -24,9 +24,23 @@ public class GrandExchangeItem {
 		this.name = name;
 		try {
 			String itemNameURL = name.replaceAll(" ", "_");
-			URLConnection connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL).openConnection();
-			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-			connection.connect();
+			URLConnection connection = null;
+			boolean connectionFailed = false;
+			if (name.contains("teleport")) {
+				try {
+					connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL + "_(tablet)").openConnection();
+					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+					connection.connect();
+				} catch (Exception ignored) {
+					connectionFailed = true;
+				}
+			}
+			if (connectionFailed) {
+				connection = new URL("https://oldschool.runescape.wiki/w/Exchange:" + itemNameURL).openConnection();
+				connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+				connection.connect();
+			}
+
 
 			BufferedReader r  = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 			StringBuilder sb = new StringBuilder();
@@ -51,7 +65,7 @@ public class GrandExchangeItem {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			initNIL();
+			return;
 		}
 		initLivePrices();
 	}
