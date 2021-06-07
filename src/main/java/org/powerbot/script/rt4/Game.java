@@ -59,6 +59,27 @@ public class Game extends ClientAccessor {
 	}
 
 	/**
+	 * Closes any open tab on the mobile client.
+	 * This is useful because the mobile client's canvas is often underneath the tabs and when openened they can cause interaction issues.
+	 * Only does something on mobile clients.
+	 *
+	 * @return true if not on mobile or if tab is closed after or before interaction
+	 */
+	public boolean closeOpenTab() {
+		final Tab tab = tab();
+		if (!ctx.client().isMobile() || tab == Tab.NONE) {
+			return true;
+		}
+		final Component c = getByTexture(tab.textures);
+		return c != null && c.click(true) && Condition.wait(new Condition.Check() {
+			@Override
+			public boolean poll() {
+				return tab() == Tab.NONE;
+			}
+		}, 50, 10);
+	}
+
+	/**
 	 * Attempts to open the specified game tab on the user interface by clicking. If the
 	 * tab is already opened, it will return {@code true}.
 	 *
