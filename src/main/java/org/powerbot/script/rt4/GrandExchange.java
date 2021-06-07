@@ -137,7 +137,8 @@ public class GrandExchange extends ClientAccessor {
 			Component chatItemInput = ctx.widgets.component(CHAT_INPUT, CHAT_INPUT_ITEM);
 			Component searchResults = ctx.widgets.component(CHAT_INPUT, GRAND_EXCHANGE_SEARCH_RESULT_COMPONENT);
 			if (Condition.wait(() -> chatItemInput.visible() && chatItemInput.text().contains("would you like to buy"), 500, 5)) {
-				ctx.input.send(itemName);
+				int index = Math.max(itemName.indexOf(" "), Random.nextInt(4, 7));
+				ctx.input.send(itemName.substring(0, index));
 
 				Condition.wait(() -> getBuyItemComponent(itemId) != null, 500, 5);
 				itemComponent = getBuyItemComponent(itemId);
