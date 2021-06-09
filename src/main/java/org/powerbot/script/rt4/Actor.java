@@ -105,14 +105,23 @@ public abstract class Actor extends Interactive implements InteractiveEntity, Na
 		int orientation = orientation();
 		Tile t = tile();
 		switch (orientation) {
-			case 4:
-				return new Tile(t.x(), t.y() + 1, t.floor());
-			case 6:
-				return new Tile(t.x() + 1, t.y(), t.floor());
 			case 0:
 				return new Tile(t.x(), t.y() - 1, t.floor());
+			case 1:
+				return new Tile(t.x() - 1, t.y() - 1, t.floor());
 			case 2:
 				return new Tile(t.x() - 1, t.y(), t.floor());
+			case 3:
+				return new Tile(t.x() - 1, t.y() + 1, t.floor());
+			case 4:
+				return new Tile(t.x(), t.y() + 1, t.floor());
+			case 5:
+				return new Tile(t.x() + 1, t.y() + 1, t.floor());
+			case 6:
+				return new Tile(t.x() + 1, t.y(), t.floor());
+			case 7:
+				return new Tile(t.x() + 1, t.y() - 1, t.floor());
+
 		}
 		return Tile.NIL;
 	}
