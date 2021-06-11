@@ -551,7 +551,7 @@ public class Game extends ClientAccessor {
 		EQUIPMENT("Worn Equipment", 901),
 		PRAYER("Prayer", 902),
 		MAGIC("Magic", 780, 1582, 1583, 1584),
-		CLAN_CHAT("Clan Chat", 904),
+		CLAN_CHAT(new String[]{"Clan-channel", "Your Clan", "View another clan"}, 781, 2307, 2308),
 		FRIENDS_LIST("Friends List", 782),
 		ACCOUNT_MANAGEMENT("Account Management", 1709),
 		IGNORED_LIST("Ignore List", 783),
