@@ -70,7 +70,7 @@ public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBox
 		if (hotkey) {
 			interacted = ctx.input.send("{VK_ESCAPE}");
 		} else {
-			interacted = ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, 1).component(Constants.DEPOSITBOX_CLOSE).interact("Close");
+			interacted = ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, 1).component(Constants.DEPOSITBOX_CLOSE).click();
 		}
 		return interacted && Condition.wait(()->!opened(), 30, 10);
 	}
@@ -81,7 +81,7 @@ public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBox
 	 * @return {@code true} if the inventory was successfully deposited, {@code false} otherwise.
 	 */
 	public boolean depositInventory() {
-		return opened() && ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_INVENTORY).interact("Deposit inventory");
+		return opened() && ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_INVENTORY).click();
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBox
 	 * @return {@code true} if the player's equipment was successfully deposited, {@code false} otherwise.
 	 */
 	public boolean depositWornItems() {
-		return opened() && ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_WORN_ITEMS).interact("Deposit worn items");
+		return opened() && ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_WORN_ITEMS).click();
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class DepositBox extends ItemQuery<Item> implements Streamable<DepositBox
 	 * @return {@code true} if the loot has been successfully deposited, {@code false} otherwise.
 	 */
 	public boolean depositLoot() {
-		return opened() && ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_LOOT).interact("Deposit loot");
+		return opened() && ctx.widgets.component(Constants.DEPOSITBOX_WIDGET, Constants.DEPOSITBOX_LOOT).click();
 	}
 
 	/**

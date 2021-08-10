@@ -802,14 +802,14 @@ public class Bank extends ItemQuery<Item> implements Streamable<BankItemStream> 
 	 * @return {@code true} if deposit inventory button was clicked successfully; otherwise {@code false}
 	 */
 	public boolean depositInventory() {
-		return ctx.inventory.get().isEmpty() || ctx.widgets.widget(Constants.BANK_WIDGET).component(Constants.BANK_DEPOSIT_INVENTORY).interact("Deposit");
+		return ctx.inventory.get().isEmpty() || ctx.widgets.widget(Constants.BANK_WIDGET).component(Constants.BANK_DEPOSIT_INVENTORY).click();
 	}
 
 	/**
 	 * @return {@code true} if deposit equipment button was clicked successfully; otherwise {@code false}
 	 */
 	public boolean depositEquipment() {
-		return ctx.widgets.widget(Constants.BANK_WIDGET).component(Constants.BANK_DEPOSIT_EQUIPMENT).interact("Deposit");
+		return ctx.widgets.widget(Constants.BANK_WIDGET).component(Constants.BANK_DEPOSIT_EQUIPMENT).click();
 	}
 
 	/**
